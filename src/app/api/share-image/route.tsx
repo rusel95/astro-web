@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
                 fontStyle: 'italic',
               }}
             >
-              "{zodiac.phrase}"
+              &ldquo;{zodiac.phrase}&rdquo;
             </div>
 
             {/* Name if provided */}
