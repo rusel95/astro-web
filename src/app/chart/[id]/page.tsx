@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check, Download } from 'lucide-react';
+import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check, Download, Gift, Cake } from 'lucide-react';
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
 import NatalChartWheel from '@/components/chart/NatalChartWheel';
@@ -14,6 +14,27 @@ import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
 
 type Tab = 'overview' | 'planets' | 'houses' | 'aspects' | 'report';
+
+function isBirthdayToday(birthDate: string): boolean {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  return birth.getMonth() === today.getMonth() && birth.getDate() === today.getDate();
+}
+
+function isBirthdaySoon(birthDate: string): { isSoon: boolean; daysUntil: number } {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  
+  if (thisYearBirthday < today) {
+    thisYearBirthday.setFullYear(today.getFullYear() + 1);
+  }
+  
+  const diffTime = thisYearBirthday.getTime() - today.getTime();
+  const daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return { isSoon: daysUntil <= 14 && daysUntil > 0, daysUntil };
+}
 
 export default function ChartPage() {
   const { id } = useParams<{ id: string }>();
@@ -227,6 +248,55 @@ export default function ChartPage() {
           )}
         </div>
       </motion.div>
+
+      {/* Birthday Banner */}
+      {chart.birthDate && isBirthdayToday(chart.birthDate) && (
+        <motion.a
+          href={`/birthday-forecast/${id}`}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="block mb-6"
+        >
+          <div className="glass-card p-4 border-2 border-zorya-gold/40 bg-gradient-to-r from-zorya-gold/10 to-zorya-purple/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center">
+                  <Cake size={24} className="text-zorya-gold" />
+                </div>
+                <div>
+                  <p className="text-zorya-gold font-semibold">🎂 З Днем Народження!</p>
+                  <p className="text-text-secondary text-sm">Отримайте персональний прогноз на рік</p>
+                </div>
+              </div>
+              <div className="text-zorya-gold">→</div>
+            </div>
+          </div>
+        </motion.a>
+      )}
+      
+      {chart.birthDate && !isBirthdayToday(chart.birthDate) && isBirthdaySoon(chart.birthDate).isSoon && (
+        <motion.a
+          href={`/birthday-forecast/${id}`}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="block mb-6"
+        >
+          <div className="glass-card p-4 border border-zorya-purple/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center">
+                  <Gift size={20} className="text-zorya-violet" />
+                </div>
+                <div>
+                  <p className="text-text-primary font-medium">День народження за {isBirthdaySoon(chart.birthDate).daysUntil} дн.</p>
+                  <p className="text-text-muted text-sm">Дізнайтесь прогноз на наступний рік</p>
+                </div>
+              </div>
+              <div className="text-zorya-violet">→</div>
+            </div>
+          </div>
+        </motion.a>
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">

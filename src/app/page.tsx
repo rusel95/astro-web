@@ -7,6 +7,11 @@ import ChartsCounter from '@/components/ChartsCounter';
 
 const ZODIAC_RING = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 
+const BIRTHDAY_CTA = {
+  title: '🎂 Сьогодні ваш день народження?',
+  subtitle: 'Отримайте персональний прогноз на наступний рік життя',
+};
+
 const PRODUCTS: { Icon: LucideIcon; title: string; bullets: string[] }[] = [
   {
     Icon: User,
@@ -170,6 +175,32 @@ export default function Home() {
 
       {/* ===== DIVIDER ===== */}
       <hr className="divider-cosmic mx-8 md:mx-auto md:max-w-4xl" />
+
+      {/* ===== BIRTHDAY CTA ===== */}
+      <section className="py-8 bg-cosmic-900">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.a
+            href="/chart/new"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="block glass-card p-5 border border-zorya-gold/30 bg-gradient-to-r from-zorya-gold/5 to-zorya-purple/5 hover:from-zorya-gold/10 hover:to-zorya-purple/10 transition-all group cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center text-2xl">
+                  🎂
+                </div>
+                <div>
+                  <p className="text-zorya-gold font-semibold text-lg">{BIRTHDAY_CTA.title}</p>
+                  <p className="text-text-secondary text-sm">{BIRTHDAY_CTA.subtitle}</p>
+                </div>
+              </div>
+              <div className="text-zorya-gold group-hover:translate-x-1 transition-transform">→</div>
+            </div>
+          </motion.a>
+        </div>
+      </section>
 
       {/* ===== QUESTIONS SECTION ===== */}
       <section className="py-16 md:py-24 bg-cosmic-800">
