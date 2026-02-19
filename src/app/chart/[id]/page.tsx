@@ -86,6 +86,27 @@ export default function ChartPage() {
     }
   }, []);
 
+  const handleShareToTwitter = useCallback(() => {
+    if (!chart || !sunPlanet) return;
+    
+    const sunSign = zodiacFromDegree(sunPlanet.longitude);
+    const chartUrl = window.location.href;
+    
+    // X-optimized copy: short, engaging, emoji, hashtags
+    const tweetText = `✨ Щойно розрахував свою натальну карту!
+
+${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
+🌙 Місяць в ${moonPlanet ? zodiacFromDegree(moonPlanet.longitude) : '—'}
+⬆️ Асцендент в ${zodiacFromDegree(chart.ascendant)}
+
+Дізнайся про себе більше → ${chartUrl}
+
+#астрологія #натальнакарта #${sunSign.toLowerCase()}`;
+    
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+    window.open(twitterUrl, '_blank', 'width=550,height=420');
+  }, [chart, sunPlanet, moonPlanet]);
+
   const handleDownloadStory = useCallback(async () => {
     if (!chart || !sunPlanet) return;
     
@@ -95,8 +116,24 @@ export default function ChartPage() {
     try {
       const response = await fetch(url);
       const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
       
+      // Try Web Share API first (mobile devices, Instagram Stories)
+      if (navigator.share && navigator.canShare) {
+        const file = new File([blob], `astro-${sunSign.toLowerCase()}.png`, { type: 'image/png' });
+        const shareData = {
+          title: `✨ ${inputData.name || 'Моя'} астрологічна карта`,
+          text: `Мій знак Сонця: ${sunSign} ${ZODIAC_SYMBOLS[sunPlanet.sign]} | Розрахуй свою карту на AstroSvitlana`,
+          files: [file],
+        };
+        
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return;
+        }
+      }
+      
+      // Fallback: download file
+      const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = blobUrl;
       a.download = `astro-story-${sunSign.toLowerCase()}.png`;
@@ -105,7 +142,7 @@ export default function ChartPage() {
       document.body.removeChild(a);
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error('Failed to download story:', error);
+      console.error('Failed to share/download story:', error);
     }
   }, [chart, sunPlanet, inputData.name]);
 
@@ -217,6 +254,18 @@ export default function ChartPage() {
           >
             <Download size={14} strokeWidth={1.75} />
             Stories для Instagram
+          </motion.button>
+
+          <motion.button
+            onClick={handleShareToTwitter}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-black/60 text-white border border-white/20 hover:bg-black/80 hover:border-white/40"
+            title="Поділитися в X (Twitter)"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            Поділитися в X
           </motion.button>
         </div>
       </motion.div>
