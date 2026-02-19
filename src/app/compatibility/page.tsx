@@ -34,6 +34,7 @@ export default function CompatibilityPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [result, setResult] = useState<any>(null);
 
   const canSubmit = 
     name1.trim().length > 0 && 
@@ -47,19 +48,41 @@ export default function CompatibilityPage() {
     if (!canSubmit) return;
     setLoading(true);
     setError('');
+    setResult(null);
 
     try {
-      // TODO: API call to /api/compatibility
-      // const res = await fetch('/api/compatibility', { 
-      //   person1: { name1, birthDate1, birthTime1, lat1, lon1 },
-      //   person2: { name2, birthDate2, birthTime2, lat2, lon2 }
-      // });
-      
-      // Placeholder for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Synastry would calculate:', { lat1, lon1, lat2, lon2 });
-      
-      setError('API endpoint not yet implemented');
+      const res = await fetch('/api/compatibility', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          person1: {
+            name: name1,
+            birthDate: birthDate1,
+            birthTime: birthTime1,
+            city: city1,
+            countryCode: countryCode1,
+            latitude: lat1,
+            longitude: lon1,
+          },
+          person2: {
+            name: name2,
+            birthDate: birthDate2,
+            birthTime: birthTime2,
+            city: city2,
+            countryCode: countryCode2,
+            latitude: lat2,
+            longitude: lon2,
+          },
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Помилка розрахунку');
+      }
+
+      const data = await res.json();
+      setResult(data);
     } catch (err: any) {
       setError(err.message || 'Помилка розрахунку');
     } finally {
@@ -248,25 +271,112 @@ export default function CompatibilityPage() {
           💫 Розрахувати сумісність
         </motion.button>
 
+        {/* Results */}
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12"
+          >
+            {/* Compatibility Score */}
+            <div className="text-center mb-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                className="inline-flex items-center justify-center w-32 h-32 rounded-full mb-4"
+                style={{
+                  background: `conic-gradient(from 0deg, #6C3CE1 0%, #EC4899 ${result.compatibilityScore}%, rgba(255,255,255,0.1) ${result.compatibilityScore}%)`,
+                  boxShadow: '0 8px 32px rgba(108,60,225,0.4)',
+                }}
+              >
+                <div className="w-28 h-28 rounded-full flex items-center justify-center" style={{ background: BG }}>
+                  <span className="text-4xl font-bold text-white">{Math.round(result.compatibilityScore)}%</span>
+                </div>
+              </motion.div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {result.compatibilityScore >= 75 ? '💖 Висока сумісність!' :
+                 result.compatibilityScore >= 50 ? '💕 Хороша сумісність' :
+                 '💫 Потребує роботи'}
+              </h3>
+              <p className="text-white/60">{name1} та {name2}</p>
+            </div>
+
+            {/* Synastry Aspects */}
+            <div className="p-6 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <h4 className="text-xl font-bold text-white mb-4">🔮 Ключові аспекти</h4>
+              <div className="space-y-3">
+                {result.synastryAspects.slice(0, 10).map((aspect: any, idx: number) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="p-4 rounded-xl"
+                    style={{
+                      background: aspect.type === 'Trine' || aspect.type === 'Sextile' 
+                        ? 'rgba(34, 197, 94, 0.1)' 
+                        : aspect.type === 'Square' 
+                        ? 'rgba(239, 68, 68, 0.1)' 
+                        : 'rgba(255,255,255,0.03)',
+                      border: `1px solid ${
+                        aspect.type === 'Trine' || aspect.type === 'Sextile' 
+                          ? 'rgba(34, 197, 94, 0.3)' 
+                          : aspect.type === 'Square' 
+                          ? 'rgba(239, 68, 68, 0.3)' 
+                          : 'rgba(255,255,255,0.08)'
+                      }`,
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-white font-medium">
+                        {aspect.planet1} ({aspect.person1Name}) → {aspect.planet2} ({aspect.person2Name})
+                      </span>
+                      <span className="text-xs text-white/50">Орб: {aspect.orb.toFixed(1)}°</span>
+                    </div>
+                    <p className="text-sm text-white/60 mt-1">{aspect.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+              {result.synastryAspects.length > 10 && (
+                <p className="text-center text-white/40 text-sm mt-4">
+                  + ще {result.synastryAspects.length - 10} аспектів
+                </p>
+              )}
+            </div>
+
+            {/* New calculation button */}
+            <button
+              onClick={() => setResult(null)}
+              className="w-full mt-6 py-3 rounded-xl text-white/70 hover:text-white transition-all"
+              style={{ background: 'rgba(255,255,255,0.05)' }}
+            >
+              ← Нова пара
+            </button>
+          </motion.div>
+        )}
+
         {/* Info block */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 p-6 rounded-2xl"
-          style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.08)',
-          }}
-        >
-          <h3 className="text-white font-bold mb-3">Що таке синастрія?</h3>
-          <p className="text-white/60 text-sm leading-relaxed">
-            Синастрія — це метод порівняння двох натальних карт для оцінки сумісності. 
-            Ми аналізуємо аспекти між вашими планетами: Венера-Марс (кохання), 
-            Місяць-Місяць (емоції), Сонце-Місяць (розуміння), Меркурій-Меркурій (комунікація). 
-            Результат покаже сильні сторони ваших стосунків та потенційні виклики.
-          </p>
-        </motion.div>
+        {!result && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 p-6 rounded-2xl"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
+            <h3 className="text-white font-bold mb-3">Що таке синастрія?</h3>
+            <p className="text-white/60 text-sm leading-relaxed">
+              Синастрія — це метод порівняння двох натальних карт для оцінки сумісності. 
+              Ми аналізуємо аспекти між вашими планетами: Венера-Марс (кохання), 
+              Місяць-Місяць (емоції), Сонце-Місяць (розуміння), Меркурій-Меркурій (комунікація). 
+              Результат покаже сильні сторони ваших стосунків та потенційні виклики.
+            </p>
+          </motion.div>
+        )}
       </div>
     </div>
   );
