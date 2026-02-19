@@ -43,6 +43,10 @@ export default function ChartPage() {
     }
   }, [id]);
 
+  // Extract planets early (used in callbacks)
+  const sunPlanet = chart?.planets.find(p => p.name === 'Sun');
+  const moonPlanet = chart?.planets.find(p => p.name === 'Moon');
+
   const handleCopyLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -123,8 +127,6 @@ export default function ChartPage() {
 
   const ascSign = zodiacFromDegree(chart.ascendant);
   const mcSign = zodiacFromDegree(chart.midheaven);
-  const sunPlanet = chart.planets.find(p => p.name === 'Sun');
-  const moonPlanet = chart.planets.find(p => p.name === 'Moon');
 
   const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
     { id: 'overview',   label: 'Огляд',   Icon: LayoutGrid },
