@@ -20,7 +20,7 @@ export default function CompatibilityPage() {
   const [birthTime1, setBirthTime1] = useState('12:00');
   const [city1, setCity1] = useState('');
   const [lat1, setLat1] = useState(0);
-  const [lon1, setLon1] = useState(0);
+  const [lon1, setLon1] = useState(0); // Used for API call (TODO)
   const [countryCode1, setCountryCode1] = useState('');
 
   // Person 2 (Partner)
@@ -29,7 +29,7 @@ export default function CompatibilityPage() {
   const [birthTime2, setBirthTime2] = useState('14:30');
   const [city2, setCity2] = useState('');
   const [lat2, setLat2] = useState(0);
-  const [lon2, setLon2] = useState(0);
+  const [lon2, setLon2] = useState(0); // Used for API call (TODO)
   const [countryCode2, setCountryCode2] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -50,11 +50,14 @@ export default function CompatibilityPage() {
 
     try {
       // TODO: API call to /api/compatibility
-      // const res = await fetch('/api/compatibility', { ... });
+      // const res = await fetch('/api/compatibility', { 
+      //   person1: { name1, birthDate1, birthTime1, lat1, lon1 },
+      //   person2: { name2, birthDate2, birthTime2, lat2, lon2 }
+      // });
       
       // Placeholder for now
       await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Synastry calculation would happen here');
+      console.log('Synastry would calculate:', { lat1, lon1, lat2, lon2 });
       
       setError('API endpoint not yet implemented');
     } catch (err: any) {
@@ -116,7 +119,7 @@ export default function CompatibilityPage() {
 
             <div className="flex flex-col gap-5">
               <div>
-                <label className="block text-sm text-white/50 mb-2">Ім'я</label>
+                <label className="block text-sm text-white/50 mb-2">Ім&apos;я</label>
                 <input
                   type="text"
                   value={name1}
@@ -172,7 +175,7 @@ export default function CompatibilityPage() {
 
             <div className="flex flex-col gap-5">
               <div>
-                <label className="block text-sm text-white/50 mb-2">Ім'я</label>
+                <label className="block text-sm text-white/50 mb-2">Ім&apos;я</label>
                 <input
                   type="text"
                   value={name2}
