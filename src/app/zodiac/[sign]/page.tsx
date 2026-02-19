@@ -206,24 +206,68 @@ export async function generateMetadata({ params }: { params: { sign: string } })
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://astro-web-five.vercel.app';
+  const canonicalUrl = `${baseUrl}/zodiac/${params.sign}`;
+  const ogImage = `${baseUrl}/api/og/${params.sign}`;
+  
   const title = `${zodiac.symbol} ${zodiac.name} — Характеристика знаку зодіаку | AstroSvitlana`;
   const description = `${zodiac.description} Дізнайтеся більше про знак ${zodiac.name}: сильні сторони, слабкості, сумісність.`;
-  const ogImage = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://astro-web-five.vercel.app'}/api/og/${params.sign}`;
+  
+  // High-traffic keywords for SEO
+  const keywords = [
+    `${zodiac.name}`,
+    `знак зодіаку ${zodiac.name}`,
+    `${zodiac.name} характеристика`,
+    `${zodiac.name} гороскоп`,
+    `${zodiac.name} сумісність`,
+    `${zodiac.name} ${zodiac.dates}`,
+    `${zodiac.element} знак`,
+    zodiac.nameEn,
+    `astrology ${zodiac.nameEn}`,
+    'натальна карта',
+    'астрологія',
+  ];
 
   return {
     title,
     description,
+    keywords: keywords.join(', '),
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    authors: [{ name: 'AstroSvitlana' }],
+    creator: 'AstroSvitlana',
+    publisher: 'AstroSvitlana',
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: {
       title,
       description,
-      images: [{ url: ogImage, width: 1200, height: 630 }],
+      url: canonicalUrl,
+      siteName: 'AstroSvitlana',
+      locale: 'uk_UA',
       type: 'article',
+      images: [{ 
+        url: ogImage, 
+        width: 1200, 
+        height: 630,
+        alt: `${zodiac.symbol} ${zodiac.name} — астрологічна характеристика`,
+      }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
       images: [ogImage],
+      creator: '@AstroSvitlana',
     },
   };
 }
@@ -235,9 +279,47 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
     notFound();
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://astro-web-five.vercel.app';
+  const canonicalUrl = `${baseUrl}/zodiac/${params.sign}`;
+
+  // JSON-LD structured data for SEO
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: `${zodiac.symbol} ${zodiac.name} — Характеристика знаку зодіаку`,
+    description: zodiac.description,
+    image: `${baseUrl}/api/og/${params.sign}`,
+    author: {
+      '@type': 'Organization',
+      name: 'AstroSvitlana',
+      url: baseUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AstroSvitlana',
+      url: baseUrl,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+    datePublished: '2026-02-19',
+    dateModified: '2026-02-19',
+    keywords: `${zodiac.name}, знак зодіаку, астрологія, ${zodiac.element}, ${zodiac.nameEn}`,
+    articleSection: 'Знаки зодіаку',
+    inLanguage: 'uk-UA',
+  };
+
   return (
-    <div className="min-h-screen py-12 px-4" style={{ background: 'linear-gradient(to bottom, #0f0a1e, #1a0e35)' }}>
-      <div className="max-w-4xl mx-auto">
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      <div className="min-h-screen py-12 px-4" style={{ background: 'linear-gradient(to bottom, #0f0a1e, #1a0e35)' }}>
+        <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <div
@@ -326,5 +408,6 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
         </div>
       </div>
     </div>
+    </>
   );
 }
