@@ -1,7 +1,22 @@
 import type { Metadata } from 'next';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 import AuthNav from '@/components/AuthNav';
 import PostHogProvider from '@/components/PostHogProvider';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Зоря — Натальна карта з AI-інтерпретацією',
@@ -32,20 +47,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const user = await getUser();
 
   return (
-    <html lang="uk">
-      <body className="min-h-screen bg-cosmic-900 text-text-primary antialiased">
+    <html lang="uk" className={`${cormorant.variable} ${inter.variable}`}>
+      <body className="min-h-screen bg-cosmic-900 text-text-primary antialiased font-sans">
         {/* Navigation */}
-        <nav className="sticky top-0 z-50 bg-cosmic-900/80 backdrop-blur-md border-b border-white/10">
+        <nav className="sticky top-0 z-50 border-b border-white/[0.07]" style={{ background: 'rgba(8,8,26,0.85)', backdropFilter: 'blur(20px) saturate(1.5)', WebkitBackdropFilter: 'blur(20px) saturate(1.5)' }}>
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2 font-bold text-xl text-zorya-violet">
-              <img src="/logo-64.png" alt="Зоря" className="w-8 h-8 rounded-lg" />
-              <span className="hidden sm:inline">Зоря</span>
+            <a href="/" className="flex items-center gap-2.5 group">
+              <img src="/logo-64.png" alt="Зоря" className="w-8 h-8 rounded-xl" />
+              <span className="hidden sm:inline font-display text-xl font-semibold text-zorya-violet group-hover:text-zorya-gold transition-colors">Зоря</span>
             </a>
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Full label on sm+, icon-only on xs */}
               <a
                 href="/chart/new"
-                className="flex items-center gap-1.5 px-3 sm:px-5 py-2 bg-zorya-purple text-white text-sm font-semibold rounded-full hover:bg-zorya-violet transition-colors shadow-glow-sm"
+                className="flex items-center gap-1.5 px-3 sm:px-5 py-2 text-white text-sm font-semibold rounded-full transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
+                  boxShadow: '0 2px 14px rgba(108, 60, 225, 0.35)',
+                }}
               >
                 <span>✦</span>
                 <span className="hidden sm:inline">Розрахувати карту</span>
@@ -60,21 +78,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className="min-h-[calc(100vh-56px)]">{children}</main>
 
         {/* Footer */}
-        <footer className="bg-cosmic-800 border-t border-white/10 py-8">
+        <footer className="bg-cosmic-800 border-t border-white/[0.07] py-10">
           <div className="max-w-6xl mx-auto px-4 text-center">
-            <a href="/" className="text-zorya-violet font-bold text-lg">✦ Зоря</a>
+            <a href="/" className="inline-flex items-center gap-2 group">
+              <span className="font-display text-2xl font-semibold text-zorya-violet group-hover:text-zorya-gold transition-colors">✦ Зоря</span>
+            </a>
             <p className="text-text-muted text-sm mt-2">
               Натальна карта з AI-інтерпретацією
             </p>
-            <div className="mt-4">
+            <div className="mt-5">
               <a
                 href="/chart/new"
-                className="inline-block px-8 py-3 bg-zorya-purple text-white font-semibold rounded-full hover:bg-zorya-violet transition-colors shadow-glow-sm"
+                className="inline-flex items-center gap-2 px-8 py-3 text-white font-semibold rounded-full transition-all text-sm"
+                style={{
+                  background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
+                  boxShadow: '0 3px 18px rgba(108, 60, 225, 0.38)',
+                }}
               >
-                Розрахувати карту безкоштовно
+                ✦ Розрахувати карту безкоштовно
               </a>
             </div>
-            <p className="text-text-muted text-xs mt-6">© 2026 Зоря. Всі права захищені.</p>
+            <p className="text-text-muted text-xs mt-6 opacity-60">© 2026 Зоря. Всі права захищені.</p>
           </div>
         </footer>
       </body>

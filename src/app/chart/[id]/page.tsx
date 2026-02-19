@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check } from 'lucide-react';
+import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check, Download } from 'lucide-react';
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
 import NatalChartWheel from '@/components/chart/NatalChartWheel';
@@ -60,6 +60,29 @@ export default function ChartPage() {
       setTimeout(() => setCopied(false), 2500);
     }
   }, []);
+
+  const handleDownloadStory = useCallback(async () => {
+    if (!chart || !sunPlanet) return;
+    
+    const sunSign = zodiacFromDegree(sunPlanet.longitude);
+    const url = `/api/share-image?sign=${encodeURIComponent(sunSign)}&name=${encodeURIComponent(inputData.name || '')}`;
+    
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `astro-story-${sunSign.toLowerCase()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Failed to download story:', error);
+    }
+  }, [chart, sunPlanet, inputData.name]);
 
   const generateReport = useCallback(async (area: ReportArea) => {
     if (!chart) return;
@@ -126,8 +149,8 @@ export default function ChartPage() {
           {chart.locationName} • {chart.birthDate} • {chart.birthTime}
         </p>
 
-        {/* Share button */}
-        <div className="flex justify-center mt-3">
+        {/* Share buttons */}
+        <div className="flex justify-center gap-3 mt-3 flex-wrap">
           <motion.button
             onClick={handleCopyLink}
             whileTap={{ scale: 0.95 }}
@@ -162,6 +185,15 @@ export default function ChartPage() {
                 </motion.span>
               )}
             </AnimatePresence>
+          </motion.button>
+
+          <motion.button
+            onClick={handleDownloadStory}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-gradient-to-r from-zorya-violet to-zorya-purple text-white border border-zorya-purple/40 hover:shadow-lg hover:shadow-zorya-purple/30"
+          >
+            <Download size={14} strokeWidth={1.75} />
+            Stories для Instagram
           </motion.button>
         </div>
       </motion.div>

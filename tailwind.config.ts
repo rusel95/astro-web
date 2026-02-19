@@ -50,7 +50,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['var(--font-cormorant)', 'Cormorant Garamond', 'Georgia', 'serif'],
       },
       boxShadow: {
         'glow-sm': '0 0 10px rgba(102, 77, 204, 0.2)',
