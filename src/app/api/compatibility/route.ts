@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildAPIRequest, mapAPIResponse } from '@/lib/api-mapper';
-import { ChartInput, NatalChart, Planet, AspectType } from '@/types/astrology';
+import { ChartInput, NatalChart, AspectType } from '@/types/astrology';
 
 interface CompatibilityInput {
   person1: ChartInput;
@@ -33,7 +33,7 @@ function getAngleDifference(lon1: number, lon2: number): number {
 }
 
 // Determine aspect type based on angle
-function getAspectType(angle: number, orb: number = 8): { type: AspectType; orb: number } | null {
+function getAspectType(angle: number, _orb: number = 8): { type: AspectType; orb: number } | null {
   const aspects = [
     { type: 'Conjunction' as AspectType, angle: 0, maxOrb: 8 },
     { type: 'Sextile' as AspectType, angle: 60, maxOrb: 6 },

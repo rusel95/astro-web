@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Персональний прогноз | Транзити планет | Зоря',
+  description: 'Отримайте детальний прогноз на найближчий період через аналіз транзитів планет до вашої натальної карти.',
+  openGraph: {
+    title: 'Персональний астрологічний прогноз',
+    description: 'Що вас чекає? Астрологічний прогноз на основі транзитів',
+    type: 'website',
+  },
+};
 
 export default function ForecastPage() {
   return (

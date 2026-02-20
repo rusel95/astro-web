@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
 
 const MONTHS_UA = [
   'Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
@@ -25,12 +24,6 @@ const INPUT_STYLE: React.CSSProperties = {
   appearance: 'none',
 };
 
-const FOCUSED_STYLE: React.CSSProperties = {
-  ...INPUT_STYLE,
-  border: '1.5px solid rgba(153,102,230,0.7)',
-  background: 'rgba(108,60,225,0.12)',
-};
-
 // ── Scroll Drum Column ─────────────────────────────────────────────────────────
 interface DrumProps {
   items: (string | number)[];
@@ -44,9 +37,6 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   const ITEM_H = 52;
   const VISIBLE = 5;
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const startY = useRef(0);
-  const startScroll = useRef(0);
 
   // Center selected item
   useEffect(() => {
@@ -56,7 +46,7 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   }, [selected]);
 
   const handleScroll = () => {
-    if (!containerRef.current || dragging) return;
+    if (!containerRef.current) return;
     const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
     const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
     if (clamped !== selected) onSelect(clamped);

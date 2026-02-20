@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Кар'єрний гороскоп | Призначення та професія | Зоря",
+  description: "Знайдіть свій професійний шлях через аналіз МС, Сатурна та 10 дому. Дізнайтесь про ідеальну кар'єру та призначення.",
+  openGraph: {
+    title: "Кар'єрний гороскоп",
+    description: "Астрологічний аналіз вашого професійного призначення",
+    type: 'website',
+  },
+};
 
 export default function CareerPage() {
   return (

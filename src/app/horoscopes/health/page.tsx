@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Гороскоп здоров'я | Астрологія та медицина | Зоря",
+  description: "Дізнайтесь про схильності до захворювань, сильні та слабкі зони організму через аналіз 6 дому та медичної астрології.",
+  openGraph: {
+    title: "Гороскоп здоров'я",
+    description: "Астрологічний аналіз вашого фізичного та емоційного здоров'я",
+    type: 'website',
+  },
+};
 
 export default function HealthPage() {
   return (

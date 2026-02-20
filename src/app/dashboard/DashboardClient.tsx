@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Gift, Cake } from 'lucide-react';
+import { Cake } from 'lucide-react';
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
 const BTN_GRAD = 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)';

@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Гороскоп особистості | Астрологічний портрет | Зоря',
+  description: 'Дізнайтесь свої справжні сильні та слабкі сторони, приховані таланти та життєву місію через детальний аналіз натальної карти.',
+  openGraph: {
+    title: 'Гороскоп особистості',
+    description: 'Глибинний астрологічний портрет — хто ви насправді',
+    type: 'website',
+  },
+};
 
 export default function PersonalityPage() {
   return (

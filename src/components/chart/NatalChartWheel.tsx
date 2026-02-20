@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
-import { Planet, House, Aspect, PlanetName, ZodiacSign } from '@/types/astrology';
+import { Planet, House, Aspect, PlanetName } from '@/types/astrology';
 import {
   PLANET_SYMBOLS,
   PLANET_NAMES_UK,

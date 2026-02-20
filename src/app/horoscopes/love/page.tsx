@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Любовний гороскоп | Венера в натальній карті | Зоря',
+  description: 'Дізнайтесь про ваш стиль кохання, потреби у стосунках та сумісність з партнерами через аналіз Венери та 7 дому.',
+  openGraph: {
+    title: 'Любовний гороскоп',
+    description: 'Астрологічний аналіз ваших стосунків та стилю кохання',
+    type: 'website',
+  },
+};
 
 export default function LovePage() {
   return (
