@@ -133,7 +133,8 @@ test.describe('Horoscope Pages — SEO', () => {
   test('Compatibility: has Open Graph tags', async ({ page }) => {
     await page.goto('/horoscopes/compatibility');
     
-    const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content');
+    // Wait for meta tags (may need rebuild on production)
+    const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content', { timeout: 5000 }).catch(() => null);
     expect(ogTitle).toBeTruthy();
   });
 });

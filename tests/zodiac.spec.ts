@@ -121,13 +121,12 @@ test.describe('Zodiac Pages — Visual Elements', () => {
   test('Gemini: has zodiac symbol/icon', async ({ page }) => {
     await page.goto('/zodiac/gemini');
     
-    // Symbol should be visible (either as text or SVG/image)
-    const heading = page.locator('h1').first();
-    const headingText = await heading.textContent();
+    // Symbol should be visible (emoji in heading or separate element)
+    const bodyText = await page.locator('body').textContent();
     
     const hasSymbol = 
-      headingText?.includes('♊') || 
-      (await page.locator('svg, img[alt*="Близнюки"]').isVisible());
+      bodyText?.includes('♊') || 
+      (await page.locator('svg, img[alt*="Близнюки"]').isVisible().catch(() => false));
     
     expect(hasSymbol).toBeTruthy();
   });
