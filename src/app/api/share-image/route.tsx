@@ -1,3 +1,4 @@
+// @ts-nocheck - next/og ImageResponse JSX types compatibility
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 
