@@ -1,4 +1,15 @@
 import ProductPage from '@/components/ProductPage';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Астрологічна сумісність пари | Зоря',
+  description: 'Порівняння двох натальних карт покаже зони гармонії та конфлікту, емоційну, інтелектуальну та сексуальну сумісність.',
+  openGraph: {
+    title: 'Астрологічна сумісність пари',
+    description: 'Перевірте вашу сумісність на основі натальних карт',
+    type: 'website',
+  },
+};
 
 export default function CompatibilityPage() {
   return (

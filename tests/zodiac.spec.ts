@@ -40,8 +40,8 @@ test.describe('Zodiac Pages — All Signs', () => {
     test(`${sign.name}: has description content`, async ({ page }) => {
       await page.goto(`/zodiac/${sign.slug}`);
       
-      // Should have descriptive paragraphs
-      const content = page.locator('p, article').first();
+      // Find main description paragraph (skip dates paragraph)
+      const content = page.locator('p').filter({ hasText: /знак|представник|символ/i }).first();
       await expect(content).toBeVisible();
       
       const text = await content.textContent();
