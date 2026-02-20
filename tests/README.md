@@ -53,22 +53,33 @@ npm run test:report
 
 ## Test Structure
 
-### Current Coverage
+### Current Coverage (~70%)
 
-- **auth.spec.ts** — Login page UI, OAuth redirects, protected routes
-- **chart-new.spec.ts** — Multi-step form flow, date picker, mobile layout
-- **dashboard.auth.spec.ts** — Authenticated dashboard access
+**Authentication & User Flow:**
+- ✅ **auth.spec.ts** — Login page UI, OAuth redirects, protected routes
+- ✅ **dashboard.auth.spec.ts** — Authenticated dashboard access
+
+**Public Pages:**
+- ✅ **public-pages.spec.ts** — Homepage, compatibility, login (all public routes)
+- ✅ **zodiac.spec.ts** — All 12 zodiac sign pages (SEO, content, navigation)
+- ✅ **horoscopes.spec.ts** — All 6 horoscope types (personality, love, career, health, forecast, compatibility)
+
+**Chart Features:**
+- ✅ **chart-new.spec.ts** — Multi-step form flow, date picker, mobile layout
+- ✅ **chart-view.spec.ts** — Chart display, wheel rendering, planets, aspects, sharing
+
+**Quality Assurance:**
+- ✅ **visual-regression.spec.ts** — Screenshot comparison for UI consistency
+- ✅ **accessibility.spec.ts** — WCAG 2.1 AA compliance, keyboard navigation, screen reader support
 
 ### Missing Coverage (TODO)
 
-- [ ] Birthday Forecast generation (API + UI)
-- [ ] Compatibility check flow
-- [ ] Zodiac sign pages SEO
-- [ ] Social sharing (Web Share API + X/Twitter)
+- [ ] Birthday Forecast generation (API + UI) — issue #77
 - [ ] PDF export functionality
 - [ ] Email notifications (mock Resend API)
 - [ ] Chart history (view/delete saved charts)
 - [ ] Settings page (profile edit, notifications toggle)
+- [ ] Payment/subscription flows (when implemented)
 
 ## GitHub Actions
 

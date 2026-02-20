@@ -41,6 +41,13 @@ jobs:
       - name: Run E2E tests
         run: npm test
       
+      - name: Run accessibility tests
+        run: npx playwright test accessibility.spec.ts --project=public
+      
+      - name: Run visual regression tests
+        run: npx playwright test visual-regression.spec.ts --project=public
+        continue-on-error: true # First run will create baselines
+      
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()

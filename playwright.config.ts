@@ -7,10 +7,20 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'html',
+  
+  // Screenshot comparison settings
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 100, // Allow small differences
+      threshold: 0.2, // 20% threshold for visual diffs
+    },
+  },
 
   use: {
     baseURL: process.env.BASE_URL || 'https://astro-web-five.vercel.app',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
   projects: [
