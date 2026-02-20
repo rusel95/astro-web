@@ -1,9 +1,34 @@
 # Spec #77: Birthday Forecast — Complete Implementation
 
 **Issue:** [#77](https://github.com/rusel95/astro-web/issues/77)  
-**Status:** Draft  
+**Status:** ✅ Spec Approved  
 **Priority:** High (Retention + Viral)  
 **Estimated:** 2 дні  
+**Model:** gpt-4o-mini (cost optimized)  
+
+---
+
+## 💰 Прайсинг (GPT-4o-mini)
+
+**OpenAI API costs:**
+- Input: $0.150 / 1M tokens
+- Output: $0.600 / 1M tokens
+
+**Per forecast:**
+- ~720 input tokens (system + user prompt + chart)
+- ~1,060 output tokens (JSON forecast)
+- **Cost: ~$0.00075 (< 1 cent)**
+
+**Monthly estimates (with caching):**
+- 1,000 users/month: **$0.75**
+- 10,000 users/month: **$7.50**
+- With 80% cache hit: **$1.50/month** (10k users)
+
+**Email (Resend):**
+- Free tier: 3,000 emails/month
+- Paid ($20/mo): 50,000 emails/month
+
+**Total monthly cost (< 3,000 users): ~$1-8/month**
 
 ---
 
@@ -186,8 +211,11 @@ npm install @react-email/components resend
 
 **Environment variables:**
 ```
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o-mini
 RESEND_API_KEY=re_...
 RESEND_FROM_EMAIL=astro@astrosvitla.com
+CRON_SECRET=<random-string>
 ```
 
 #### Email Template Component
