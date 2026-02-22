@@ -8,6 +8,7 @@ import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
 import { isSupabaseConfigured, createClient } from '@/lib/supabase/client';
 import { posthog } from '@/lib/posthog';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 const TOTAL_STEPS = 5;
 
@@ -114,7 +115,7 @@ export default function NewChartPage() {
   const goNext = useCallback(() => {
     if (!canAdvance()) return;
     if (step < TOTAL_STEPS - 1) {
-      posthog.capture('onboarding_step_completed', { step, from: step, to: step + 1 });
+      track(ANALYTICS_EVENTS.ONBOARDING_STEP_COMPLETED, { step, from: step, to: step + 1 });
       setDirection(1);
       setStep(s => s + 1);
     } else if (handleSubmitRef.current) {
@@ -128,6 +129,10 @@ export default function NewChartPage() {
       setStep(s => s - 1);
     }
   };
+
+  useEffect(() => {
+    track(ANALYTICS_EVENTS.ONBOARDING_STARTED);
+  }, []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -196,7 +201,7 @@ export default function NewChartPage() {
         }
       }
 
-      posthog.capture('chart_created', {
+      track(ANALYTICS_EVENTS.CHART_CREATED, {
         chart_id: data.id,
         zodiac: birthDate ? birthDate.substring(0, 7) : null,
         has_birth_time: !unknownTime,

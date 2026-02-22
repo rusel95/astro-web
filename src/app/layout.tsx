@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 import AuthNav from '@/components/AuthNav';
 import PostHogProvider from '@/components/PostHogProvider';
+import { CookieConsent } from '@/components/CookieConsent';
 import Footer from '@/components/Footer';
 
 const cormorant = Cormorant_Garamond({
@@ -76,6 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </nav>
 
         <PostHogProvider />
+        <CookieConsent />
         <main className="min-h-[calc(100vh-56px)]">{children}</main>
 
         <Footer />

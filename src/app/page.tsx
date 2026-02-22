@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Briefcase, Heart, Activity, TrendingUp, Sparkles, Globe2, Star, Bot, Lock, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import ChartsCounter from '@/components/ChartsCounter';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 const ZODIAC_RING = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 
@@ -61,6 +63,10 @@ const QUESTIONS = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    track(ANALYTICS_EVENTS.LANDING_VIEWED);
+  }, []);
+
   return (
     <div className="bg-cosmic-900">
 
@@ -151,6 +157,7 @@ export default function Home() {
                 className="btn-primary text-base px-10 inline-flex"
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
+                onClick={() => track(ANALYTICS_EVENTS.CTA_CLICKED, { location: 'hero' })}
               >
                 ✦ Розрахувати карту безкоштовно
               </motion.a>
