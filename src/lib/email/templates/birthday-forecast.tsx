@@ -181,5 +181,6 @@ function yearsWord(years: number): string {
 }
 
 export function renderBirthdayForecastEmail(props: BirthdayForecastEmailProps): string {
-  return `<!DOCTYPE html>${React.renderToStaticMarkup(<BirthdayForecastEmail {...props} />)}`;
+  const html = React.renderToStaticMarkup(<BirthdayForecastEmail {...props} />);
+  return '<!DOCTYPE html>' + html;
 }
