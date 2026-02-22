@@ -154,7 +154,7 @@ export function renderBirthdayForecastEmail({
           </p>
           <p style={{ fontSize: '12px', color: '#d1d5db', margin: 0 }}>
             Якщо не хочеш отримувати ці листи, можеш{' '}
-            <a href={`${forecastUrl}?unsubscribe=true`} style={{ color: '#9ca3af' }}>
+            <a href={forecastUrl + '?unsubscribe=true'} style={{ color: '#9ca3af' }}>
               відписатися
             </a>
           </p>
