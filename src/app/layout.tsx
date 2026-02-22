@@ -60,6 +60,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </a>
             <div className="flex items-center gap-2 sm:gap-3">
               <a
+                href="/moon"
+                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-white/80 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.05]"
+              >
+                <span>🌙</span>
+                <span className="hidden md:inline">Місяць</span>
+              </a>
+              <a
                 href="/chart/new"
                 className="flex items-center gap-1.5 px-3 sm:px-5 py-2 text-white text-sm font-semibold rounded-full transition-all"
                 style={{
