@@ -7,7 +7,7 @@ import {
 } from '@/lib/moon/ephemeris';
 import { isCurrentlyVoid, getNextVoidPeriod } from '@/lib/moon/void-calculator';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 export const revalidate = 900; // Cache for 15 minutes
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
