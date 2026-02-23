@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MoonPhase } from '@/types/moon';
+import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
 export const revalidate = 86400; // Cache for 24 hours
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,45 +13,39 @@ export async function GET(req: NextRequest) {
     const startDate = searchParams.get('start') || new Date().toISOString().split('T')[0];
     const days = parseInt(searchParams.get('days') || '30');
 
-    const baseUrl = process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io/api/v3';
-    const apiKey = process.env.ASTROLOGY_API_KEY;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!apiKey || apiKey === 'placeholder') {
+    // Calculate end date
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + days);
+    const endDateStr = endDate.toISOString().split('T')[0];
+
+    // Fetch from moon_calendar table
+    const { data, error } = await supabase
+      .from('moon_calendar')
+      .select('date, moon_sign, moon_phase, moon_phase_angle, illumination_percent, moon_longitude')
+      .gte('date', startDate)
+      .lte('date', endDateStr)
+      .order('date', { ascending: true });
+
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) {
       return NextResponse.json(
-        { error: 'API тимчасово недоступний' },
+        { error: 'Дані ще не згенеровано. Запустіть: npm run generate-moon-calendar' },
         { status: 503 }
       );
     }
 
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + days);
-
-    const response = await fetch(`${baseUrl}/moon/phases`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        start_date: startDate,
-        end_date: endDate.toISOString().split('T')[0],
-        timezone: 'Europe/Kiev',
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    // Map API response to our types
-    const phases: MoonPhase[] = (data.phases || []).map((p: any) => ({
-      date: p.date,
-      phase: p.phase as MoonPhase['phase'],
-      illumination: p.illumination,
-      zodiac_sign: p.zodiac_sign,
-      degree: p.degree,
+    // Map to expected format
+    const phases = data.map((row) => ({
+      date: row.date,
+      phase: row.moon_phase,
+      illumination: row.illumination_percent,
+      zodiac_sign: row.moon_sign,
+      degree: row.moon_longitude % 30, // Degree within sign
     }));
 
     return NextResponse.json({ phases }, {

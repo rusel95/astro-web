@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { VoidPeriod } from '@/types/moon';
+import { createClient } from '@supabase/supabase-js';
 
 export const runtime = 'edge';
 export const revalidate = 3600; // Cache for 1 hour
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,51 +13,45 @@ export async function GET(req: NextRequest) {
     const startDate = searchParams.get('start') || new Date().toISOString().split('T')[0];
     const days = parseInt(searchParams.get('days') || '30');
 
-    const baseUrl = process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io/api/v3';
-    const apiKey = process.env.ASTROLOGY_API_KEY;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!apiKey || apiKey === 'placeholder') {
-      return NextResponse.json(
-        { error: 'API тимчасово недоступний' },
-        { status: 503 }
-      );
-    }
-
+    // Calculate end date
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + days);
+    const endDateStr = endDate.toISOString().split('T')[0];
 
-    const response = await fetch(`${baseUrl}/moon/void-of-course`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        start_date: startDate,
-        end_date: endDate.toISOString().split('T')[0],
-        timezone: 'Europe/Kiev',
-      }),
-    });
+    // Fetch from moon_calendar table (only rows with void_of_course data)
+    const { data, error } = await supabase
+      .from('moon_calendar')
+      .select('date, void_of_course')
+      .gte('date', startDate)
+      .lte('date', endDateStr)
+      .not('void_of_course', 'is', null)
+      .order('date', { ascending: true });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
     }
 
-    const data = await response.json();
-    
-    // Map API response to our types
-    const voidPeriods: VoidPeriod[] = (data.void_periods || []).map((v: any) => ({
-      start: v.start,
-      end: v.end,
+    if (!data) {
+      return NextResponse.json({ void_periods: [] });
+    }
+
+    // Extract void periods from JSONB data
+    const voidPeriods = data.map((row) => ({
+      start: row.void_of_course.start,
+      end: row.void_of_course.end,
       last_aspect: {
-        planet: v.last_aspect.planet,
-        type: v.last_aspect.type,
-        time: v.last_aspect.time,
+        planet: row.void_of_course.lastAspect.planet,
+        type: row.void_of_course.lastAspect.type,
+        time: row.void_of_course.lastAspect.time,
       },
       sign_ingress: {
-        to_sign: v.sign_ingress.to_sign,
-        time: v.sign_ingress.time,
+        to_sign: row.void_of_course.nextSign,
+        time: row.void_of_course.end,
       },
+      moon_sign: row.void_of_course.moonSign,
+      duration_minutes: row.void_of_course.durationMinutes,
     }));
 
     return NextResponse.json({ void_periods: voidPeriods }, {

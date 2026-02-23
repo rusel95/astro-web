@@ -1,64 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CurrentMoon } from '@/types/moon';
+import { createClient } from '@supabase/supabase-js';
+import {
+  getMoonPosition,
+  getMoonPhase,
+  getZodiacSign,
+} from '@/lib/moon/ephemeris';
+import { isCurrentlyVoid, getNextVoidPeriod } from '@/lib/moon/void-calculator';
 
 export const runtime = 'edge';
 export const revalidate = 900; // Cache for 15 minutes
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const chartId = searchParams.get('chartId');
     
-    const baseUrl = process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io/api/v3';
-    const apiKey = process.env.ASTROLOGY_API_KEY;
-
-    if (!apiKey || apiKey === 'placeholder') {
-      return NextResponse.json(
-        { error: 'API тимчасово недоступний' },
-        { status: 503 }
-      );
-    }
-
     const now = new Date();
-    const requestBody: any = {
-      date: now.toISOString(),
-      latitude: 49.8397, // Default: Lviv
-      longitude: 24.0297,
-    };
-
-    // If chartId provided, fetch user's chart for house position
-    if (chartId) {
-      // TODO: Fetch user chart from storage/Supabase
-      // For now, use default coordinates
-    }
-
-    const response = await fetch(`${baseUrl}/moon/current`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const moonPos = getMoonPosition(now);
+    const moonSign = getZodiacSign(moonPos.longitude);
+    const phase = getMoonPhase(now);
     
-    const currentMoon: CurrentMoon = {
-      longitude: data.longitude,
-      sign: data.sign,
-      house: data.house || 1,
-      phase: data.phase,
-      illumination: data.illumination,
-      is_void: data.is_void || false,
-      next_void: data.next_void ? {
-        start: data.next_void.start,
-        end: data.next_void.end,
-        last_aspect: data.next_void.last_aspect,
-        sign_ingress: data.next_void.sign_ingress,
+    // Check if currently void
+    const isVoid = isCurrentlyVoid(now);
+    
+    // Get next void period
+    const nextVoid = getNextVoidPeriod(now);
+    
+    // Calculate house position if chartId provided
+    let house = 1; // Default
+    if (chartId) {
+      // TODO: Calculate house based on user's natal chart
+      // For now, use default
+    }
+    
+    const currentMoon = {
+      longitude: moonPos.longitude,
+      sign: moonSign,
+      house,
+      phase: phase.phase,
+      illumination: phase.illumination,
+      is_void: isVoid,
+      next_void: nextVoid ? {
+        start: nextVoid.start.toISOString(),
+        end: nextVoid.end.toISOString(),
+        last_aspect: {
+          planet: nextVoid.lastAspect.planet,
+          type: nextVoid.lastAspect.type,
+          time: nextVoid.lastAspect.time.toISOString(),
+        },
+        sign_ingress: {
+          to_sign: nextVoid.nextSign,
+          time: nextVoid.end.toISOString(),
+        },
+        duration_minutes: nextVoid.durationMinutes,
       } : undefined,
     };
 

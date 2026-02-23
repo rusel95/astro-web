@@ -10,7 +10,8 @@
     "test": "playwright test --project=public --project=mobile",
     "test:auth": "playwright test --project=setup && playwright test --project=authenticated",
     "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "generate-moon-calendar": "tsx scripts/generate-moon-calendar.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
@@ -23,7 +24,8 @@
     "posthog-js": "^1.352.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "resend": "^6.9.2"
+    "resend": "^6.9.2",
+    "sweph": "^2.10.3-b-1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
