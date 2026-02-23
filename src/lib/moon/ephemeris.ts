@@ -150,7 +150,7 @@ function findExactAspectTime(
   startDate: Date,
   targetAngle: number
 ): Date | null {
-  let currentAngle = angularDistance(moonPos1.longitude, planetPos.longitude);
+  const currentAngle = angularDistance(moonPos1.longitude, planetPos.longitude);
   let closestTime = startDate;
   let closestDistance = Math.abs(currentAngle - targetAngle);
   

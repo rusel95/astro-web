@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import {
   getMoonPosition,
   getMoonPhase,
@@ -9,9 +8,6 @@ import { isCurrentlyVoid, getNextVoidPeriod } from '@/lib/moon/void-calculator';
 
 export const runtime = 'nodejs';
 export const revalidate = 900; // Cache for 15 minutes
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,11 +26,8 @@ export async function GET(req: NextRequest) {
     const nextVoid = getNextVoidPeriod(now);
     
     // Calculate house position if chartId provided
-    let house = 1; // Default
-    if (chartId) {
-      // TODO: Calculate house based on user's natal chart
-      // For now, use default
-    }
+    // TODO: Calculate house based on user's natal chart
+    const house = chartId ? 1 : 1; // Default for now
     
     const currentMoon = {
       longitude: moonPos.longitude,
