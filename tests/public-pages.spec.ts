@@ -18,7 +18,8 @@ test.describe('Public Pages — Desktop', () => {
       
       // Check URL (allow redirects for authenticated routes)
       const finalUrl = pw.url();
-      const isExpectedPath = finalUrl.includes(page.path) || (page.path === '/auth/login' && finalUrl === new URL(pw.context()._options.baseURL || '').origin + '/');
+      const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
+      const isExpectedPath = finalUrl.includes(page.path) || (page.path === '/auth/login' && finalUrl === new URL(baseURL).origin + '/');
       expect(isExpectedPath).toBeTruthy();
       
       // Check title or heading
