@@ -107,31 +107,48 @@ function calculateSynastryAspects(
   return aspects;
 }
 
-// Calculate compatibility score (0-100)
+// Score per aspect type (0-100 scale)
+const ASPECT_SCORE: Partial<Record<AspectType, number>> = {
+  Trine: 85,
+  Sextile: 75,
+  Conjunction: 65, // Neutral — depends on planets involved
+  Opposition: 40,  // Challenging but creates magnetic attraction
+  Square: 25,      // Most challenging
+};
+
+// Weight by planet pair importance for relationships
+const PLANET_WEIGHT: Record<string, number> = {
+  Sun: 1.5,
+  Moon: 2.0,
+  Venus: 2.0,
+  Mars: 1.5,
+  Mercury: 1.0,
+  Jupiter: 1.0,
+};
+
+// Calculate compatibility score (0-100) via weighted average of aspect scores
 function calculateCompatibilityScore(aspects: SynastryAspect[]): number {
-  let score = 50; // Base score
+  if (aspects.length === 0) return 50;
+
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
 
   for (const aspect of aspects) {
-    switch (aspect.type) {
-      case 'Conjunction':
-        score += 8;
-        break;
-      case 'Trine':
-        score += 10;
-        break;
-      case 'Sextile':
-        score += 7;
-        break;
-      case 'Square':
-        score -= 3;
-        break;
-      case 'Opposition':
-        score += 2; // Can be challenging but creates attraction
-        break;
-    }
+    const baseScore = ASPECT_SCORE[aspect.type] ?? 50;
+    const w1 = PLANET_WEIGHT[aspect.planet1] ?? 1.0;
+    const w2 = PLANET_WEIGHT[aspect.planet2] ?? 1.0;
+    const weight = (w1 + w2) / 2;
+
+    // Tighter orb = stronger aspect — reduce score up to 20% for wide orbs
+    const orbFactor = 1 - (aspect.orb / 10) * 0.2;
+
+    totalWeightedScore += baseScore * weight * orbFactor;
+    totalWeight += weight;
   }
 
-  return Math.max(0, Math.min(100, score));
+  const score = Math.round(totalWeightedScore / totalWeight);
+  // Realistic range: 20–95 (no chart is perfectly compatible or totally incompatible)
+  return Math.max(20, Math.min(95, score));
 }
 
 export async function POST(req: NextRequest) {

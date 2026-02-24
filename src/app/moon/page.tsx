@@ -21,15 +21,14 @@ async function getMoonData() {
       fetch(`${baseUrl}/api/moon/void-of-course`, { next: { revalidate: 3600 } }),
     ]);
 
-    if (!currentRes.ok || !phasesRes.ok || !voidRes.ok) {
-      throw new Error('Failed to fetch moon data');
+    if (!currentRes.ok) {
+      throw new Error('Failed to fetch current moon data');
     }
 
-    const [currentData, phasesData, voidData] = await Promise.all([
-      currentRes.json(),
-      phasesRes.json(),
-      voidRes.json(),
-    ]);
+    const currentData = await currentRes.json();
+
+    const phasesData = phasesRes.ok ? await phasesRes.json() : { phases: [] };
+    const voidData = voidRes.ok ? await voidRes.json() : { void_periods: [] };
 
     return {
       current: currentData.current,

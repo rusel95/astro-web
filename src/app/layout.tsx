@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals.css';
 import AuthNav from '@/components/AuthNav';
+import MobileNav from '@/components/MobileNav';
 import PostHogProvider from '@/components/PostHogProvider';
 import { CookieConsent } from '@/components/CookieConsent';
 import Footer from '@/components/Footer';
@@ -59,21 +60,32 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <span className="hidden sm:inline font-display text-xl font-semibold text-zorya-violet group-hover:text-zorya-gold transition-colors">Зоря</span>
             </a>
             <div className="flex items-center gap-1.5 sm:gap-2.5">
+              {/* Dashboard link — only for logged-in users, desktop only */}
+              {user && (
+                <a
+                  href="/dashboard"
+                  aria-label="Мій кабінет"
+                  className="hidden md:flex items-center gap-1.5 px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
+                >
+                  <span>⭐</span>
+                  <span>Мої карти</span>
+                </a>
+              )}
               <a
                 href="/moon"
                 aria-label="Місячний календар"
-                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
+                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
               >
                 <span>🌙</span>
-                <span className="hidden md:inline">Місяць</span>
+                <span>Місяць</span>
               </a>
               <a
                 href="/compatibility"
                 aria-label="Сумісність"
-                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
+                className="hidden md:flex items-center gap-1.5 px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
               >
                 <span>💞</span>
-                <span className="hidden md:inline">Сумісність</span>
+                <span>Сумісність</span>
               </a>
               <a
                 href="/chart/new"
@@ -94,9 +106,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         <PostHogProvider />
         <CookieConsent />
-        <main className="min-h-[calc(100vh-56px)]">{children}</main>
+        {/* pb-16 on mobile to clear the fixed bottom nav */}
+        <main className="min-h-[calc(100vh-56px)] pb-16 md:pb-0">{children}</main>
 
         <Footer />
+        <MobileNav isLoggedIn={!!user} />
       </body>
     </html>
   );

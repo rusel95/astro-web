@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check, Download, Gift, Cake } from 'lucide-react';
+import { Loader2, Share2, Check, Download, Gift, Cake, ChevronDown } from 'lucide-react';
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
@@ -13,8 +13,6 @@ import HousesTable from '@/components/chart/HousesTable';
 import AspectsTable from '@/components/chart/AspectsTable';
 import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
-
-type Tab = 'overview' | 'planets' | 'houses' | 'aspects' | 'report';
 
 function isBirthdayToday(birthDate: string): boolean {
   const birth = new Date(birthDate);
@@ -26,36 +24,42 @@ function isBirthdaySoon(birthDate: string): { isSoon: boolean; daysUntil: number
   const birth = new Date(birthDate);
   const today = new Date();
   const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-  
+
   if (thisYearBirthday < today) {
     thisYearBirthday.setFullYear(today.getFullYear() + 1);
   }
-  
+
   const diffTime = thisYearBirthday.getTime() - today.getTime();
   const daysUntil = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   return { isSoon: daysUntil <= 14 && daysUntil > 0, daysUntil };
+}
+
+function zodiacFromDegree(deg: number) {
+  const signs = [
+    'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+    'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces',
+  ] as const;
+  return signs[Math.floor((deg % 360) / 30)];
 }
 
 export default function ChartPage() {
   const { id } = useParams<{ id: string }>();
   const [chart, setChart] = useState<NatalChart | null>(null);
   const [inputData, setInputData] = useState<{ name?: string; gender?: string }>({});
-  const [tab, setTab] = useState<Tab>('overview');
   const [report, setReport] = useState<AIReport | null>(null);
   const [loadingReport, setLoadingReport] = useState(false);
   const [selectedArea, setSelectedArea] = useState<ReportArea | null>(null);
   const [generatedAreas, setGeneratedAreas] = useState<Set<ReportArea>>(new Set());
   const [reports, setReports] = useState<Record<string, AIReport>>({});
   const [copied, setCopied] = useState(false);
-
+  const [showDetails, setShowDetails] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadChart() {
-      // 1. Try sessionStorage/localStorage first (just-created chart)
       const stored = sessionStorage.getItem(`chart-${id}`) || localStorage.getItem(`chart-${id}`);
       const storedInput = sessionStorage.getItem(`chart-input-${id}`) || localStorage.getItem(`chart-input-${id}`);
       if (stored) {
@@ -65,7 +69,6 @@ export default function ChartPage() {
         return;
       }
 
-      // 2. Fallback: fetch from Supabase (authenticated user, different device)
       try {
         const res = await fetch(`/api/charts/${id}`);
         if (!res.ok) {
@@ -77,7 +80,6 @@ export default function ChartPage() {
           if (cancelled) return;
           setChart(data.chart.chart_data);
           setInputData({ name: data.chart.name, gender: data.chart.gender });
-          // Cache locally for this session
           sessionStorage.setItem(`chart-${id}`, JSON.stringify(data.chart.chart_data));
           sessionStorage.setItem(`chart-input-${id}`, JSON.stringify({ name: data.chart.name, gender: data.chart.gender }));
         } else {
@@ -92,7 +94,6 @@ export default function ChartPage() {
     return () => { cancelled = true; };
   }, [id]);
 
-  // Extract planets early (used in callbacks)
   const sunPlanet = chart?.planets.find(p => p.name === 'Sun');
   const moonPlanet = chart?.planets.find(p => p.name === 'Moon');
 
@@ -102,7 +103,6 @@ export default function ChartPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback for older browsers
       const el = document.createElement('input');
       el.value = window.location.href;
       document.body.appendChild(el);
@@ -116,51 +116,24 @@ export default function ChartPage() {
 
   const handleShareToTwitter = useCallback(() => {
     if (!chart || !sunPlanet) return;
-    
     const sunSign = zodiacFromDegree(sunPlanet.longitude);
     const chartUrl = window.location.href;
-    
-    // X-optimized copy: short, engaging, emoji, hashtags
-    const tweetText = `✨ Щойно розрахував свою натальну карту!
-
-${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
-🌙 Місяць в ${moonPlanet ? zodiacFromDegree(moonPlanet.longitude) : '—'}
-⬆️ Асцендент в ${zodiacFromDegree(chart.ascendant)}
-
-Дізнайся про себе більше → ${chartUrl}
-
-#астрологія #натальнакарта #${sunSign.toLowerCase()}`;
-    
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-    window.open(twitterUrl, '_blank', 'width=550,height=420');
+    const tweetText = `✨ Щойно розрахував свою натальну карту!\n\n${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}\n🌙 Місяць в ${moonPlanet ? zodiacFromDegree(moonPlanet.longitude) : '—'}\n⬆️ Асцендент в ${zodiacFromDegree(chart.ascendant)}\n\nДізнайся про себе більше → ${chartUrl}\n\n#астрологія #натальнакарта #${sunSign.toLowerCase()}`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank', 'width=550,height=420');
   }, [chart, sunPlanet, moonPlanet]);
 
   const handleDownloadStory = useCallback(async () => {
     if (!chart || !sunPlanet) return;
-    
     const sunSign = zodiacFromDegree(sunPlanet.longitude);
     const url = `/api/share-image?sign=${encodeURIComponent(sunSign)}&name=${encodeURIComponent(inputData.name || '')}`;
-    
     try {
       const response = await fetch(url);
       const blob = await response.blob();
-      
-      // Try Web Share API first (mobile devices, Instagram Stories)
       if (navigator.share && navigator.canShare) {
         const file = new File([blob], `astro-${sunSign.toLowerCase()}.png`, { type: 'image/png' });
-        const shareData = {
-          title: `✨ ${inputData.name || 'Моя'} астрологічна карта`,
-          text: `Мій знак Сонця: ${sunSign} ${ZODIAC_SYMBOLS[sunPlanet.sign]} | Розрахуй свою карту на Зоря`,
-          files: [file],
-        };
-        
-        if (navigator.canShare(shareData)) {
-          await navigator.share(shareData);
-          return;
-        }
+        const shareData = { title: `✨ ${inputData.name || 'Моя'} астрологічна карта`, text: `Мій знак Сонця: ${sunSign} ${ZODIAC_SYMBOLS[sunPlanet.sign]} | Розрахуй свою карту на Зоря`, files: [file] };
+        if (navigator.canShare(shareData)) { await navigator.share(shareData); return; }
       }
-      
-      // Fallback: download file
       const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = blobUrl;
@@ -179,13 +152,11 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
     if (reports[area]) {
       setSelectedArea(area);
       setReport(reports[area]);
-      setTab('report');
       return;
     }
     setSelectedArea(area);
     setLoadingReport(true);
     setReport(null);
-    setTab('report');
     try {
       const res = await fetch('/api/report', {
         method: 'POST',
@@ -212,20 +183,8 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
           Ця карта не існує або належить іншому користувачу. Увійдіть до акаунту або створіть нову карту.
         </p>
         <div className="flex gap-3 mt-2">
-          <a
-            href="/auth/login"
-            className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-80"
-            style={{ border: '1px solid rgba(108,60,225,0.5)', color: '#9966E6' }}
-          >
-            Увійти
-          </a>
-          <a
-            href="/chart/new"
-            className="px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)' }}
-          >
-            Нова карта
-          </a>
+          <a href="/auth/login" className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-80" style={{ border: '1px solid rgba(108,60,225,0.5)', color: '#9966E6' }}>Увійти</a>
+          <a href="/chart/new" className="px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)' }}>Нова карта</a>
         </div>
       </div>
     );
@@ -242,31 +201,19 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
   const ascSign = zodiacFromDegree(chart.ascendant);
   const mcSign = zodiacFromDegree(chart.midheaven);
 
-  const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
-    { id: 'overview',   label: 'Огляд',   Icon: LayoutGrid },
-    { id: 'planets',    label: 'Планети', Icon: Globe2 },
-    { id: 'houses',     label: 'Доми',    Icon: Building2 },
-    { id: 'aspects',    label: 'Аспекти', Icon: GitBranch },
-    { id: 'report',     label: 'Звіт',    Icon: ScrollText },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-12">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center pt-6 pb-4 relative"
-      >
+    <div className="max-w-2xl mx-auto px-4 pb-12">
+
+      {/* ── Header ── */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-6 pb-4">
         <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
           {inputData.name || 'Натальна карта'}
         </h1>
         <p className="text-text-muted text-sm mt-1">
-          {chart.locationName} • {chart.birthDate} • {chart.birthTime}
+          {chart.locationName} · {chart.birthDate} · {chart.birthTime}
         </p>
 
-        {/* Share buttons */}
-        <div className="flex justify-center gap-3 mt-3 flex-wrap">
+        <div className="flex justify-center gap-2 mt-4 flex-wrap">
           <motion.button
             onClick={handleCopyLink}
             whileTap={{ scale: 0.95 }}
@@ -278,26 +225,12 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
           >
             <AnimatePresence mode="wait">
               {copied ? (
-                <motion.span
-                  key="check"
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.5, opacity: 0 }}
-                  className="flex items-center gap-2"
-                >
-                  <Check size={14} strokeWidth={2.5} />
-                  Посилання скопійовано!
+                <motion.span key="check" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="flex items-center gap-2">
+                  <Check size={14} strokeWidth={2.5} /> Скопійовано!
                 </motion.span>
               ) : (
-                <motion.span
-                  key="share"
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.5, opacity: 0 }}
-                  className="flex items-center gap-2"
-                >
-                  <Share2 size={14} strokeWidth={1.75} />
-                  Скопіювати посилання
+                <motion.span key="share" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="flex items-center gap-2">
+                  <Share2 size={14} strokeWidth={1.75} /> Поділитися
                 </motion.span>
               )}
             </AnimatePresence>
@@ -306,69 +239,35 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
           <motion.button
             onClick={handleDownloadStory}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-gradient-to-r from-zorya-violet to-zorya-purple text-white border border-zorya-purple/40 hover:shadow-lg hover:shadow-zorya-purple/30"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-zorya-violet to-zorya-purple text-white border border-zorya-purple/40 hover:shadow-lg hover:shadow-zorya-purple/30 transition-all"
           >
-            <Download size={14} strokeWidth={1.75} />
-            Stories для Instagram
+            <Download size={14} strokeWidth={1.75} /> Stories
           </motion.button>
 
           <motion.button
             onClick={handleShareToTwitter}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-black/60 text-white border border-white/20 hover:bg-black/80 hover:border-white/40"
-            title="Поділитися в X (Twitter)"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-black/60 text-white border border-white/20 hover:bg-black/80 hover:border-white/40 transition-all"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
             </svg>
-            Поділитися в X
+            X
           </motion.button>
         </div>
       </motion.div>
 
-      {/* Chart Wheel */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="mb-6"
-      >
-        <div className="glass-card overflow-hidden">
-          {chart.svgContent ? (
-            <div
-              className="w-full"
-              dangerouslySetInnerHTML={{ __html: chart.svgContent }}
-              style={{ lineHeight: 0 }}
-            />
-          ) : (
-            <div className="p-6">
-              <NatalChartWheel
-                planets={chart.planets}
-                houses={chart.houses}
-                aspects={chart.aspects}
-                ascendant={chart.ascendant}
-                midheaven={chart.midheaven}
-              />
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Birthday Banner */}
+      {/* ── Birthday Banners ── */}
       {chart.birthDate && isBirthdayToday(chart.birthDate) && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-5">
           <div className="glass-card p-4 border-2 border-zorya-gold/40 bg-gradient-to-r from-zorya-gold/10 to-zorya-purple/10">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center">
-                <Cake size={24} className="text-zorya-gold" />
+              <div className="w-10 h-10 rounded-2xl bg-zorya-gold/20 flex items-center justify-center flex-shrink-0">
+                <Cake size={20} className="text-zorya-gold" />
               </div>
               <div>
-                <p className="text-zorya-gold font-semibold">З Днем Народження!</p>
-                <p className="text-text-secondary text-sm">Перегляньте AI-звіт для персонального прогнозу</p>
+                <p className="text-zorya-gold font-semibold text-sm">З Днем Народження!</p>
+                <p className="text-text-secondary text-xs">Перегляньте AI-звіт для персонального прогнозу</p>
               </div>
             </div>
           </div>
@@ -376,27 +275,28 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
       )}
 
       {chart.birthDate && !isBirthdayToday(chart.birthDate) && isBirthdaySoon(chart.birthDate).isSoon && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-5">
           <div className="glass-card p-4 border border-zorya-purple/30">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center">
-                <Gift size={20} className="text-zorya-violet" />
+              <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center flex-shrink-0">
+                <Gift size={18} className="text-zorya-violet" />
               </div>
               <div>
-                <p className="text-text-primary font-medium">День народження за {isBirthdaySoon(chart.birthDate).daysUntil} дн.</p>
-                <p className="text-text-muted text-sm">Перегляньте AI-звіт для персонального прогнозу</p>
+                <p className="text-text-primary font-medium text-sm">День народження за {isBirthdaySoon(chart.birthDate).daysUntil} дн.</p>
+                <p className="text-text-muted text-xs">Перегляньте AI-звіт для персонального прогнозу</p>
               </div>
             </div>
           </div>
         </motion.div>
       )}
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      {/* ── Quick Identity ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"
+      >
         <QuickStat
           label="Сонце"
           icon={sunPlanet ? <ZodiacIcon sign={sunPlanet.sign} size={16} className="text-zorya-violet" /> : null}
@@ -421,134 +321,129 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
           value={ZODIAC_NAMES_UK[mcSign]}
           sub={`${(chart.midheaven % 30).toFixed(1)}°`}
         />
-      </div>
+      </motion.div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 bg-white/5 rounded-2xl p-1 mb-6 overflow-x-auto border border-white/10 no-scrollbar">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex-1 min-w-[56px] py-2.5 px-1 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex flex-col items-center gap-1 touch-manipulation select-none ${
-              tab === t.id
-                ? 'bg-zorya-purple/20 text-zorya-violet border border-zorya-purple/30'
-                : 'text-text-muted hover:text-text-primary hover:bg-white/5 active:bg-white/10'
-            }`}
-            style={{ WebkitTapHighlightColor: 'transparent' }}
-          >
-            <t.Icon size={18} strokeWidth={1.75} />
-            <span className="text-[10px] sm:text-[11px]">{t.label}</span>
-          </button>
-        ))}
-      </div>
+      {/* ── AI Life Areas — PRIMARY SECTION ── */}
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+            <span className="text-zorya-violet">✦</span> AI Інтерпретація
+          </h2>
+          {generatedAreas.size > 0 && (
+            <span className="text-xs text-text-muted bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+              {generatedAreas.size}/6 сфер
+            </span>
+          )}
+        </div>
 
-      {/* Tab content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={tab}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-        >
-          {tab === 'overview' && (
-            <div className="space-y-4">
-              <div className="glass-card p-5">
-                <h3 className="text-sm font-semibold text-text-muted mb-3">Планети у знаках</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {chart.planets.slice(0, 10).map(p => (
-                    <div key={p.name} className="flex items-center gap-2 text-sm">
-                      <ZodiacIcon sign={p.sign} size={16} className="text-zorya-violet flex-shrink-0" />
-                      <span className="text-text-primary">{p.name === 'TrueNode' ? 'Пн.Вуз.' : p.name === 'SouthNode' ? 'Пд.Вуз.' : p.name}</span>
-                      <span className="text-text-muted text-xs">{ZODIAC_NAMES_UK[p.sign]}</span>
-                      {p.isRetrograde && <span className="text-orange-400 text-xs">℞</span>}
-                    </div>
-                  ))}
-                </div>
+        <AreaCards
+          selectedArea={selectedArea}
+          onSelect={generateReport}
+          generatedAreas={generatedAreas}
+        />
+
+        {/* Report loading */}
+        <AnimatePresence>
+          {loadingReport && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="glass-card p-8 flex flex-col items-center gap-4 mt-4"
+            >
+              <Loader2 size={28} strokeWidth={1.5} className="text-zorya-violet animate-spin" />
+              <div className="text-center">
+                <p className="text-text-primary font-semibold">Генеруємо звіт...</p>
+                <p className="text-text-muted text-xs mt-1">AI аналізує вашу натальну карту</p>
               </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-text-primary mb-2 flex items-center gap-2">
-                  <span className="text-zorya-violet">✦</span> AI Інтерпретація
-                </h3>
-                <p className="text-text-muted text-sm mb-4">
-                  Оберіть сферу життя для персоналізованого аналізу
-                </p>
-                <AreaCards
-                  selectedArea={selectedArea}
-                  onSelect={generateReport}
-                  generatedAreas={generatedAreas}
+              <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-zorya-purple to-zorya-violet rounded-full"
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 8, ease: 'easeInOut' }}
                 />
               </div>
-            </div>
+            </motion.div>
           )}
+        </AnimatePresence>
 
-          {tab === 'planets' && (
-            <div className="glass-card p-4">
-              <PlanetsTable chart={chart} />
-            </div>
+        {/* Inline report result */}
+        <AnimatePresence>
+          {report && !loadingReport && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-4"
+            >
+              <ReportView report={report} />
+              <button
+                onClick={() => { setSelectedArea(null); setReport(null); }}
+                className="w-full mt-3 py-3 text-sm text-text-muted hover:text-zorya-violet transition-colors"
+              >
+                ← Обрати іншу сферу
+              </button>
+            </motion.div>
           )}
+        </AnimatePresence>
+      </motion.div>
 
-          {tab === 'houses' && (
-            <div className="glass-card p-4">
-              <HousesTable chart={chart} />
-            </div>
-          )}
+      {/* ── Technical Details Accordion ── */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+        <button
+          onClick={() => setShowDetails(prev => !prev)}
+          className="w-full flex items-center justify-between p-4 rounded-2xl glass-card hover:border-white/20 transition-all"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+        >
+          <span className="text-sm font-semibold text-text-primary">Технічні деталі карти</span>
+          <ChevronDown
+            size={18}
+            strokeWidth={1.75}
+            className={`text-text-muted transition-transform duration-300 ${showDetails ? 'rotate-180' : ''}`}
+          />
+        </button>
 
-          {tab === 'aspects' && (
-            <div className="glass-card p-4">
-              <h3 className="text-sm text-text-muted mb-3 px-1">
-                {chart.aspects.length} аспектів
-              </h3>
-              <AspectsTable chart={chart} />
-            </div>
-          )}
-
-          {tab === 'report' && (
-            <div className="space-y-4">
-              {!selectedArea && (
-                <div>
-                  <p className="text-text-muted text-sm mb-4">Оберіть сферу для аналізу:</p>
-                  <AreaCards
-                    selectedArea={selectedArea}
-                    onSelect={generateReport}
-                    generatedAreas={generatedAreas}
+        <AnimatePresence>
+          {showDetails && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-4 pt-4">
+                <div className="glass-card p-6">
+                  <NatalChartWheel
+                    planets={chart.planets}
+                    houses={chart.houses}
+                    aspects={chart.aspects}
+                    ascendant={chart.ascendant}
+                    midheaven={chart.midheaven}
                   />
                 </div>
-              )}
 
-              {loadingReport && (
-                <div className="glass-card p-8 flex flex-col items-center gap-4">
-                  <Loader2 size={28} strokeWidth={1.5} className="text-zorya-violet animate-spin" />
-                  <div className="text-center">
-                    <p className="text-text-primary font-semibold">Генеруємо звіт...</p>
-                    <p className="text-text-muted text-xs mt-1">AI аналізує вашу натальну карту</p>
-                  </div>
-                  <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-zorya-purple to-zorya-violet rounded-full"
-                      initial={{ width: '0%' }}
-                      animate={{ width: '100%' }}
-                      transition={{ duration: 8, ease: 'easeInOut' }}
-                    />
-                  </div>
+                <div className="glass-card p-4">
+                  <h3 className="text-sm font-semibold text-text-muted mb-3">Планети</h3>
+                  <PlanetsTable chart={chart} />
                 </div>
-              )}
 
-              {report && !loadingReport && <ReportView report={report} />}
+                <div className="glass-card p-4">
+                  <h3 className="text-sm font-semibold text-text-muted mb-3">Доми</h3>
+                  <HousesTable chart={chart} />
+                </div>
 
-              {selectedArea && !loadingReport && (
-                <button
-                  onClick={() => { setSelectedArea(null); setReport(null); }}
-                  className="w-full py-3 text-sm text-text-muted hover:text-zorya-violet transition-colors"
-                >
-                  ← Обрати іншу сферу
-                </button>
-              )}
-            </div>
+                <div className="glass-card p-4">
+                  <h3 className="text-sm font-semibold text-text-muted mb-3">{chart.aspects.length} аспектів</h3>
+                  <AspectsTable chart={chart} />
+                </div>
+              </div>
+            </motion.div>
           )}
-        </motion.div>
-      </AnimatePresence>
+        </AnimatePresence>
+      </motion.div>
+
     </div>
   );
 }
@@ -564,12 +459,4 @@ function QuickStat({ label, value, sub, icon }: { label: string; value: string; 
       <div className="text-[10px] sm:text-xs text-text-muted mt-0.5">{sub}</div>
     </div>
   );
-}
-
-function zodiacFromDegree(deg: number) {
-  const signs = [
-    'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
-    'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces',
-  ] as const;
-  return signs[Math.floor((deg % 360) / 30)];
 }
