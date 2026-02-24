@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
-import { isSupabaseConfigured, createClient } from '@/lib/supabase/client';
+import { isSupabaseConfigured } from '@/lib/supabase/client';
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
 const BTN_GRAD = 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)';
