@@ -39,7 +39,7 @@ export interface MoonIngress {
 /**
  * Get ecliptic longitude from equatorial coordinates
  */
-function getEclipticLongitude(eq: Astronomy.EquatorVector): number {
+function getEclipticLongitude(eq: any): number {
   const ecl = Astronomy.Ecliptic(eq);
   let lon = ecl.elon;
   if (lon < 0) lon += 360;
@@ -62,15 +62,17 @@ export function getPlanetPosition(planetName: string, date: Date): PlanetPositio
     const longitude2 = getEclipticLongitude(geoMoon2);
     const speed = (longitude2 - longitude) * 24; // degrees per day
     
+    // Distance from magnitude of vector
+    const distance = Math.sqrt(geoMoon.x ** 2 + geoMoon.y ** 2 + geoMoon.z ** 2);
+    
     return {
       longitude,
       latitude: 0, // astronomy-engine doesn't provide ecliptic latitude easily
-      distance: geoMoon.t, // distance in AU
+      distance,
       speed,
     };
   }
   
-  const helioVector = Astronomy.HelioVector(planetName as Astronomy.Body, time);
   const geoVector = Astronomy.GeoVector(planetName as Astronomy.Body, time, false);
   const longitude = getEclipticLongitude(geoVector);
   
@@ -83,10 +85,13 @@ export function getPlanetPosition(planetName: string, date: Date): PlanetPositio
     speed = speed > 0 ? speed - 360 * 24 : speed + 360 * 24;
   }
   
+  // Distance from magnitude of vector
+  const distance = Math.sqrt(geoVector.x ** 2 + geoVector.y ** 2 + geoVector.z ** 2);
+  
   return {
     longitude,
     latitude: 0,
-    distance: geoVector.t,
+    distance,
     speed,
   };
 }
