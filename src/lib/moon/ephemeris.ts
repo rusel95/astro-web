@@ -68,7 +68,7 @@ function getJulianDay(date: Date): number {
   const day = date.getUTCDate();
   const hour = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
   
-  const jd = sweph.swe_julday(year, month, day, hour, sweph.SE_GREG_CAL);
+  const jd = sweph.julday(year, month, day, hour, sweph.constants.SE_GREG_CAL);
   return jd;
 }
 
@@ -76,7 +76,7 @@ function getJulianDay(date: Date): number {
  * Get Date from Julian Day
  */
 function getDateFromJulian(jd: number): Date {
-  const result = sweph.swe_revjul(jd, sweph.SE_GREG_CAL);
+  const result = sweph.revjul(jd, sweph.constants.SE_GREG_CAL);
   const date = new Date(Date.UTC(
     result.year,
     result.month - 1,
@@ -93,13 +93,14 @@ function getDateFromJulian(jd: number): Date {
  */
 export function getPlanetPosition(planetId: number, date: Date): PlanetPosition {
   const jd = getJulianDay(date);
-  const result = sweph.swe_calc_ut(jd, planetId, sweph.SEFLG_SPEED);
+  const result = sweph.calc_ut(jd, planetId, sweph.constants.SEFLG_SPEED);
   
+  // result.data contains: [longitude, latitude, distance, longitudeSpeed, latitudeSpeed, distanceSpeed]
   return {
-    longitude: result.longitude,
-    latitude: result.latitude,
-    distance: result.distance,
-    speed: result.longitudeSpeed,
+    longitude: result.data[0],
+    latitude: result.data[1],
+    distance: result.data[2],
+    speed: result.data[3],
   };
 }
 
