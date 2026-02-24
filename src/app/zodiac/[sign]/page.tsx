@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import ZodiacIcon from '@/components/icons/ZodiacIcon';
 
 const ZODIAC_SIGNS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
@@ -323,13 +324,12 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
         {/* Header */}
         <div className="text-center mb-12">
           <div
-            className="inline-block text-[120px] mb-6"
+            className="inline-block mb-6"
             style={{
-              color: zodiac.color,
               filter: `drop-shadow(0 0 40px ${zodiac.color}80)`,
             }}
           >
-            {zodiac.symbol}
+            <ZodiacIcon sign={zodiac.nameEn} size={120} color={zodiac.color} />
           </div>
           <h1 className="text-5xl font-bold text-white mb-4">{zodiac.name}</h1>
           <p className="text-xl text-white/60 mb-2">{zodiac.dates}</p>

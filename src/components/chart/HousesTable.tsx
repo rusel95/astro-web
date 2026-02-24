@@ -1,7 +1,8 @@
 'use client';
 
 import { NatalChart } from '@/types/astrology';
-import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
+import { ZODIAC_NAMES_UK } from '@/lib/constants';
+import ZodiacIcon from '@/components/icons/ZodiacIcon';
 
 export default function HousesTable({ chart }: { chart: NatalChart }) {
   return (
@@ -23,7 +24,7 @@ export default function HousesTable({ chart }: { chart: NatalChart }) {
                 {h.number === 10 && <span className="text-[10px] text-text-muted ml-1">MC</span>}
               </td>
               <td className="py-2.5 px-4">
-                <span className="mr-1">{ZODIAC_SYMBOLS[h.sign]}</span>
+                <span className="mr-1 inline-flex align-middle"><ZodiacIcon sign={h.sign} size={14} className="text-zorya-violet" /></span>
                 <span className="text-text-secondary">{ZODIAC_NAMES_UK[h.sign]}</span>
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-text-secondary text-xs">

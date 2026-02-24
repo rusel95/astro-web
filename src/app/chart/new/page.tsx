@@ -11,7 +11,7 @@ import { posthog } from '@/lib/posthog';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
 const BTN_GRAD = 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)';
@@ -44,7 +44,10 @@ const ZODIAC_SIGNS: ZodiacSign[] = [
   { name: 'Риби',     key: 'Pisces',      symbol: '♓', color: '#a855f7', from: [2, 19],  to: [3, 20]  },
 ];
 
-const ZODIAC_WHEEL = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
+const ZODIAC_WHEEL = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
+];
 
 function getZodiacSign(dateStr: string): ZodiacSign | null {
   if (!dateStr) return null;
@@ -69,7 +72,6 @@ const STEP_TITLES = [
   'Де ви народились?',
   'О котрій годині ви народились?',
   'Як вас звати?',
-  'Ваша електронна пошта',
 ];
 
 const STEP_SUBTITLES = [
@@ -77,7 +79,6 @@ const STEP_SUBTITLES = [
   'Місце народження потрібне для розрахунку Асцендента та будинків',
   'Час народження визначає ваш Асцендент — маску, яку ви показуєте світу',
   "Вкажіть вашу стать та ім'я для персоналізованого звіту",
-  "Необов'язково — для збереження карти та сповіщень",
 ];
 
 export default function NewChartPage() {
@@ -95,7 +96,6 @@ export default function NewChartPage() {
   const [countryCode, setCountryCode] = useState('');
   const [lat, setLat] = useState(0);
   const [lon, setLon] = useState(0);
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -107,7 +107,6 @@ export default function NewChartPage() {
       case 1: return city.length > 0 && lat !== 0;
       case 2: return true;
       case 3: return name.trim().length > 0 && gender !== '';
-      case 4: return true;
       default: return false;
     }
   }, [step, birthDate, city, lat, name, gender]);
@@ -236,21 +235,20 @@ export default function NewChartPage() {
               animate={{ rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
             >
-              {ZODIAC_WHEEL.map((s, i) => {
+              {ZODIAC_WHEEL.map((sign, i) => {
                 const angle = (i / 12) * 360;
                 const rad = (angle * Math.PI) / 180;
                 return (
                   <span
                     key={i}
-                    className="absolute text-lg font-bold select-none"
+                    className="absolute select-none"
                     style={{
-                      color: 'rgba(153, 102, 230, 0.7)',
                       left: `${50 + 44 * Math.cos(rad)}%`,
                       top: `${50 + 44 * Math.sin(rad)}%`,
                       transform: 'translate(-50%, -50%)',
                     }}
                   >
-                    {s}
+                    <ZodiacIcon sign={sign} size={20} color="rgba(153, 102, 230, 0.7)" />
                   </span>
                 );
               })}
@@ -326,21 +324,20 @@ export default function NewChartPage() {
             animate={{ rotate: 360 }}
             transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
           >
-            {ZODIAC_WHEEL.map((s, i) => {
+            {ZODIAC_WHEEL.map((sign, i) => {
               const angle = (i / 12) * 360;
               const rad = (angle * Math.PI) / 180;
               return (
                 <span
                   key={i}
-                  className="absolute text-2xl font-bold select-none"
+                  className="absolute select-none"
                   style={{
-                    color: 'rgba(153, 102, 230, 0.55)',
                     left: `${50 + 44 * Math.cos(rad)}%`,
                     top: `${50 + 44 * Math.sin(rad)}%`,
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
-                  {s}
+                  <ZodiacIcon sign={sign} size={26} color="rgba(153, 102, 230, 0.55)" />
                 </span>
               );
             })}
@@ -653,40 +650,11 @@ export default function NewChartPage() {
                   </div>
                 )}
 
-                {/* ── Step 4: Email (optional) ── */}
-                {step === 4 && (
-                  <div className="flex flex-col gap-4">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      autoFocus
-                      className="w-full px-6 py-4 rounded-2xl text-white text-center text-lg placeholder-white/30 focus:outline-none transition-all"
-                      style={INPUT_STYLE}
-                    />
-                    {error && (
-                      <p className="text-red-400 text-sm text-center">{error}</p>
-                    )}
-                  </div>
-                )}
-
               </div>
             </div>
 
             {/* ── Bottom action buttons ── */}
             <div className="flex flex-col gap-3 pt-4">
-              {/* Skip button (email step only) */}
-              {isLast && (
-                <button
-                  onClick={goNext}
-                  className="text-sm text-center py-1 transition-colors hover:text-white/60"
-                  style={{ color: 'rgba(255,255,255,0.35)' }}
-                >
-                  Пропустити
-                </button>
-              )}
-
               {/* Main Next / Submit button */}
               <motion.button
                 onClick={goNext}

@@ -1,8 +1,15 @@
 // @ts-nocheck - next/og ImageResponse JSX types compatibility
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { ZODIAC_SVG_PATHS } from '@/components/icons/ZodiacIcon';
 
 export const runtime = 'edge';
+
+const SIGN_KEY_MAP: Record<string, string> = {
+  aries: 'Aries', taurus: 'Taurus', gemini: 'Gemini', cancer: 'Cancer',
+  leo: 'Leo', virgo: 'Virgo', libra: 'Libra', scorpio: 'Scorpio',
+  sagittarius: 'Sagittarius', capricorn: 'Capricorn', aquarius: 'Aquarius', pisces: 'Pisces',
+};
 
 const ZODIAC_DATA: Record<string, { symbol: string; name: string; color: string; dates: string; element: string; traits: string }> = {
   aries: { 
@@ -147,14 +154,14 @@ export async function GET(
           {/* Zodiac symbol */}
           <div
             style={{
-              fontSize: '280px',
-              lineHeight: 1,
-              color: zodiac.color,
               marginBottom: '40px',
               filter: `drop-shadow(0 0 60px ${zodiac.color}80)`,
             }}
           >
-            {zodiac.symbol}
+            <svg width="200" height="200" viewBox="0 0 24 24" fill="none"
+              stroke={zodiac.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d={ZODIAC_SVG_PATHS[SIGN_KEY_MAP[sign.toLowerCase()] || 'Aries']} />
+            </svg>
           </div>
 
           {/* Sign name */}

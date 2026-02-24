@@ -6,6 +6,18 @@ import { MoonPhase, VoidPeriod } from '@/types/moon';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MoonPhaseCard } from './MoonPhaseCard';
 
+// Parse "YYYY-MM-DD" as local date (not UTC) to avoid timezone shift
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// Format Date as "YYYY-MM-DD" using local timezone
+function formatLocalDate(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 interface MoonCalendarProps {
   phases: MoonPhase[];
   voidPeriods: VoidPeriod[];
@@ -16,19 +28,29 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
 
   const newMoonDates = phases
     .filter(p => p.phase === 'new_moon')
-    .map(p => new Date(p.date));
-  
+    .map(p => parseLocalDate(p.date));
+
   const fullMoonDates = phases
     .filter(p => p.phase === 'full_moon')
-    .map(p => new Date(p.date));
-  
-  const voidDates = voidPeriods
-    .map(v => new Date(v.start));
+    .map(p => parseLocalDate(p.date));
 
-  const majorPhases = phases.filter(p => 
-    p.phase === 'new_moon' || p.phase === 'full_moon' || 
-    p.phase === 'first_quarter' || p.phase === 'last_quarter'
-  );
+  const voidDates = voidPeriods
+    .map(v => parseLocalDate(v.start.split('T')[0]));
+
+  // Deduplicate major phases: only keep first day of each phase transition
+  const upcomingPhases: MoonPhase[] = [];
+  const majorTypes = ['new_moon', 'first_quarter', 'full_moon', 'last_quarter'];
+  let lastPhase = '';
+  for (const p of phases) {
+    if (majorTypes.includes(p.phase) && p.phase !== lastPhase) {
+      upcomingPhases.push(p);
+    }
+    lastPhase = p.phase;
+  }
+
+  // Find phase data for selected date (use local timezone to match server dates)
+  const selectedDateStr = selectedDate ? formatLocalDate(selectedDate) : undefined;
+  const selectedPhase = phases.find(p => p.date === selectedDateStr);
 
   return (
     <div className="space-y-6">
@@ -50,28 +72,39 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
                   voidPeriod: voidDates,
                 }}
                 modifiersStyles={{
-                  newMoon: { 
-                    backgroundColor: 'hsl(var(--primary))', 
+                  newMoon: {
+                    backgroundColor: 'hsl(var(--primary))',
                     color: 'hsl(var(--primary-foreground))',
                     fontWeight: 'bold',
                   },
-                  fullMoon: { 
-                    backgroundColor: 'hsl(var(--warning))', 
+                  fullMoon: {
+                    backgroundColor: 'hsl(var(--warning))',
                     color: 'hsl(var(--warning-foreground))',
                     fontWeight: 'bold',
                   },
-                  voidPeriod: { 
+                  voidPeriod: {
                     border: '2px dashed hsl(var(--destructive))',
                   },
                 }}
                 className="rounded-md border"
               />
             </div>
-            
-            {/* Legend */}
+
+            {/* Selected date info + Legend */}
             <div className="space-y-4">
-              <h3 className="font-semibold">Легенда</h3>
+              {selectedPhase ? (
+                <div className="p-4 rounded-lg border space-y-2">
+                  <h3 className="font-semibold">
+                    {parseLocalDate(selectedPhase.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })}
+                  </h3>
+                  <MoonPhaseCard phase={selectedPhase} />
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">Оберіть дату щоб побачити деталі</p>
+              )}
+
               <div className="space-y-3">
+                <h3 className="font-semibold">Легенда</h3>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs text-primary-foreground">
                     🌑
@@ -93,15 +126,6 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
                   </span>
                 </div>
               </div>
-
-              <div className="mt-6 p-4 bg-muted rounded-lg text-sm">
-                <h4 className="font-semibold mb-2">Підказки:</h4>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>🌑 Новий Місяць — час для намірів</li>
-                  <li>🌕 Повний Місяць — завершення справ</li>
-                  <li>⚠️ Void — відкласти важливі рішення</li>
-                </ul>
-              </div>
             </div>
           </div>
         </CardContent>
@@ -114,7 +138,7 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {majorPhases.slice(0, 4).map((phase, idx) => (
+            {upcomingPhases.slice(0, 4).map((phase, idx) => (
               <MoonPhaseCard key={idx} phase={phase} />
             ))}
           </div>

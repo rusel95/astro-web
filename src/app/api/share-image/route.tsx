@@ -1,22 +1,29 @@
 // @ts-nocheck - next/og ImageResponse JSX types compatibility
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { ZODIAC_SVG_PATHS } from '@/components/icons/ZodiacIcon';
 
 export const runtime = 'edge';
 
-const ZODIAC_DATA: Record<string, { symbol: string; color: string; phrase: string }> = {
-  'Овен':     { symbol: '♈', color: '#ef4444', phrase: 'Я завойовую світ своєю сміливістю' },
-  'Телець':   { symbol: '♉', color: '#22c55e', phrase: 'Я створюю красу і стабільність' },
-  'Близнюки': { symbol: '♊', color: '#eab308', phrase: 'Я з\'єдную ідеї та людей' },
-  'Рак':      { symbol: '♋', color: '#94a3b8', phrase: 'Я піклуюся і захищаю близьких' },
-  'Лев':      { symbol: '♌', color: '#d4af37', phrase: 'Я сяю і надихаю інших' },
-  'Діва':     { symbol: '♍', color: '#14b8a6', phrase: 'Я досконалість у деталях' },
-  'Терези':   { symbol: '♎', color: '#ec4899', phrase: 'Я гармонія і справедливість' },
-  'Скорпіон': { symbol: '♏', color: '#dc2626', phrase: 'Я трансформую глибини душі' },
-  'Стрілець': { symbol: '♐', color: '#f97316', phrase: 'Я шукаю істину за горизонтом' },
-  'Козеріг':  { symbol: '♑', color: '#92400e', phrase: 'Я будую свою імперію крок за кроком' },
-  'Водолій':  { symbol: '♒', color: '#3b82f6', phrase: 'Я змінюю майбутнє своїми ідеями' },
-  'Риби':     { symbol: '♓', color: '#a855f7', phrase: 'Я відчуваю світ глибше за інших' },
+const SIGN_EN_MAP: Record<string, string> = {
+  'Овен': 'Aries', 'Телець': 'Taurus', 'Близнюки': 'Gemini', 'Рак': 'Cancer',
+  'Лев': 'Leo', 'Діва': 'Virgo', 'Терези': 'Libra', 'Скорпіон': 'Scorpio',
+  'Стрілець': 'Sagittarius', 'Козеріг': 'Capricorn', 'Водолій': 'Aquarius', 'Риби': 'Pisces',
+};
+
+const ZODIAC_DATA: Record<string, { color: string; phrase: string }> = {
+  'Овен':     { color: '#ef4444', phrase: 'Я завойовую світ своєю сміливістю' },
+  'Телець':   { color: '#22c55e', phrase: 'Я створюю красу і стабільність' },
+  'Близнюки': { color: '#eab308', phrase: 'Я з\'єдную ідеї та людей' },
+  'Рак':      { color: '#94a3b8', phrase: 'Я піклуюся і захищаю близьких' },
+  'Лев':      { color: '#d4af37', phrase: 'Я сяю і надихаю інших' },
+  'Діва':     { color: '#14b8a6', phrase: 'Я досконалість у деталях' },
+  'Терези':   { color: '#ec4899', phrase: 'Я гармонія і справедливість' },
+  'Скорпіон': { color: '#dc2626', phrase: 'Я трансформую глибини душі' },
+  'Стрілець': { color: '#f97316', phrase: 'Я шукаю істину за горизонтом' },
+  'Козеріг':  { color: '#92400e', phrase: 'Я будую свою імперію крок за кроком' },
+  'Водолій':  { color: '#3b82f6', phrase: 'Я змінюю майбутнє своїми ідеями' },
+  'Риби':     { color: '#a855f7', phrase: 'Я відчуваю світ глибше за інших' },
 };
 
 export async function GET(request: NextRequest) {
@@ -62,13 +69,13 @@ export async function GET(request: NextRequest) {
             {/* Zodiac symbol with glow */}
             <div
               style={{
-                fontSize: '320px',
-                color: zodiac.color,
                 filter: `drop-shadow(0 0 80px ${zodiac.color})`,
-                lineHeight: 1,
               }}
             >
-              {zodiac.symbol}
+              <svg width="240" height="240" viewBox="0 0 24 24" fill="none"
+                stroke={zodiac.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d={ZODIAC_SVG_PATHS[SIGN_EN_MAP[sign] || 'Aries']} />
+              </svg>
             </div>
 
             {/* Sign name */}

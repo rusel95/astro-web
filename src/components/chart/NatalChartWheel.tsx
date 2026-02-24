@@ -5,13 +5,13 @@ import { Planet, House, Aspect, PlanetName } from '@/types/astrology';
 import {
   PLANET_SYMBOLS,
   PLANET_NAMES_UK,
-  ZODIAC_SYMBOLS,
   ZODIAC_NAMES_UK,
   ASPECT_NAMES_UK,
   ASPECT_SYMBOLS,
   getPlanetDignityStatus,
   DIGNITY_NAMES_UK,
 } from '@/lib/constants';
+import ZodiacIcon, { ZODIAC_SVG_PATHS } from '@/components/icons/ZodiacIcon';
 
 interface NatalChartWheelProps {
   planets: Planet[];
@@ -37,7 +37,10 @@ interface AspectTooltip {
 type TooltipData = PlanetTooltip | AspectTooltip | null;
 
 // ─── Colour palette ──────────────────────────────────────────────────────────
-const ZODIAC_GLYPHS: string[] = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const ZODIAC_KEYS: string[] = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
+];
 
 const ZODIAC_COLORS: string[] = [
   '#e85d4a','#4a9e5c','#e8d44a','#4a8be8',
@@ -252,7 +255,7 @@ export default function NatalChartWheel({
         <circle cx={CX} cy={CY} r={R_OUTER} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
         <circle cx={CX} cy={CY} r={R_ZODIAC_INNER} fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="0.5" />
 
-        {ZODIAC_GLYPHS.map((glyph, i) => {
+        {ZODIAC_KEYS.map((key, i) => {
           const startLng = i * 30, midLng = startLng + 15, endLng = startLng + 30;
           const startA = toAngle(startLng), midA = toAngle(midLng), endA = toAngle(endLng);
 
@@ -272,6 +275,8 @@ export default function NatalChartWheel({
 
           const divLine = { inner: arcOuter(R_ZODIAC_INNER, startA), outer: arcOuter(R_OUTER, startA) };
           const glyphPos = polarToXY(CX, CY, (R_OUTER + R_ZODIAC_INNER) / 2, midA);
+          const iconSize = 16;
+          const scale = iconSize / 24;
 
           return (
             <g key={i}>
@@ -279,10 +284,10 @@ export default function NatalChartWheel({
               <line x1={divLine.inner.x} y1={divLine.inner.y}
                 x2={divLine.outer.x} y2={divLine.outer.y}
                 stroke="rgba(255,255,255,0.22)" strokeWidth="0.5" />
-              <text x={glyphPos.x} y={glyphPos.y}
-                textAnchor="middle" dominantBaseline="central"
-                fill={ZODIAC_COLORS[i]} fontSize="15" fontWeight="bold"
-              >{glyph}</text>
+              <g transform={`translate(${glyphPos.x - iconSize / 2}, ${glyphPos.y - iconSize / 2}) scale(${scale})`}>
+                <path d={ZODIAC_SVG_PATHS[key]} fill="none" stroke={ZODIAC_COLORS[i]}
+                  strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+              </g>
             </g>
           );
         })}
@@ -470,7 +475,6 @@ function TooltipPanel({
     const symbol = PLANET_SYMBOLS[p.name as PlanetName] ?? '?';
     const name   = PLANET_NAMES_UK[p.name as PlanetName] ?? p.name;
     const sign   = ZODIAC_NAMES_UK[p.sign];
-    const signSym = ZODIAC_SYMBOLS[p.sign];
     const color  = PLANET_COLORS[p.name] ?? '#c4b5fd';
     const dignity = getPlanetDignityStatus(p.name as PlanetName, p.sign);
     const degInSign = (p.longitude % 30).toFixed(1);
@@ -498,7 +502,7 @@ function TooltipPanel({
 
           {/* Sign & degree */}
           <div className="flex items-center gap-1.5 text-xs text-text-muted mb-1">
-            <span style={{ color: ELEMENT_COLORS[p.sign] }}>{signSym}</span>
+            <ZodiacIcon sign={p.sign} size={12} color={ELEMENT_COLORS[p.sign]} />
             <span className="text-white/80">{sign}</span>
             <span className="text-white/40">{degInSign}°</span>
           </div>

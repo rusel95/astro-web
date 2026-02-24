@@ -5,14 +5,13 @@ import { motion } from 'framer-motion';
 import { User, Briefcase, Heart, Activity, TrendingUp, Sparkles, Globe2, Star, Bot, Lock, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import ChartsCounter from '@/components/ChartsCounter';
+import ZodiacIcon from '@/components/icons/ZodiacIcon';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
-const ZODIAC_RING = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
-
-const BIRTHDAY_CTA = {
-  title: '🎂 Сьогодні ваш день народження?',
-  subtitle: 'Отримайте персональний прогноз на наступний рік життя',
-};
+const ZODIAC_RING = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
+];
 
 const PRODUCTS: { Icon: LucideIcon; title: string; bullets: string[] }[] = [
   {
@@ -87,21 +86,20 @@ export default function Home() {
             animate={{ rotate: 360 }}
             transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
           >
-            {ZODIAC_RING.map((s, i) => {
+            {ZODIAC_RING.map((sign, i) => {
               const angle = (i / 12) * 360;
               const rad = (angle * Math.PI) / 180;
               return (
                 <span
                   key={i}
-                  className="absolute font-display font-bold text-zorya-violet"
+                  className="absolute"
                   style={{
-                    fontSize: '2rem',
                     left: `${50 + 46 * Math.cos(rad)}%`,
                     top:  `${50 + 46 * Math.sin(rad)}%`,
                     transform: 'translate(-50%,-50%)',
                   }}
                 >
-                  {s}
+                  <ZodiacIcon sign={sign} size={32} className="text-zorya-violet" />
                 </span>
               );
             })}
@@ -182,32 +180,6 @@ export default function Home() {
 
       {/* ===== DIVIDER ===== */}
       <hr className="divider-cosmic mx-8 md:mx-auto md:max-w-4xl" />
-
-      {/* ===== BIRTHDAY CTA ===== */}
-      <section className="py-8 bg-cosmic-900">
-        <div className="max-w-4xl mx-auto px-4">
-          <motion.a
-            href="/chart/new"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="block glass-card p-5 border border-zorya-gold/30 bg-gradient-to-r from-zorya-gold/5 to-zorya-purple/5 hover:from-zorya-gold/10 hover:to-zorya-purple/10 transition-all group cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center text-2xl">
-                  🎂
-                </div>
-                <div>
-                  <p className="text-zorya-gold font-semibold text-lg">{BIRTHDAY_CTA.title}</p>
-                  <p className="text-text-secondary text-sm">{BIRTHDAY_CTA.subtitle}</p>
-                </div>
-              </div>
-              <div className="text-zorya-gold group-hover:translate-x-1 transition-transform">→</div>
-            </div>
-          </motion.a>
-        </div>
-      </section>
 
       {/* ===== QUESTIONS SECTION ===== */}
       <section className="py-16 md:py-24 bg-cosmic-800">
