@@ -1,38 +1,15 @@
 /**
- * Swiss Ephemeris wrapper for Moon calculations
- * Handles Moon position, aspects, and ingress times
+ * Astronomy calculations using astronomy-engine (pure JS)
+ * Works on Vercel Edge Runtime (no native C++ dependencies)
  */
 
-import sweph from 'sweph';
+import * as Astronomy from 'astronomy-engine';
 
-// Swiss Ephemeris constants
-const SE_MOON = 1;
-const SE_SUN = 0;
-const SE_MERCURY = 2;
-const SE_VENUS = 3;
-const SE_MARS = 4;
-const SE_JUPITER = 5;
-const SE_SATURN = 6;
-const SE_URANUS = 7;
-const SE_NEPTUNE = 8;
-const SE_PLUTO = 9;
-
+// Planet IDs matching astronomy-engine
 const PLANETS = [
-  SE_SUN, SE_MERCURY, SE_VENUS, SE_MARS,
-  SE_JUPITER, SE_SATURN, SE_URANUS, SE_NEPTUNE, SE_PLUTO
+  'Sun', 'Mercury', 'Venus', 'Mars',
+  'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'
 ];
-
-const PLANET_NAMES: Record<number, string> = {
-  [SE_SUN]: 'Sun',
-  [SE_MERCURY]: 'Mercury',
-  [SE_VENUS]: 'Venus',
-  [SE_MARS]: 'Mars',
-  [SE_JUPITER]: 'Jupiter',
-  [SE_SATURN]: 'Saturn',
-  [SE_URANUS]: 'Uranus',
-  [SE_NEPTUNE]: 'Neptune',
-  [SE_PLUTO]: 'Pluto',
-};
 
 // Major aspects (0°, 60°, 90°, 120°, 180°)
 const MAJOR_ASPECTS = [0, 60, 90, 120, 180];
@@ -60,47 +37,57 @@ export interface MoonIngress {
 }
 
 /**
- * Get Julian Day Number from Date
+ * Get ecliptic longitude from equatorial coordinates
  */
-function getJulianDay(date: Date): number {
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
-  const hour = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
-  
-  const jd = sweph.julday(year, month, day, hour, sweph.constants.SE_GREG_CAL);
-  return jd;
-}
-
-/**
- * Get Date from Julian Day
- */
-function getDateFromJulian(jd: number): Date {
-  const result = sweph.revjul(jd, sweph.constants.SE_GREG_CAL);
-  const date = new Date(Date.UTC(
-    result.year,
-    result.month - 1,
-    result.day,
-    Math.floor(result.hour),
-    Math.floor((result.hour % 1) * 60),
-    Math.floor(((result.hour * 60) % 1) * 60)
-  ));
-  return date;
+function getEclipticLongitude(eq: Astronomy.EquatorVector): number {
+  const ecl = Astronomy.Ecliptic(eq);
+  let lon = ecl.elon;
+  if (lon < 0) lon += 360;
+  return lon;
 }
 
 /**
  * Get planet position at given time
  */
-export function getPlanetPosition(planetId: number, date: Date): PlanetPosition {
-  const jd = getJulianDay(date);
-  const result = sweph.calc_ut(jd, planetId, sweph.constants.SEFLG_SPEED);
+export function getPlanetPosition(planetName: string, date: Date): PlanetPosition {
+  const time = new Astronomy.AstroTime(date);
   
-  // result.data contains: [longitude, latitude, distance, longitudeSpeed, latitudeSpeed, distanceSpeed]
+  if (planetName === 'Moon') {
+    const geoMoon = Astronomy.GeoMoon(time);
+    const longitude = getEclipticLongitude(geoMoon);
+    
+    // Calculate speed (longitude change over 1 hour)
+    const time2 = time.AddDays(1/24); // +1 hour
+    const geoMoon2 = Astronomy.GeoMoon(time2);
+    const longitude2 = getEclipticLongitude(geoMoon2);
+    const speed = (longitude2 - longitude) * 24; // degrees per day
+    
+    return {
+      longitude,
+      latitude: 0, // astronomy-engine doesn't provide ecliptic latitude easily
+      distance: geoMoon.t, // distance in AU
+      speed,
+    };
+  }
+  
+  const helioVector = Astronomy.HelioVector(planetName as Astronomy.Body, time);
+  const geoVector = Astronomy.GeoVector(planetName as Astronomy.Body, time, false);
+  const longitude = getEclipticLongitude(geoVector);
+  
+  // Calculate speed
+  const time2 = time.AddDays(1/24);
+  const geoVector2 = Astronomy.GeoVector(planetName as Astronomy.Body, time2, false);
+  const longitude2 = getEclipticLongitude(geoVector2);
+  let speed = (longitude2 - longitude) * 24;
+  if (Math.abs(speed) > 180) {
+    speed = speed > 0 ? speed - 360 * 24 : speed + 360 * 24;
+  }
+  
   return {
-    longitude: result.data[0],
-    latitude: result.data[1],
-    distance: result.data[2],
-    speed: result.data[3],
+    longitude,
+    latitude: 0,
+    distance: geoVector.t,
+    speed,
   };
 }
 
@@ -108,7 +95,7 @@ export function getPlanetPosition(planetId: number, date: Date): PlanetPosition 
  * Get Moon position
  */
 export function getMoonPosition(date: Date): PlanetPosition {
-  return getPlanetPosition(SE_MOON, date);
+  return getPlanetPosition('Moon', date);
 }
 
 /**
@@ -180,8 +167,8 @@ export function findUpcomingAspects(startDate: Date, endDate: Date): Aspect[] {
   const aspects: Aspect[] = [];
   const moonPos = getMoonPosition(startDate);
   
-  for (const planetId of PLANETS) {
-    const planetPos = getPlanetPosition(planetId, startDate);
+  for (const planetName of PLANETS) {
+    const planetPos = getPlanetPosition(planetName, startDate);
     const angle = angularDistance(moonPos.longitude, planetPos.longitude);
     const aspectInfo = isMajorAspect(angle);
     
@@ -190,7 +177,7 @@ export function findUpcomingAspects(startDate: Date, endDate: Date): Aspect[] {
       
       if (exactTime && exactTime >= startDate && exactTime <= endDate) {
         aspects.push({
-          planet: PLANET_NAMES[planetId],
+          planet: planetName,
           type: aspectInfo.type as Aspect['type'],
           angle: aspectInfo.exactAngle,
           exactTime,
@@ -253,7 +240,7 @@ export function getMoonPhase(date: Date): {
   illumination: number;
 } {
   const moonPos = getMoonPosition(date);
-  const sunPos = getPlanetPosition(SE_SUN, date);
+  const sunPos = getPlanetPosition('Sun', date);
   
   // Calculate elongation (angle between Sun and Moon)
   let angle = moonPos.longitude - sunPos.longitude;
