@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { buildAPIRequest, mapAPIResponse } from '@/lib/api-mapper';
+import { mapAPIResponse } from '@/lib/api-mapper';
 import { ChartInput, NatalChart, AspectType } from '@/types/astrology';
+import { getAstrologyClient, toSdkSubject, toSdkChartOptions } from '@/lib/astrology-client';
+import { AstrologyError } from '@astro-api/astroapi-typescript';
 
 interface CompatibilityInput {
   person1: ChartInput;
@@ -33,7 +35,7 @@ function getAngleDifference(lon1: number, lon2: number): number {
 }
 
 // Determine aspect type based on angle
-function getAspectType(angle: number, _orb: number = 8): { type: AspectType; orb: number } | null {
+function getAspectType(angle: number): { type: AspectType; orb: number } | null {
   const aspects = [
     { type: 'Conjunction' as AspectType, angle: 0, maxOrb: 8 },
     { type: 'Sextile' as AspectType, angle: 60, maxOrb: 6 },
@@ -77,8 +79,6 @@ function calculateSynastryAspects(
   name2: string
 ): SynastryAspect[] {
   const aspects: SynastryAspect[] = [];
-
-  // Key planets for relationships
   const keyPlanets = ['Sun', 'Moon', 'Venus', 'Mars', 'Mercury', 'Jupiter'];
 
   for (const p1 of chart1.planets) {
@@ -111,9 +111,9 @@ function calculateSynastryAspects(
 const ASPECT_SCORE: Partial<Record<AspectType, number>> = {
   Trine: 85,
   Sextile: 75,
-  Conjunction: 65, // Neutral — depends on planets involved
-  Opposition: 40,  // Challenging but creates magnetic attraction
-  Square: 25,      // Most challenging
+  Conjunction: 65,
+  Opposition: 40,
+  Square: 25,
 };
 
 // Weight by planet pair importance for relationships
@@ -139,7 +139,6 @@ function calculateCompatibilityScore(aspects: SynastryAspect[]): number {
     const w2 = PLANET_WEIGHT[aspect.planet2] ?? 1.0;
     const weight = (w1 + w2) / 2;
 
-    // Tighter orb = stronger aspect — reduce score up to 20% for wide orbs
     const orbFactor = 1 - (aspect.orb / 10) * 0.2;
 
     totalWeightedScore += baseScore * weight * orbFactor;
@@ -147,7 +146,6 @@ function calculateCompatibilityScore(aspects: SynastryAspect[]): number {
   }
 
   const score = Math.round(totalWeightedScore / totalWeight);
-  // Realistic range: 20–95 (no chart is perfectly compatible or totally incompatible)
   return Math.max(20, Math.min(95, score));
 }
 
@@ -156,47 +154,17 @@ export async function POST(req: NextRequest) {
     const input: CompatibilityInput = await req.json();
     const { person1, person2 } = input;
 
-    const baseUrl = process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io/api/v3';
-    const apiKey = process.env.ASTROLOGY_API_KEY;
+    const client = getAstrologyClient();
+    const options = toSdkChartOptions();
 
-    if (!apiKey || apiKey === 'placeholder') {
-      return NextResponse.json(
-        { error: 'Сервіс тимчасово недоступний' },
-        { status: 503 }
-      );
-    }
-
-    // Fetch both natal charts in parallel
-    const [chart1Res, chart2Res] = await Promise.all([
-      fetch(`${baseUrl}/charts/natal`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(buildAPIRequest(person1)),
-      }),
-      fetch(`${baseUrl}/charts/natal`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(buildAPIRequest(person2)),
-      }),
-    ]);
-
-    if (!chart1Res.ok || !chart2Res.ok) {
-      throw new Error('Помилка розрахунку карт');
-    }
-
+    // Fetch both natal charts in parallel via SDK
     const [apiResponse1, apiResponse2] = await Promise.all([
-      chart1Res.json(),
-      chart2Res.json(),
+      client.charts.getNatalChart({ subject: toSdkSubject(person1), options }),
+      client.charts.getNatalChart({ subject: toSdkSubject(person2), options }),
     ]);
 
-    const chart1 = mapAPIResponse(apiResponse1, person1);
-    const chart2 = mapAPIResponse(apiResponse2, person2);
+    const chart1 = mapAPIResponse(apiResponse1 as any, person1);
+    const chart2 = mapAPIResponse(apiResponse2 as any, person2);
 
     // Calculate synastry aspects
     const synastryAspects = calculateSynastryAspects(
@@ -218,7 +186,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error: any) {
-    console.error('Compatibility API error:', error);
+    if (error instanceof AstrologyError) {
+      console.error('Astrology API error:', error.statusCode, error.message);
+    } else {
+      console.error('Compatibility API error:', error);
+    }
     return NextResponse.json(
       { error: error.message || 'Помилка аналізу сумісності' },
       { status: 500 }

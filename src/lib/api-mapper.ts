@@ -3,7 +3,6 @@ import {
   APINatalChartResponse, APIPlanetaryPosition, APIHouseCusp, APIAspect,
   PlanetName, ZodiacSign, AspectType,
 } from '@/types/astrology';
-import { DEFAULT_API_OPTIONS } from './constants';
 
 // Map API planet name to our PlanetName type
 function toPlanetName(name: string): PlanetName | null {
@@ -113,21 +112,3 @@ function zodiacFromDegree(deg: number): ZodiacSign {
   return signs[Math.floor((deg % 360) / 30)];
 }
 
-export function buildAPIRequest(input: ChartInput) {
-  return {
-    subject: {
-      name: input.name,
-      birth_data: {
-        year: parseInt(input.birthDate.split('-')[0]),
-        month: parseInt(input.birthDate.split('-')[1]),
-        day: parseInt(input.birthDate.split('-')[2]),
-        hour: parseInt(input.birthTime.split(':')[0]),
-        minute: parseInt(input.birthTime.split(':')[1]),
-        second: 0,
-        city: input.city,
-        country_code: input.countryCode,
-      },
-    },
-    options: DEFAULT_API_OPTIONS,
-  };
-}
