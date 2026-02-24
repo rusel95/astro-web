@@ -19,6 +19,15 @@ function LoginForm() {
   const [success, setSuccess] = useState('');
   const configured = isSupabaseConfigured();
 
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (!configured) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) router.replace('/dashboard');
+    });
+  }, [configured, router]);
+
   useEffect(() => {
     const err = searchParams.get('error');
     if (err === 'auth_callback_failed') {

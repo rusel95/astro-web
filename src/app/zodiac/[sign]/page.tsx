@@ -210,7 +210,7 @@ export async function generateMetadata({ params }: { params: { sign: string } })
   const canonicalUrl = `${baseUrl}/zodiac/${params.sign}`;
   const ogImage = `${baseUrl}/api/og/${params.sign}`;
   
-  const title = `${zodiac.symbol} ${zodiac.name} — Характеристика знаку зодіаку | AstroSvitlana`;
+  const title = `${zodiac.symbol} ${zodiac.name} — Характеристика знаку зодіаку | Зоря`;
   const description = `${zodiac.description} Дізнайтеся більше про знак ${zodiac.name}: сильні сторони, слабкості, сумісність.`;
   
   // High-traffic keywords for SEO
@@ -235,9 +235,9 @@ export async function generateMetadata({ params }: { params: { sign: string } })
     alternates: {
       canonical: canonicalUrl,
     },
-    authors: [{ name: 'AstroSvitlana' }],
-    creator: 'AstroSvitlana',
-    publisher: 'AstroSvitlana',
+    authors: [{ name: 'Зоря' }],
+    creator: 'Зоря',
+    publisher: 'Зоря',
     robots: {
       index: true,
       follow: true,
@@ -252,7 +252,7 @@ export async function generateMetadata({ params }: { params: { sign: string } })
       title,
       description,
       url: canonicalUrl,
-      siteName: 'AstroSvitlana',
+      siteName: 'Зоря',
       locale: 'uk_UA',
       type: 'article',
       images: [{ 
@@ -267,7 +267,7 @@ export async function generateMetadata({ params }: { params: { sign: string } })
       title,
       description,
       images: [ogImage],
-      creator: '@AstroSvitlana',
+      creator: '@Зоря',
     },
   };
 }
@@ -291,12 +291,12 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
     image: `${baseUrl}/api/og/${params.sign}`,
     author: {
       '@type': 'Organization',
-      name: 'AstroSvitlana',
+      name: 'Зоря',
       url: baseUrl,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'AstroSvitlana',
+      name: 'Зоря',
       url: baseUrl,
     },
     mainEntityOfPage: {

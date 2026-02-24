@@ -10,8 +10,10 @@ export const runtime = 'edge';
 export const revalidate = 900; // Revalidate every 15 minutes
 
 async function getMoonData() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+    || process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`
+    || 'http://localhost:3000';
+
   try {
     const [currentRes, phasesRes, voidRes] = await Promise.all([
       fetch(`${baseUrl}/api/moon/current`, { next: { revalidate: 900 } }),
@@ -136,6 +138,6 @@ function CalendarSkeleton() {
 }
 
 export const metadata = {
-  title: 'Місячний Календар | AstroSvitla',
+  title: 'Місячний Календар | Зоря',
   description: 'Фази Місяця, Void of Course періоди та персональні місячні транзити. Дізнайтеся коли краще починати справи і коли варто почекати.',
 };

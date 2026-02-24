@@ -229,7 +229,7 @@ export async function GET(
           >
             <div style={{ fontSize: '32px' }}>✦</div>
             <div style={{ fontSize: '28px', color: 'rgba(255, 255, 255, 0.4)' }}>
-              AstroSvitlana
+              Зоря
             </div>
           </div>
         </div>

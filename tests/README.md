@@ -1,6 +1,6 @@
 # E2E Testing Guide
 
-Playwright-based end-to-end tests for AstroSvitlana.
+Playwright-based end-to-end tests for Зоря.
 
 ## Setup
 

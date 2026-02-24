@@ -27,6 +27,15 @@ export default function AuthNav({ user }: Props) {
         const supabase = createClient();
         await supabase.auth.signOut();
       }
+      // Clear all chart data from localStorage to prevent data leaks between users
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('chart-') || key.startsWith('chart-input-'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
       router.push('/');
       router.refresh();
     } catch {

@@ -52,19 +52,28 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="uk" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-cosmic-900 text-text-primary antialiased font-sans">
         {/* Navigation */}
-        <nav className="sticky top-0 z-50 border-b border-white/[0.07]" style={{ background: 'rgba(8,8,26,0.85)', backdropFilter: 'blur(20px) saturate(1.5)', WebkitBackdropFilter: 'blur(20px) saturate(1.5)' }}>
+        <nav aria-label="Головна навігація" className="sticky top-0 z-50 border-b border-white/[0.07]" style={{ background: 'rgba(8,8,26,0.85)', backdropFilter: 'blur(20px) saturate(1.5)', WebkitBackdropFilter: 'blur(20px) saturate(1.5)' }}>
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" className="flex items-center gap-2.5 group">
               <img src="/logo-64.png" alt="Зоря" className="w-8 h-8 rounded-xl" />
               <span className="hidden sm:inline font-display text-xl font-semibold text-zorya-violet group-hover:text-zorya-gold transition-colors">Зоря</span>
             </a>
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               <a
                 href="/moon"
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-white/80 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.05]"
+                aria-label="Місячний календар"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
               >
                 <span>🌙</span>
                 <span className="hidden md:inline">Місяць</span>
+              </a>
+              <a
+                href="/compatibility"
+                aria-label="Сумісність"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
+              >
+                <span>💞</span>
+                <span className="hidden md:inline">Сумісність</span>
               </a>
               <a
                 href="/chart/new"
@@ -75,7 +84,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 }}
               >
                 <span>✦</span>
-                <span className="hidden sm:inline">Розрахувати карту</span>
+                <span className="hidden sm:inline">Нова карта</span>
                 <span className="sm:hidden text-xs">Карта</span>
               </a>
               <AuthNav user={user} />

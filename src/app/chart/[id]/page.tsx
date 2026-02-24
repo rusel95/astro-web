@@ -48,20 +48,47 @@ export default function ChartPage() {
   const [reports, setReports] = useState<Record<string, AIReport>>({});
   const [copied, setCopied] = useState(false);
 
+  const [notFound, setNotFound] = useState(false);
+
   useEffect(() => {
-    // Try sessionStorage first, then localStorage as fallback
-    const stored = sessionStorage.getItem(`chart-${id}`) || localStorage.getItem(`chart-${id}`);
-    const storedInput = sessionStorage.getItem(`chart-input-${id}`) || localStorage.getItem(`chart-input-${id}`);
-    if (stored) {
-      const chartData = JSON.parse(stored);
-      setChart(chartData);
-      // Persist to localStorage for sharing (survives session)
-      localStorage.setItem(`chart-${id}`, stored);
+    let cancelled = false;
+
+    async function loadChart() {
+      // 1. Try sessionStorage/localStorage first (just-created chart)
+      const stored = sessionStorage.getItem(`chart-${id}`) || localStorage.getItem(`chart-${id}`);
+      const storedInput = sessionStorage.getItem(`chart-input-${id}`) || localStorage.getItem(`chart-input-${id}`);
+      if (stored) {
+        if (cancelled) return;
+        setChart(JSON.parse(stored));
+        if (storedInput) setInputData(JSON.parse(storedInput));
+        return;
+      }
+
+      // 2. Fallback: fetch from Supabase (authenticated user, different device)
+      try {
+        const res = await fetch(`/api/charts/${id}`);
+        if (!res.ok) {
+          if (!cancelled) setNotFound(true);
+          return;
+        }
+        const data = await res.json();
+        if (data.chart?.chart_data) {
+          if (cancelled) return;
+          setChart(data.chart.chart_data);
+          setInputData({ name: data.chart.name, gender: data.chart.gender });
+          // Cache locally for this session
+          sessionStorage.setItem(`chart-${id}`, JSON.stringify(data.chart.chart_data));
+          sessionStorage.setItem(`chart-input-${id}`, JSON.stringify({ name: data.chart.name, gender: data.chart.gender }));
+        } else {
+          if (!cancelled) setNotFound(true);
+        }
+      } catch {
+        if (!cancelled) setNotFound(true);
+      }
     }
-    if (storedInput) {
-      setInputData(JSON.parse(storedInput));
-      localStorage.setItem(`chart-input-${id}`, storedInput);
-    }
+
+    loadChart();
+    return () => { cancelled = true; };
   }, [id]);
 
   // Extract planets early (used in callbacks)
@@ -122,7 +149,7 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
         const file = new File([blob], `astro-${sunSign.toLowerCase()}.png`, { type: 'image/png' });
         const shareData = {
           title: `✨ ${inputData.name || 'Моя'} астрологічна карта`,
-          text: `Мій знак Сонця: ${sunSign} ${ZODIAC_SYMBOLS[sunPlanet.sign]} | Розрахуй свою карту на AstroSvitlana`,
+          text: `Мій знак Сонця: ${sunSign} ${ZODIAC_SYMBOLS[sunPlanet.sign]} | Розрахуй свою карту на Зоря`,
           files: [file],
         };
         
@@ -174,6 +201,34 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
     }
     setLoadingReport(false);
   }, [chart, reports]);
+
+  if (notFound) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 px-4">
+        <div className="text-5xl">🔭</div>
+        <h2 className="text-xl font-bold text-text-primary">Карту не знайдено</h2>
+        <p className="text-text-muted text-sm text-center max-w-xs">
+          Ця карта не існує або належить іншому користувачу. Увійдіть до акаунту або створіть нову карту.
+        </p>
+        <div className="flex gap-3 mt-2">
+          <a
+            href="/auth/login"
+            className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-80"
+            style={{ border: '1px solid rgba(108,60,225,0.5)', color: '#9966E6' }}
+          >
+            Увійти
+          </a>
+          <a
+            href="/chart/new"
+            className="px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)' }}
+          >
+            Нова карта
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (!chart) {
     return (
@@ -300,51 +355,43 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
 
       {/* Birthday Banner */}
       {chart.birthDate && isBirthdayToday(chart.birthDate) && (
-        <motion.a
-          href={`/birthday-forecast/${id}`}
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="block mb-6"
+          className="mb-6"
         >
           <div className="glass-card p-4 border-2 border-zorya-gold/40 bg-gradient-to-r from-zorya-gold/10 to-zorya-purple/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center">
-                  <Cake size={24} className="text-zorya-gold" />
-                </div>
-                <div>
-                  <p className="text-zorya-gold font-semibold">🎂 З Днем Народження!</p>
-                  <p className="text-text-secondary text-sm">Отримайте персональний прогноз на рік</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-zorya-gold/20 flex items-center justify-center">
+                <Cake size={24} className="text-zorya-gold" />
               </div>
-              <div className="text-zorya-gold">→</div>
+              <div>
+                <p className="text-zorya-gold font-semibold">З Днем Народження!</p>
+                <p className="text-text-secondary text-sm">Перегляньте AI-звіт для персонального прогнозу</p>
+              </div>
             </div>
           </div>
-        </motion.a>
+        </motion.div>
       )}
-      
+
       {chart.birthDate && !isBirthdayToday(chart.birthDate) && isBirthdaySoon(chart.birthDate).isSoon && (
-        <motion.a
-          href={`/birthday-forecast/${id}`}
+        <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="block mb-6"
+          className="mb-6"
         >
           <div className="glass-card p-4 border border-zorya-purple/30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center">
-                  <Gift size={20} className="text-zorya-violet" />
-                </div>
-                <div>
-                  <p className="text-text-primary font-medium">День народження за {isBirthdaySoon(chart.birthDate).daysUntil} дн.</p>
-                  <p className="text-text-muted text-sm">Дізнайтесь прогноз на наступний рік</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center">
+                <Gift size={20} className="text-zorya-violet" />
               </div>
-              <div className="text-zorya-violet">→</div>
+              <div>
+                <p className="text-text-primary font-medium">День народження за {isBirthdaySoon(chart.birthDate).daysUntil} дн.</p>
+                <p className="text-text-muted text-sm">Перегляньте AI-звіт для персонального прогнозу</p>
+              </div>
             </div>
           </div>
-        </motion.a>
+        </motion.div>
       )}
 
       {/* Quick Stats */}

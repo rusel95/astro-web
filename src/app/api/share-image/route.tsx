@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
                 letterSpacing: '0.05em',
               }}
             >
-              🌙 AstroSvitlana
+              ✦ Зоря
             </div>
             <div
               style={{
