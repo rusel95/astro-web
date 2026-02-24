@@ -215,12 +215,22 @@ npx playwright test --ui  # Interactive test UI
 
 ---
 
-## GitHub Issues
+## GitHub Issues — Task Pipeline
 
-- Track all tasks in GitHub Issues: https://github.com/rusel95/astro-web/issues
-- Label `needs-spec` for issues that need specs before implementation
-- Every issue should have a spec/plan inside for user validation before work begins
-- Close issues that are done. Delete irrelevant ones
+Track all tasks in GitHub Issues: https://github.com/rusel95/astro-web/issues
+
+### Issue Lifecycle (labels)
+1. **`needs-spec`** — Issue exists but has no implementation spec yet. Agent adds spec as comment
+2. **`ready`** — User reviewed the spec, approved it. **Agent can start working on these**
+3. *(closed)* — Done and deployed
+
+### Workflow
+- At session start: check for issues labeled `ready` → implement them
+- User tells "роби що в Ready" → find all `ready` issues and work through them
+- Every issue must have a spec/plan comment inside for user validation BEFORE work begins
+- Never start work on `needs-spec` issues — wait for user to move them to `ready`
+- After completing an issue: close it with a comment describing what was done
+- Delete irrelevant issues. Close duplicates with reference to the kept issue
 
 ---
 
