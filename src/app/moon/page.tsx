@@ -7,14 +7,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { getMoonPosition, getMoonPhase, getZodiacSign } from '@/lib/moon/ephemeris';
 import { isCurrentlyVoid, getNextVoidPeriod, findVoidPeriods } from '@/lib/moon/void-calculator';
+import type { ZodiacSign } from '@/types/astrology';
+import type { CurrentMoon, MoonPhaseType } from '@/types/moon';
 
 export const runtime = 'nodejs';
 export const revalidate = 900; // Revalidate every 15 minutes
 
-function getCurrentMoon() {
+function getCurrentMoon(): CurrentMoon {
   const now = new Date();
   const moonPos = getMoonPosition(now);
-  const moonSign = getZodiacSign(moonPos.longitude);
+  const moonSign = getZodiacSign(moonPos.longitude) as ZodiacSign;
   const phase = getMoonPhase(now);
   const isVoid = isCurrentlyVoid(now);
   const nextVoid = getNextVoidPeriod(now);
@@ -23,22 +25,21 @@ function getCurrentMoon() {
     longitude: moonPos.longitude,
     sign: moonSign,
     house: 1,
-    phase: phase.phase,
+    phase: phase.phase as MoonPhaseType,
     illumination: phase.illumination,
     is_void: isVoid,
     next_void: nextVoid ? {
       start: nextVoid.start.toISOString(),
       end: nextVoid.end.toISOString(),
       last_aspect: {
-        planet: nextVoid.lastAspect.planet,
-        type: nextVoid.lastAspect.type,
+        planet: nextVoid.lastAspect.planet as any,
+        type: nextVoid.lastAspect.type as any,
         time: nextVoid.lastAspect.time.toISOString(),
       },
       sign_ingress: {
-        to_sign: nextVoid.nextSign,
+        to_sign: nextVoid.nextSign as ZodiacSign,
         time: nextVoid.end.toISOString(),
       },
-      duration_minutes: nextVoid.durationMinutes,
     } : undefined,
   };
 }
@@ -53,9 +54,9 @@ function getPhases(days: number = 30) {
     const phase = getMoonPhase(date);
     phases.push({
       date: date.toISOString().split('T')[0],
-      phase: phase.phase,
+      phase: phase.phase as MoonPhaseType,
       illumination: Math.round(phase.illumination),
-      zodiac_sign: getZodiacSign(moonPos.longitude),
+      zodiac_sign: getZodiacSign(moonPos.longitude) as ZodiacSign,
       degree: Math.round(moonPos.longitude % 30 * 10) / 10,
     });
   }
@@ -71,12 +72,12 @@ function getVoidPeriods(days: number = 30) {
     start: v.start.toISOString(),
     end: v.end.toISOString(),
     last_aspect: {
-      planet: v.lastAspect.planet,
-      type: v.lastAspect.type,
+      planet: v.lastAspect.planet as any,
+      type: v.lastAspect.type as any,
       time: v.lastAspect.time.toISOString(),
     },
     sign_ingress: {
-      to_sign: v.nextSign,
+      to_sign: v.nextSign as ZodiacSign,
       time: v.end.toISOString(),
     },
     moon_sign: v.moonSign,
