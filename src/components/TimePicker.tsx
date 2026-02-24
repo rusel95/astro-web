@@ -1,164 +1,247 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TimePickerProps {
   value: string; // HH:mm
   onChange: (value: string) => void;
 }
 
-// ── Scroll Drum Column (inline, no external deps) ─────────────────────────────
-interface DrumColumnProps {
-  items: string[];
-  selected: number;
-  onSelect: (idx: number) => void;
-  label: string;
-  width?: string;
+function clamp(v: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, v));
 }
 
-function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: DrumColumnProps) {
-  const ITEM_H = 52;
-  const VISIBLE = 5;
-  const containerRef = useRef<HTMLDivElement>(null);
+interface FieldProps {
+  label: string;
+  children: React.ReactNode;
+  focused: boolean;
+}
 
-  // Center selected item on mount and selection change
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    el.scrollTop = selected * ITEM_H;
-  }, [selected]);
-
-  const handleScroll = () => {
-    const el = containerRef.current;
-    if (!el) return;
-    const newIdx = Math.round(el.scrollTop / ITEM_H);
-    const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
-    if (clamped !== selected) onSelect(clamped);
-  };
-
+function Field({ label, children, focused }: FieldProps) {
   return (
-    <div className={`${width} flex flex-col items-center gap-1`}>
+    <div className="flex flex-col gap-1 flex-1">
       <span
-        className="text-[10px] uppercase tracking-widest font-semibold"
+        className="text-[10px] uppercase tracking-widest font-semibold text-center"
         style={{ color: 'rgba(255,255,255,0.35)' }}
       >
         {label}
       </span>
-      <div className="relative w-full" style={{ height: ITEM_H * VISIBLE }}>
-        {/* Selection highlight */}
-        <div
-          className="absolute left-0 right-0 z-10 pointer-events-none rounded-xl"
-          style={{
-            top: ITEM_H * Math.floor(VISIBLE / 2),
-            height: ITEM_H,
-            background: 'rgba(108,60,225,0.25)',
-            borderTop: '1px solid rgba(153,102,230,0.4)',
-            borderBottom: '1px solid rgba(153,102,230,0.4)',
-          }}
-        />
-        {/* Fade top */}
-        <div
-          className="absolute inset-x-0 top-0 z-20 pointer-events-none"
-          style={{ height: ITEM_H * 2, background: 'linear-gradient(to bottom, rgba(15,10,30,0.95), transparent)' }}
-        />
-        {/* Fade bottom */}
-        <div
-          className="absolute inset-x-0 bottom-0 z-20 pointer-events-none"
-          style={{ height: ITEM_H * 2, background: 'linear-gradient(to top, rgba(15,10,30,0.95), transparent)' }}
-        />
-        {/* Scroll container */}
-        <div
-          ref={containerRef}
-          className="absolute inset-0 overflow-y-scroll hide-scrollbar-tp"
-          style={{
-            scrollSnapType: 'y mandatory',
-            scrollPaddingTop: ITEM_H * Math.floor(VISIBLE / 2),
-          }}
-          onScroll={handleScroll}
-        >
-          {/* Top padding */}
-          <div style={{ height: ITEM_H * Math.floor(VISIBLE / 2) }} />
-          {items.map((item, idx) => (
-            <div
-              key={idx}
-              onClick={() => onSelect(idx)}
-              className="flex items-center justify-center cursor-pointer select-none"
-              style={{
-                height: ITEM_H,
-                scrollSnapAlign: 'start',
-                color: idx === selected ? '#ffffff' : 'rgba(255,255,255,0.3)',
-                fontSize: idx === selected ? '22px' : '17px',
-                fontWeight: idx === selected ? 700 : 400,
-                transition: 'all 0.15s ease',
-              }}
-            >
-              {item}
-            </div>
-          ))}
-          {/* Bottom padding */}
-          <div style={{ height: ITEM_H * Math.floor(VISIBLE / 2) }} />
-        </div>
-      </div>
+      <motion.div
+        animate={{
+          borderColor: focused
+            ? 'rgba(153,102,230,0.7)'
+            : 'rgba(255,255,255,0.12)',
+          background: focused
+            ? 'rgba(108,60,225,0.12)'
+            : 'rgba(255,255,255,0.07)',
+          boxShadow: focused
+            ? '0 0 0 3px rgba(108,60,225,0.15)'
+            : 'none',
+        }}
+        transition={{ duration: 0.15 }}
+        className="rounded-xl overflow-hidden"
+        style={{ border: '1.5px solid rgba(255,255,255,0.12)' }}
+      >
+        {children}
+      </motion.div>
     </div>
   );
 }
 
-// ── Main TimePicker ────────────────────────────────────────────────────────────
-const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
-const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
-
 export default function TimePicker({ value, onChange }: TimePickerProps) {
   const parts = value ? value.split(':').map(Number) : [12, 0];
-  const hour = parts[0] ?? 12;
-  const minute = parts[1] ?? 0;
+  const [hour, setHour] = useState<number>(parts[0] ?? 12);
+  const [minute, setMinute] = useState<number>(parts[1] ?? 0);
 
-  const handleHourSelect = (idx: number) => {
-    const mm = String(minute).padStart(2, '0');
-    onChange(`${String(idx).padStart(2, '0')}:${mm}`);
+  const [hourStr, setHourStr] = useState(String(parts[0] ?? 12).padStart(2, '0'));
+  const [minuteStr, setMinuteStr] = useState(String(parts[1] ?? 0).padStart(2, '0'));
+
+  const [focusedField, setFocusedField] = useState<'hour' | 'minute' | null>(null);
+
+  const hourRef = useRef<HTMLInputElement>(null);
+  const minuteRef = useRef<HTMLInputElement>(null);
+
+  const emit = (h: number, m: number) => {
+    onChange(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
   };
 
-  const handleMinuteSelect = (idx: number) => {
-    const hh = String(hour).padStart(2, '0');
-    onChange(`${hh}:${String(idx).padStart(2, '0')}`);
+  // ── Hour handlers ──
+  const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '').slice(0, 2);
+    setHourStr(raw);
+    const n = parseInt(raw, 10);
+    if (raw.length === 0) return;
+    if (!isNaN(n) && n >= 0 && n <= 23) {
+      setHour(n);
+      emit(n, minute);
+      if (raw.length === 2) {
+        setTimeout(() => minuteRef.current?.focus(), 0);
+      }
+    } else if (n > 23) {
+      setHour(23);
+      setHourStr('23');
+      emit(23, minute);
+      minuteRef.current?.focus();
+    }
+  };
+
+  const handleHourBlur = () => {
+    setFocusedField(null);
+    const n = parseInt(hourStr, 10);
+    if (isNaN(n) || n < 0) {
+      setHour(0);
+      setHourStr('00');
+      emit(0, minute);
+    } else {
+      const clamped = clamp(n, 0, 23);
+      setHour(clamped);
+      setHourStr(String(clamped).padStart(2, '0'));
+      emit(clamped, minute);
+    }
+  };
+
+  const handleHourKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const next = (hour + 1) % 24;
+      setHour(next);
+      setHourStr(String(next).padStart(2, '0'));
+      emit(next, minute);
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = hour > 0 ? hour - 1 : 23;
+      setHour(next);
+      setHourStr(String(next).padStart(2, '0'));
+      emit(next, minute);
+    }
+  };
+
+  // ── Minute handlers ──
+  const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '').slice(0, 2);
+    setMinuteStr(raw);
+    const n = parseInt(raw, 10);
+    if (raw.length === 0) return;
+    if (!isNaN(n) && n >= 0 && n <= 59) {
+      setMinute(n);
+      emit(hour, n);
+    } else if (n > 59) {
+      setMinute(59);
+      setMinuteStr('59');
+      emit(hour, 59);
+    }
+  };
+
+  const handleMinuteBlur = () => {
+    setFocusedField(null);
+    const n = parseInt(minuteStr, 10);
+    if (isNaN(n) || n < 0) {
+      setMinute(0);
+      setMinuteStr('00');
+      emit(hour, 0);
+    } else {
+      const clamped = clamp(n, 0, 59);
+      setMinute(clamped);
+      setMinuteStr(String(clamped).padStart(2, '0'));
+      emit(hour, clamped);
+    }
+  };
+
+  const handleMinuteKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const next = (minute + 1) % 60;
+      setMinute(next);
+      setMinuteStr(String(next).padStart(2, '0'));
+      emit(hour, next);
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = minute > 0 ? minute - 1 : 59;
+      setMinute(next);
+      setMinuteStr(String(next).padStart(2, '0'));
+      emit(hour, next);
+    }
+  };
+
+  const inputBase: React.CSSProperties = {
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    color: '#ffffff',
+    width: '100%',
+    textAlign: 'center',
+    fontWeight: 700,
+    fontSize: '1.5rem',
+    padding: '14px 8px',
+    caretColor: '#9966E6',
+    WebkitAppearance: 'none',
+    MozAppearance: 'textfield',
   };
 
   return (
-    <div className="w-full">
-      <div
-        className="flex gap-2 rounded-2xl px-3 py-2"
-        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-      >
+    <div className="w-full flex flex-col gap-3">
+      <div className="flex gap-3 items-end">
         {/* Hours */}
-        <DrumColumn
-          items={HOURS}
-          selected={Math.max(0, Math.min(23, hour))}
-          onSelect={handleHourSelect}
-          label="Год"
-          width="flex-1"
-        />
+        <Field label="Год" focused={focusedField === 'hour'}>
+          <input
+            ref={hourRef}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={hourStr}
+            onChange={handleHourChange}
+            onFocus={() => { setFocusedField('hour'); hourRef.current?.select(); }}
+            onBlur={handleHourBlur}
+            onKeyDown={handleHourKeyDown}
+            placeholder="ГГ"
+            maxLength={2}
+            style={inputBase}
+            aria-label="Година народження"
+          />
+        </Field>
 
-        {/* Colon separator */}
-        <div
-          className="flex items-center justify-center text-3xl font-bold pb-2"
-          style={{ color: 'rgba(153,102,230,0.6)', flexShrink: 0 }}
-        >
+        {/* Separator */}
+        <div className="pb-4 text-2xl font-light" style={{ color: 'rgba(255,255,255,0.2)', flexShrink: 0 }}>
           :
         </div>
 
         {/* Minutes */}
-        <DrumColumn
-          items={MINUTES}
-          selected={Math.max(0, Math.min(59, minute))}
-          onSelect={handleMinuteSelect}
-          label="Хв"
-          width="flex-1"
-        />
+        <Field label="Хв" focused={focusedField === 'minute'}>
+          <input
+            ref={minuteRef}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={minuteStr}
+            onChange={handleMinuteChange}
+            onFocus={() => { setFocusedField('minute'); minuteRef.current?.focus(); minuteRef.current?.select(); }}
+            onBlur={handleMinuteBlur}
+            onKeyDown={handleMinuteKeyDown}
+            placeholder="ХХ"
+            maxLength={2}
+            style={inputBase}
+            aria-label="Хвилина народження"
+          />
+        </Field>
       </div>
 
-      <style>{`
-        .hide-scrollbar-tp::-webkit-scrollbar { display: none; }
-        .hide-scrollbar-tp { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+      {/* Arrow keys hint */}
+      <AnimatePresence>
+        {focusedField && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-[10px] text-center select-none"
+            style={{ color: 'rgba(255,255,255,0.2)' }}
+          >
+            ↑↓ для зміни значення
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
