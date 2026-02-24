@@ -9,6 +9,7 @@ import TimePicker from '@/components/TimePicker';
 import { isSupabaseConfigured, createClient } from '@/lib/supabase/client';
 import { posthog } from '@/lib/posthog';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
+import ZodiacIcon from '@/components/icons/ZodiacIcon';
 
 const TOTAL_STEPS = 5;
 
@@ -21,6 +22,7 @@ const INPUT_STYLE: React.CSSProperties = {
 
 interface ZodiacSign {
   name: string;
+  key: string;
   symbol: string;
   color: string;
   from: [number, number];
@@ -28,18 +30,18 @@ interface ZodiacSign {
 }
 
 const ZODIAC_SIGNS: ZodiacSign[] = [
-  { name: 'Овен',     symbol: '♈', color: '#ef4444', from: [3, 21],  to: [4, 19]  },
-  { name: 'Телець',   symbol: '♉', color: '#22c55e', from: [4, 20],  to: [5, 20]  },
-  { name: 'Близнюки', symbol: '♊', color: '#eab308', from: [5, 21],  to: [6, 20]  },
-  { name: 'Рак',      symbol: '♋', color: '#94a3b8', from: [6, 21],  to: [7, 22]  },
-  { name: 'Лев',      symbol: '♌', color: '#d4af37', from: [7, 23],  to: [8, 22]  },
-  { name: 'Діва',     symbol: '♍', color: '#14b8a6', from: [8, 23],  to: [9, 22]  },
-  { name: 'Терези',   symbol: '♎', color: '#ec4899', from: [9, 23],  to: [10, 22] },
-  { name: 'Скорпіон', symbol: '♏', color: '#dc2626', from: [10, 23], to: [11, 21] },
-  { name: 'Стрілець', symbol: '♐', color: '#f97316', from: [11, 22], to: [12, 21] },
-  { name: 'Козеріг',  symbol: '♑', color: '#92400e', from: [12, 22], to: [1, 19]  },
-  { name: 'Водолій',  symbol: '♒', color: '#3b82f6', from: [1, 20],  to: [2, 18]  },
-  { name: 'Риби',     symbol: '♓', color: '#a855f7', from: [2, 19],  to: [3, 20]  },
+  { name: 'Овен',     key: 'Aries',       symbol: '♈', color: '#ef4444', from: [3, 21],  to: [4, 19]  },
+  { name: 'Телець',   key: 'Taurus',      symbol: '♉', color: '#22c55e', from: [4, 20],  to: [5, 20]  },
+  { name: 'Близнюки', key: 'Gemini',      symbol: '♊', color: '#eab308', from: [5, 21],  to: [6, 20]  },
+  { name: 'Рак',      key: 'Cancer',      symbol: '♋', color: '#94a3b8', from: [6, 21],  to: [7, 22]  },
+  { name: 'Лев',      key: 'Leo',         symbol: '♌', color: '#d4af37', from: [7, 23],  to: [8, 22]  },
+  { name: 'Діва',     key: 'Virgo',       symbol: '♍', color: '#14b8a6', from: [8, 23],  to: [9, 22]  },
+  { name: 'Терези',   key: 'Libra',       symbol: '♎', color: '#ec4899', from: [9, 23],  to: [10, 22] },
+  { name: 'Скорпіон', key: 'Scorpio',     symbol: '♏', color: '#dc2626', from: [10, 23], to: [11, 21] },
+  { name: 'Стрілець', key: 'Sagittarius', symbol: '♐', color: '#f97316', from: [11, 22], to: [12, 21] },
+  { name: 'Козеріг',  key: 'Capricorn',   symbol: '♑', color: '#92400e', from: [12, 22], to: [1, 19]  },
+  { name: 'Водолій',  key: 'Aquarius',    symbol: '♒', color: '#3b82f6', from: [1, 20],  to: [2, 18]  },
+  { name: 'Риби',     key: 'Pisces',      symbol: '♓', color: '#a855f7', from: [2, 19],  to: [3, 20]  },
 ];
 
 const ZODIAC_WHEEL = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
@@ -497,18 +499,16 @@ export default function NewChartPage() {
                             border: `1px solid ${zodiacSign.color}40`,
                           }}
                         >
-                          <motion.span
-                            className="leading-none select-none flex-shrink-0"
+                          <motion.div
+                            className="flex-shrink-0"
                             style={{
-                              fontSize: '42px',
-                              color: zodiacSign.color,
                               filter: `drop-shadow(0 0 12px ${zodiacSign.color})`,
                             }}
                             animate={{ scale: [1, 1.06, 1] }}
                             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                           >
-                            {zodiacSign.symbol}
-                          </motion.span>
+                            <ZodiacIcon sign={zodiacSign.key} size={42} color={zodiacSign.color} />
+                          </motion.div>
                           <div className="flex flex-col gap-0.5">
                             <p
                               className="text-[10px] uppercase tracking-[0.2em]"

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, Globe2, Building2, GitBranch, ScrollText, Loader2, Share2, Check, Download, Gift, Cake } from 'lucide-react';
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
+import ZodiacIcon from '@/components/icons/ZodiacIcon';
 import NatalChartWheel from '@/components/chart/NatalChartWheel';
 import PlanetsTable from '@/components/chart/PlanetsTable';
 import HousesTable from '@/components/chart/HousesTable';
@@ -398,22 +399,26 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <QuickStat
           label="Сонце"
-          value={sunPlanet ? `${ZODIAC_SYMBOLS[sunPlanet.sign]} ${ZODIAC_NAMES_UK[sunPlanet.sign]}` : '—'}
+          icon={sunPlanet ? <ZodiacIcon sign={sunPlanet.sign} size={16} className="text-zorya-violet" /> : null}
+          value={sunPlanet ? ZODIAC_NAMES_UK[sunPlanet.sign] : '—'}
           sub={`Дім ${sunPlanet?.house || '—'}`}
         />
         <QuickStat
           label="Місяць"
-          value={moonPlanet ? `${ZODIAC_SYMBOLS[moonPlanet.sign]} ${ZODIAC_NAMES_UK[moonPlanet.sign]}` : '—'}
+          icon={moonPlanet ? <ZodiacIcon sign={moonPlanet.sign} size={16} className="text-zorya-violet" /> : null}
+          value={moonPlanet ? ZODIAC_NAMES_UK[moonPlanet.sign] : '—'}
           sub={`Дім ${moonPlanet?.house || '—'}`}
         />
         <QuickStat
           label="Асцендент"
-          value={`${ZODIAC_SYMBOLS[ascSign]} ${ZODIAC_NAMES_UK[ascSign]}`}
+          icon={<ZodiacIcon sign={ascSign} size={16} className="text-zorya-violet" />}
+          value={ZODIAC_NAMES_UK[ascSign]}
           sub={`${(chart.ascendant % 30).toFixed(1)}°`}
         />
         <QuickStat
           label="MC"
-          value={`${ZODIAC_SYMBOLS[mcSign]} ${ZODIAC_NAMES_UK[mcSign]}`}
+          icon={<ZodiacIcon sign={mcSign} size={16} className="text-zorya-violet" />}
+          value={ZODIAC_NAMES_UK[mcSign]}
           sub={`${(chart.midheaven % 30).toFixed(1)}°`}
         />
       </div>
@@ -453,7 +458,7 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
                 <div className="grid grid-cols-2 gap-2">
                   {chart.planets.slice(0, 10).map(p => (
                     <div key={p.name} className="flex items-center gap-2 text-sm">
-                      <span className="text-zorya-violet">{ZODIAC_SYMBOLS[p.sign]}</span>
+                      <ZodiacIcon sign={p.sign} size={16} className="text-zorya-violet flex-shrink-0" />
                       <span className="text-text-primary">{p.name === 'TrueNode' ? 'Пн.Вуз.' : p.name === 'SouthNode' ? 'Пд.Вуз.' : p.name}</span>
                       <span className="text-text-muted text-xs">{ZODIAC_NAMES_UK[p.sign]}</span>
                       {p.isRetrograde && <span className="text-orange-400 text-xs">℞</span>}
@@ -548,11 +553,14 @@ ${ZODIAC_SYMBOLS[sunPlanet.sign]} Сонце в ${sunSign}
   );
 }
 
-function QuickStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+function QuickStat({ label, value, sub, icon }: { label: string; value: string; sub: string; icon?: React.ReactNode }) {
   return (
     <div className="glass-card p-3 sm:p-4">
       <div className="text-[9px] sm:text-[10px] text-text-muted uppercase tracking-wider mb-1">{label}</div>
-      <div className="text-xs sm:text-sm font-semibold text-text-primary leading-tight">{value}</div>
+      <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-text-primary leading-tight">
+        {icon}
+        <span>{value}</span>
+      </div>
       <div className="text-[10px] sm:text-xs text-text-muted mt-0.5">{sub}</div>
     </div>
   );
