@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { MoonPhase, VoidPeriod } from '@/types/moon';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MoonPhaseCard } from './MoonPhaseCard';
+import { Loader2 } from 'lucide-react';
 
 // Parse "YYYY-MM-DD" as local date (not UTC) to avoid timezone shift
 function parseLocalDate(dateStr: string): Date {
@@ -23,26 +24,63 @@ interface MoonCalendarProps {
   voidPeriods: VoidPeriod[];
 }
 
-export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
+export function MoonCalendar({ phases: initialPhases, voidPeriods }: MoonCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [allPhases, setAllPhases] = useState<MoonPhase[]>(initialPhases);
+  const [loading, setLoading] = useState(false);
+  const fetchedMonths = useRef<Set<string>>(new Set());
 
-  const newMoonDates = phases
+  // Track which months we already have data for
+  if (fetchedMonths.current.size === 0 && initialPhases.length > 0) {
+    for (const p of initialPhases) {
+      fetchedMonths.current.add(p.date.slice(0, 7)); // "YYYY-MM"
+    }
+  }
+
+  const fetchMonthPhases = useCallback(async (month: Date) => {
+    const monthKey = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+    if (fetchedMonths.current.has(monthKey)) return;
+
+    fetchedMonths.current.add(monthKey);
+    setLoading(true);
+    try {
+      const startDate = `${monthKey}-01`;
+      const res = await fetch(`/api/moon/phases?start=${startDate}&days=31`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.phases?.length) {
+          setAllPhases(prev => {
+            const existingDates = new Set(prev.map(p => p.date));
+            const newPhases = data.phases.filter((p: MoonPhase) => !existingDates.has(p.date));
+            return [...prev, ...newPhases].sort((a, b) => a.date.localeCompare(b.date));
+          });
+        }
+      }
+    } catch {
+      fetchedMonths.current.delete(monthKey);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const newMoonDates = allPhases
     .filter(p => p.phase === 'new_moon')
     .map(p => parseLocalDate(p.date));
 
-  const fullMoonDates = phases
+  const fullMoonDates = allPhases
     .filter(p => p.phase === 'full_moon')
     .map(p => parseLocalDate(p.date));
 
   const voidDates = voidPeriods
     .map(v => parseLocalDate(v.start.split('T')[0]));
 
-  // Deduplicate major phases: only keep first day of each phase transition
+  // Deduplicate major phases: only keep first day of each phase transition, future only
+  const todayStr = formatLocalDate(new Date());
   const upcomingPhases: MoonPhase[] = [];
   const majorTypes = ['new_moon', 'first_quarter', 'full_moon', 'last_quarter'];
   let lastPhase = '';
-  for (const p of phases) {
-    if (majorTypes.includes(p.phase) && p.phase !== lastPhase) {
+  for (const p of allPhases) {
+    if (majorTypes.includes(p.phase) && p.phase !== lastPhase && p.date >= todayStr) {
       upcomingPhases.push(p);
     }
     lastPhase = p.phase;
@@ -50,14 +88,17 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
 
   // Find phase data for selected date (use local timezone to match server dates)
   const selectedDateStr = selectedDate ? formatLocalDate(selectedDate) : undefined;
-  const selectedPhase = phases.find(p => p.date === selectedDateStr);
+  const selectedPhase = allPhases.find(p => p.date === selectedDateStr);
 
   return (
     <div className="space-y-6">
       {/* Calendar */}
       <Card>
         <CardHeader>
-          <CardTitle>Місячний Календар</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            Місячний Календар
+            {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -66,6 +107,7 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
                 mode="single"
                 selected={selectedDate}
                 onSelect={setSelectedDate}
+                onMonthChange={fetchMonthPhases}
                 modifiers={{
                   newMoon: newMoonDates,
                   fullMoon: fullMoonDates,
@@ -92,7 +134,12 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
 
             {/* Selected date info + Legend */}
             <div className="space-y-4">
-              {selectedPhase ? (
+              {loading && !selectedPhase ? (
+                <div className="p-4 rounded-lg border flex items-center justify-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Завантаження...</span>
+                </div>
+              ) : selectedPhase ? (
                 <div className="p-4 rounded-lg border space-y-2">
                   <h3 className="font-semibold">
                     {parseLocalDate(selectedPhase.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })}
@@ -122,7 +169,7 @@ export function MoonCalendar({ phases, voidPeriods }: MoonCalendarProps) {
                     ⚠️
                   </div>
                   <span className="text-sm text-destructive">
-                    Void of Course — не починати важливе
+                    Місяць без курсу — не починати важливе
                   </span>
                 </div>
               </div>

@@ -44,9 +44,10 @@ function getCurrentMoon(): CurrentMoon {
   };
 }
 
-function getPhases(days: number = 30) {
+function getPhases(days: number = 90) {
   const phases = [];
   const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 30); // Start 30 days in the past
   for (let i = 0; i < days; i++) {
     const date = new Date(startDate);
     date.setDate(date.getDate() + i);
@@ -89,7 +90,7 @@ function getMoonData() {
   try {
     return {
       current: getCurrentMoon(),
-      phases: getPhases(30),
+      phases: getPhases(90),
       voidPeriods: getVoidPeriods(30),
     };
   } catch (error) {
@@ -122,7 +123,7 @@ export default async function MoonPage() {
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold">🌙 Місячний Календар</h1>
         <p className="text-muted-foreground">
-          Фази Місяця, Void of Course періоди та персональні рекомендації
+          Фази Місяця, періоди бездіяльності та персональні рекомендації
         </p>
       </div>
 
@@ -142,10 +143,10 @@ export default async function MoonPage() {
       {/* Info Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-6 border rounded-lg space-y-2">
-          <h3 className="font-semibold text-lg">📌 Що таке Void of Course?</h3>
+          <h3 className="font-semibold text-lg">📌 Що таке «Місяць без курсу»?</h3>
           <p className="text-sm text-muted-foreground">
-            Void of Course (VoC) — це період коли Місяць не формує жодних major аспектів
-            перед переходом в наступний знак. Під час VoC не рекомендується:
+            Місяць без курсу — це період коли Місяць не формує жодних важливих аспектів
+            перед переходом у наступний знак зодіаку. В цей час не рекомендується:
           </p>
           <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
             <li>Підписувати важливі договори</li>
@@ -195,5 +196,5 @@ function CalendarSkeleton() {
 
 export const metadata = {
   title: 'Місячний Календар | Зоря',
-  description: 'Фази Місяця, Void of Course періоди та персональні місячні транзити. Дізнайтеся коли краще починати справи і коли варто почекати.',
+  description: 'Фази Місяця, періоди «Місяць без курсу» та персональні місячні транзити. Дізнайтеся коли краще починати справи і коли варто почекати.',
 };

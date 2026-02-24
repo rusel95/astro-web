@@ -6,18 +6,20 @@ interface CalendarProps {
   mode?: 'single' | 'multiple';
   selected?: Date | Date[];
   onSelect?: (date: Date | undefined) => void;
+  onMonthChange?: (month: Date) => void;
   modifiers?: Record<string, Date[]>;
   modifiersStyles?: Record<string, React.CSSProperties>;
   className?: string;
 }
 
-export function Calendar({ 
-  mode = 'single', 
-  selected, 
-  onSelect, 
-  modifiers = {}, 
+export function Calendar({
+  mode = 'single',
+  selected,
+  onSelect,
+  onMonthChange,
+  modifiers = {},
   modifiersStyles = {},
-  className = '' 
+  className = ''
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = React.useState(new Date());
   
@@ -41,11 +43,15 @@ export function Calendar({
   const dayNames = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
   
   const prevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    const m = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
+    setCurrentMonth(m);
+    onMonthChange?.(m);
   };
-  
+
   const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    const m = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+    setCurrentMonth(m);
+    onMonthChange?.(m);
   };
   
   const getDayModifiers = (date: Date) => {

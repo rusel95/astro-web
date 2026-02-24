@@ -18,7 +18,7 @@ export function VoidPeriodAlert({ period }: VoidPeriodAlertProps) {
     <Alert variant="destructive" className="mb-6">
       <AlertTriangle className="h-4 w-4" />
       <AlertDescription>
-        <strong>Місяць зараз Void of Course</strong> до {endTime}
+        <strong>Місяць без курсу</strong> — період бездіяльності до {endTime}
         <br />
         <span className="text-sm">
           Не рекомендується: підписувати договори, починати нові справи, приймати важливі рішення.
