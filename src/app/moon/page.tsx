@@ -5,44 +5,100 @@ import { MoonTransitCard } from '@/components/moon/MoonTransitCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { getMoonPosition, getMoonPhase, getZodiacSign } from '@/lib/moon/ephemeris';
+import { isCurrentlyVoid, getNextVoidPeriod, findVoidPeriods } from '@/lib/moon/void-calculator';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 export const revalidate = 900; // Revalidate every 15 minutes
 
-async function getMoonData() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-    || process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`
-    || 'http://localhost:3000';
+function getCurrentMoon() {
+  const now = new Date();
+  const moonPos = getMoonPosition(now);
+  const moonSign = getZodiacSign(moonPos.longitude);
+  const phase = getMoonPhase(now);
+  const isVoid = isCurrentlyVoid(now);
+  const nextVoid = getNextVoidPeriod(now);
 
+  return {
+    longitude: moonPos.longitude,
+    sign: moonSign,
+    house: 1,
+    phase: phase.phase,
+    illumination: phase.illumination,
+    is_void: isVoid,
+    next_void: nextVoid ? {
+      start: nextVoid.start.toISOString(),
+      end: nextVoid.end.toISOString(),
+      last_aspect: {
+        planet: nextVoid.lastAspect.planet,
+        type: nextVoid.lastAspect.type,
+        time: nextVoid.lastAspect.time.toISOString(),
+      },
+      sign_ingress: {
+        to_sign: nextVoid.nextSign,
+        time: nextVoid.end.toISOString(),
+      },
+      duration_minutes: nextVoid.durationMinutes,
+    } : undefined,
+  };
+}
+
+function getPhases(days: number = 30) {
+  const phases = [];
+  const startDate = new Date();
+  for (let i = 0; i < days; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
+    const moonPos = getMoonPosition(date);
+    const phase = getMoonPhase(date);
+    phases.push({
+      date: date.toISOString().split('T')[0],
+      phase: phase.phase,
+      illumination: Math.round(phase.illumination),
+      zodiac_sign: getZodiacSign(moonPos.longitude),
+      degree: Math.round(moonPos.longitude % 30 * 10) / 10,
+    });
+  }
+  return phases;
+}
+
+function getVoidPeriods(days: number = 30) {
+  const start = new Date();
+  const end = new Date();
+  end.setDate(end.getDate() + Math.min(days, 7));
+
+  return findVoidPeriods(start, end).map((v) => ({
+    start: v.start.toISOString(),
+    end: v.end.toISOString(),
+    last_aspect: {
+      planet: v.lastAspect.planet,
+      type: v.lastAspect.type,
+      time: v.lastAspect.time.toISOString(),
+    },
+    sign_ingress: {
+      to_sign: v.nextSign,
+      time: v.end.toISOString(),
+    },
+    moon_sign: v.moonSign,
+    duration_minutes: v.durationMinutes,
+  }));
+}
+
+function getMoonData() {
   try {
-    const [currentRes, phasesRes, voidRes] = await Promise.all([
-      fetch(`${baseUrl}/api/moon/current`, { next: { revalidate: 900 } }),
-      fetch(`${baseUrl}/api/moon/phases`, { next: { revalidate: 86400 } }),
-      fetch(`${baseUrl}/api/moon/void-of-course`, { next: { revalidate: 3600 } }),
-    ]);
-
-    if (!currentRes.ok) {
-      throw new Error('Failed to fetch current moon data');
-    }
-
-    const currentData = await currentRes.json();
-
-    const phasesData = phasesRes.ok ? await phasesRes.json() : { phases: [] };
-    const voidData = voidRes.ok ? await voidRes.json() : { void_periods: [] };
-
     return {
-      current: currentData.current,
-      phases: phasesData.phases || [],
-      voidPeriods: voidData.void_periods || [],
+      current: getCurrentMoon(),
+      phases: getPhases(30),
+      voidPeriods: getVoidPeriods(30),
     };
   } catch (error) {
-    console.error('Error fetching moon data:', error);
+    console.error('Error computing moon data:', error);
     return null;
   }
 }
 
 export default async function MoonPage() {
-  const moonData = await getMoonData();
+  const moonData = getMoonData();
 
   if (!moonData) {
     return (
@@ -87,7 +143,7 @@ export default async function MoonPage() {
         <div className="p-6 border rounded-lg space-y-2">
           <h3 className="font-semibold text-lg">📌 Що таке Void of Course?</h3>
           <p className="text-sm text-muted-foreground">
-            Void of Course (VoC) — це період коли Місяць не формує жодних major аспектів 
+            Void of Course (VoC) — це період коли Місяць не формує жодних major аспектів
             перед переходом в наступний знак. Під час VoC не рекомендується:
           </p>
           <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">

@@ -203,37 +203,44 @@ export function findUpcomingAspects(startDate: Date, endDate: Date): Aspect[] {
  */
 export function findNextMoonIngress(startDate: Date): MoonIngress {
   const moonPos = getMoonPosition(startDate);
-  const currentSign = Math.floor(moonPos.longitude / 30);
-  const nextSignLongitude = (currentSign + 1) * 30;
-  
-  // Binary search for exact ingress time
-  let low = startDate.getTime();
-  let high = low + 3 * 24 * 60 * 60 * 1000; // Max 3 days ahead
-  
-  while (high - low > 60 * 1000) { // 1 minute precision
-    const mid = (low + high) / 2;
-    const midDate = new Date(mid);
-    const pos = getMoonPosition(midDate);
-    
-    if (pos.longitude < nextSignLongitude || pos.longitude >= nextSignLongitude + 30) {
-      low = mid;
-    } else {
-      high = mid;
-    }
-  }
-  
-  const ingressTime = new Date(high);
-  
+  const currentSign = Math.floor(moonPos.longitude / 30) % 12;
+  const nextSign = (currentSign + 1) % 12;
+
   const SIGNS = [
     'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
     'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
   ];
-  
-  return {
-    fromSign: SIGNS[currentSign],
-    toSign: SIGNS[(currentSign + 1) % 12],
-    time: ingressTime,
-  };
+
+  // Linear scan with 30-minute steps until sign changes, then refine
+  const stepMs = 30 * 60 * 1000;
+  const maxTime = startDate.getTime() + 3 * 24 * 60 * 60 * 1000;
+  let prevTime = startDate.getTime();
+  let scanTime = prevTime + stepMs;
+
+  while (scanTime <= maxTime) {
+    const pos = getMoonPosition(new Date(scanTime));
+    const sign = Math.floor(pos.longitude / 30) % 12;
+    if (sign !== currentSign) {
+      // Sign changed — binary search for exact time
+      let low = prevTime;
+      let high = scanTime;
+      while (high - low > 60 * 1000) {
+        const mid = (low + high) / 2;
+        const midSign = Math.floor(getMoonPosition(new Date(mid)).longitude / 30) % 12;
+        if (midSign === currentSign) {
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+      return { fromSign: SIGNS[currentSign], toSign: SIGNS[nextSign], time: new Date(high) };
+    }
+    prevTime = scanTime;
+    scanTime += stepMs;
+  }
+
+  // Fallback: average Moon transit ~2.3 days per sign
+  return { fromSign: SIGNS[currentSign], toSign: SIGNS[nextSign], time: new Date(maxTime) };
 }
 
 /**
