@@ -252,10 +252,3 @@ Track all tasks in GitHub Issues: https://github.com/rusel95/astro-web/issues
 1. Edit SVG paths in `src/components/icons/ZodiacIcon.tsx`
 2. Component handles both React rendering and raw path export
 3. For OG/share images: use `ZODIAC_SVG_PATHS` directly in Satori JSX
-
-## Active Technologies
-- TypeScript (strict) on Node.js, Next.js 14 (App Router) + Next.js 14, Tailwind CSS, Framer Motion, Supabase (auth + DB), `@astro-api/astroapi-typescript` SDK, `astronomy-engine`, OpenAI (GPT-4o), PostHog, Resend (001-astromix-redesign)
-- Supabase (PostgreSQL) with RLS. sessionStorage/localStorage for anonymous quiz state (001-astromix-redesign)
-
-## Recent Changes
-- 001-astromix-redesign: Added TypeScript (strict) on Node.js, Next.js 14 (App Router) + Next.js 14, Tailwind CSS, Framer Motion, Supabase (auth + DB), `@astro-api/astroapi-typescript` SDK, `astronomy-engine`, OpenAI (GPT-4o), PostHog, Resend

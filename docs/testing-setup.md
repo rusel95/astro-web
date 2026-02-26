@@ -16,15 +16,15 @@ Add these 4 secrets:
 
 | Name | Value | Where to find |
 |------|-------|--------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project-id.supabase.co` | Already in `.env.local` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `your-anon-key` | Already in `.env.local` |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://jrjshwhgpbmttmxbsqtn.supabase.co` | Already in `.env.local` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIs...` | Already in `.env.local` |
 | `TEST_USER_EMAIL` | Test user email | Create dedicated test user in Supabase |
 | `TEST_USER_PASSWORD` | Test user password | Same as above |
 
 ### 2. Create Test User
 
 **Option A: Supabase Dashboard**
-1. Go to your Supabase Dashboard → Authentication → Users
+1. Go to https://supabase.com/dashboard/project/jrjshwhgpbmttmxbsqtn/auth/users
 2. Click "Add User" → Email
 3. Email: `test-astro@example.com` (use real email for verification)
 4. Password: Strong password (save it!)

@@ -6,7 +6,7 @@
 import { test, expect } from '@playwright/test';
 
 const PUBLIC_PAGES = [
-  { path: '/', title: /персональні|гороскопи|прогнози/i, key: 'Home' },
+  { path: '/', title: /астро|натальна карта/i, key: 'Home' },
   { path: '/compatibility', title: /сумісність/i, key: 'Compatibility' },
   { path: '/auth/login', title: /вхід|login/i, key: 'Login' },
 ];
