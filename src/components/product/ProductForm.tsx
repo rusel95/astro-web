@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 interface FormData {
@@ -22,6 +23,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     email: '',
   });
   const [tracked, setTracked] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
 
   // Pre-fill from quiz session if available
   useEffect(() => {
@@ -53,6 +55,15 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
       track(ANALYTICS_EVENTS.PRODUCT_FORM_STARTED, { product_slug: productSlug });
       setTracked(true);
     }
+  };
+
+  const handleCtaClick = () => {
+    track(ANALYTICS_EVENTS.PAYWALL_CTA_CLICKED, {
+      product_slug: productSlug,
+      action: 'product_form_submit',
+    });
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
   };
 
   return (
@@ -134,6 +145,26 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
       <p className="text-text-muted text-xs mt-4">
         Дані використовуються виключно для розрахунку вашого персонального гороскопу.
       </p>
+
+      {/* CTA Button */}
+      <button
+        onClick={handleCtaClick}
+        className="mt-6 w-full py-3.5 bg-gradient-to-r from-zorya-violet to-zorya-blue text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+      >
+        Продовжити
+      </button>
+
+      {/* Toast */}
+      {toastVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg text-sm font-medium z-50"
+        >
+          Скоро буде доступно! Ми працюємо над оплатою.
+        </motion.div>
+      )}
     </div>
   );
 }
