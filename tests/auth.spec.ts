@@ -35,7 +35,7 @@ test.describe('Auth — Login page', () => {
     expect(
       url.includes('accounts.google.com') ||
       url.includes('supabase.co/auth') ||
-      url.includes('supabase.co')
+      url.includes('jrjshwhgpbmttmxbsqtn.supabase.co')
     ).toBeTruthy();
   });
 

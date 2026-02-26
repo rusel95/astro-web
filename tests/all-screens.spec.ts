@@ -23,13 +23,15 @@ import { test, expect } from '@playwright/test';
 test.describe('Navigation — Global', () => {
   test('nav has key links', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav[aria-label="Головна навігація"]');
+    const nav = page.locator('nav');
     await expect(nav).toBeVisible();
 
     // Logo link
     await expect(nav.locator('a[href="/"]')).toBeVisible();
-    // Quiz CTA
-    await expect(nav.locator('a[href="/quiz"]')).toBeVisible();
+    // Moon link
+    await expect(nav.locator('a[href="/moon"]')).toBeVisible();
+    // New chart CTA
+    await expect(nav.locator('a[href="/chart/new"]')).toBeVisible();
   });
 
   test('nav element exists', async ({ page }) => {
@@ -42,7 +44,7 @@ test.describe('Navigation — Global', () => {
     await page.goto('/');
     await page.evaluate(() => window.scrollTo(0, 500));
     await page.waitForTimeout(300);
-    const nav = page.locator('nav[aria-label="Головна навігація"]');
+    const nav = page.locator('nav');
     const box = await nav.boundingBox();
     expect(box).not.toBeNull();
     expect(box!.y).toBeLessThanOrEqual(5); // still at top

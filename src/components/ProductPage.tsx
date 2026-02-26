@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import ProductIcon from '@/components/icons/ProductIcon';
 
 interface ProductPageProps {
   icon: string;
@@ -21,7 +20,7 @@ export default function ProductPage({ icon, title, subtitle, description, bullet
       <section className="relative py-16 md:py-24 px-4 overflow-hidden">
         <motion.div className="absolute w-[500px] h-[500px] rounded-full bg-zorya-purple/10 blur-[120px]" style={{ top: '-10%', right: '-15%' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="mb-6 flex justify-center"><ProductIcon name={icon} size={64} className="text-zorya-violet" /></motion.div>
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-6xl mb-6">{icon}</motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-5xl font-extrabold mb-4">
             <span className="bg-gradient-to-r from-zorya-gold via-zorya-violet to-zorya-blue bg-clip-text text-transparent">{title}</span>
           </motion.h1>
