@@ -273,6 +273,7 @@ export default function QuizClient() {
             animate="center"
             exit="exit"
             transition={{ type: 'tween', duration: 0.3 }}
+            className="absolute inset-0"
           >
             <StepComponent
               state={state}

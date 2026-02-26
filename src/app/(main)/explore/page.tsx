@@ -1,18 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { ChartInput } from '@/types/astrology';
+import { isSupabaseConfigured } from '@/lib/supabase/client';
 
-const DEMO_SUBJECT: ChartInput = {
-  name: 'Demo',
-  birthDate: '1990-05-11',
-  birthTime: '18:15',
-  city: 'Kyiv',
-  countryCode: 'UA',
-  latitude: 50.4501,
-  longitude: 30.5234,
-};
+interface SavedChart {
+  id: string;
+  name: string;
+  birth_date: string;
+  birth_time: string;
+  city: string;
+  country_code: string;
+  latitude: number;
+  longitude: number;
+}
 
 type ExploreAction = 'daily_horoscope' | 'transit' | 'numerology' | 'transit_svg';
 
@@ -21,7 +24,6 @@ interface Feature {
   title: string;
   icon: string;
   description: string;
-  sdkMethod: string;
 }
 
 const FEATURES: Feature[] = [
@@ -29,52 +31,101 @@ const FEATURES: Feature[] = [
     action: 'daily_horoscope',
     title: 'Персональний гороскоп',
     icon: '🔮',
-    description: 'Персоналізований прогноз на сьогодні на основі натальної карти — не знаковий, а індивідуальний.',
-    sdkMethod: 'client.horoscope.getPersonalDailyHoroscope()',
+    description: 'Персоналізований прогноз на сьогодні на основі вашої натальної карти.',
   },
   {
     action: 'transit',
     title: 'Транзити на сьогодні',
     icon: '🪐',
-    description: 'Поточні планетарні транзити до натальної карти — які аспекти зараз активні.',
-    sdkMethod: 'client.charts.getTransitChart()',
+    description: 'Поточні планетарні транзити до вашої натальної карти — які аспекти зараз активні.',
   },
   {
     action: 'transit_svg',
-    title: 'Транзитна карта SVG',
+    title: 'Транзитна карта',
     icon: '🎨',
-    description: 'Візуалізація транзитної карти — натальна карта з поточними транзитами.',
-    sdkMethod: 'client.svg.getTransitChartSvg()',
+    description: 'Візуалізація транзитної карти — ваша натальна карта з поточними транзитами.',
   },
   {
     action: 'numerology',
     title: 'Нумерологія',
     icon: '🔢',
-    description: 'Число життєвого шляху, число долі, число душі — зовсім нова функціональність.',
-    sdkMethod: 'client.numerology.getCoreNumbers()',
+    description: 'Число життєвого шляху, число долі, число душі на основі вашої дати народження.',
   },
 ];
 
-// SVG from the API is trusted content (our own API provider, not user input)
+/**
+ * SVG renderer for transit chart visualization.
+ * The SVG comes from our own Astrology API (trusted first-party content),
+ * not from user input or third-party sources.
+ */
 function SvgRenderer({ svg }: { svg: string }) {
-  // Basic validation: ensure it starts with SVG-like content
   if (!svg || (!svg.trim().startsWith('<svg') && !svg.trim().startsWith('<?xml'))) {
     return <p className="text-sm text-white/50">Невалідний SVG</p>;
   }
   return (
     <div
       className="bg-white/5 rounded-lg p-2 overflow-auto max-h-[500px] [&>svg]:w-full [&>svg]:h-auto"
+      // Safe: SVG is from our own first-party Astrology API, not user input
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 }
 
 export default function ExplorePage() {
+  const [savedCharts, setSavedCharts] = useState<SavedChart[]>([]);
+  const [selectedChartId, setSelectedChartId] = useState<string | null>(null);
+  const [loadingCharts, setLoadingCharts] = useState(true);
   const [results, setResults] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Fetch saved charts
+  useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setLoadingCharts(false);
+      return;
+    }
+
+    async function fetchMyCharts() {
+      try {
+        const res = await fetch('/api/charts/my');
+        if (!res.ok) {
+          setLoadingCharts(false);
+          return;
+        }
+        const data = await res.json();
+        if (data.charts && data.charts.length > 0) {
+          setSavedCharts(data.charts);
+          setSelectedChartId(data.charts[0].id);
+        }
+      } catch {
+        // Not logged in or no charts
+      } finally {
+        setLoadingCharts(false);
+      }
+    }
+    fetchMyCharts();
+  }, []);
+
+  const selectedChart = savedCharts.find(c => c.id === selectedChartId);
+
+  function getChartInput(): ChartInput | null {
+    if (!selectedChart) return null;
+    return {
+      name: selectedChart.name,
+      birthDate: selectedChart.birth_date,
+      birthTime: selectedChart.birth_time || '12:00',
+      city: selectedChart.city,
+      countryCode: selectedChart.country_code,
+      latitude: selectedChart.latitude,
+      longitude: selectedChart.longitude,
+    };
+  }
+
   async function runFeature(action: ExploreAction) {
+    const chartInput = getChartInput();
+    if (!chartInput) return;
+
     setLoading(prev => ({ ...prev, [action]: true }));
     setErrors(prev => ({ ...prev, [action]: '' }));
 
@@ -82,13 +133,13 @@ export default function ExplorePage() {
       const res = await fetch('/api/explore', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, chartInput: DEMO_SUBJECT }),
+        body: JSON.stringify({ action, chartInput }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || `Error ${res.status}`);
+        throw new Error(data.error || `Помилка ${res.status}`);
       }
 
       setResults(prev => ({ ...prev, [action]: data.data }));
@@ -99,17 +150,77 @@ export default function ExplorePage() {
     }
   }
 
+  // Loading state
+  if (loadingCharts) {
+    return (
+      <div className="container mx-auto py-16 text-center">
+        <div className="w-12 h-12 rounded-full border-3 border-zorya-violet/20 border-t-zorya-violet animate-spin mx-auto mb-4" />
+        <p className="text-white/60">Завантаження...</p>
+      </div>
+    );
+  }
+
+  // No charts — prompt to create one
+  if (savedCharts.length === 0) {
+    return (
+      <div className="container mx-auto py-16 px-4">
+        <div className="max-w-md mx-auto text-center space-y-6">
+          <div className="text-6xl">🔭</div>
+          <h1 className="text-3xl font-display font-bold">Досліджуйте можливості</h1>
+          <p className="text-white/60">
+            Для доступу до персонального гороскопу, транзитів та нумерології потрібно спочатку створити натальну карту.
+          </p>
+          <Link
+            href="/chart/new"
+            className="btn-primary inline-flex"
+          >
+            ✦ Створити натальну карту
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto py-8 px-4 space-y-8">
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold">API Explorer</h1>
+        <h1 className="text-4xl font-display font-bold">Досліджуйте</h1>
         <p className="text-white/60">
-          Демо нових можливостей Astrology API SDK — натисніть щоб протестувати
-        </p>
-        <p className="text-xs text-white/40">
-          Демо-дані: {DEMO_SUBJECT.name}, {DEMO_SUBJECT.birthDate}, {DEMO_SUBJECT.birthTime}, {DEMO_SUBJECT.city}
+          Персональний гороскоп, транзити та нумерологія на основі вашої натальної карти
         </p>
       </div>
+
+      {/* Chart selector */}
+      {savedCharts.length > 1 && (
+        <div className="max-w-md mx-auto">
+          <label className="block text-sm text-white/50 mb-2">Оберіть карту</label>
+          <select
+            value={selectedChartId || ''}
+            onChange={(e) => {
+              setSelectedChartId(e.target.value);
+              setResults({});
+              setErrors({});
+            }}
+            className="w-full px-4 py-3 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+            }}
+          >
+            {savedCharts.map(chart => (
+              <option key={chart.id} value={chart.id}>
+                {chart.name} — {chart.birth_date}, {chart.city}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {selectedChart && (
+        <p className="text-center text-sm text-white/40">
+          {selectedChart.name} · {selectedChart.birth_date} · {selectedChart.birth_time || '12:00'} · {selectedChart.city}
+        </p>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {FEATURES.map((feature) => (
@@ -119,17 +230,14 @@ export default function ExplorePage() {
                 {feature.icon} {feature.title}
               </CardTitle>
               <CardDescription>{feature.description}</CardDescription>
-              <code className="text-xs text-accent-purple/80 bg-white/5 px-2 py-1 rounded w-fit">
-                {feature.sdkMethod}
-              </code>
             </CardHeader>
             <CardContent className="space-y-3">
               <button
                 onClick={() => runFeature(feature.action)}
-                disabled={loading[feature.action]}
+                disabled={loading[feature.action] || !selectedChart}
                 className="px-4 py-2 bg-accent-purple/20 hover:bg-accent-purple/30 border border-accent-purple/30 rounded-lg text-sm transition-colors disabled:opacity-50"
               >
-                {loading[feature.action] ? 'Завантаження...' : 'Спробувати'}
+                {loading[feature.action] ? 'Завантаження...' : 'Показати'}
               </button>
 
               {errors[feature.action] && (
@@ -153,42 +261,6 @@ export default function ExplorePage() {
           </Card>
         ))}
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Всі доступні SDK категорії</CardTitle>
-          <CardDescription>
-            Повний список категорій що SDK підтримує (68+ ендпоінтів)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
-            {[
-              { name: 'charts', desc: 'Natal, synastry, composite, transit, returns' },
-              { name: 'analysis', desc: 'Natal report, synastry report, career, health' },
-              { name: 'horoscope', desc: 'Personal daily, weekly, monthly, yearly' },
-              { name: 'data', desc: 'Positions, aspects, houses, lunar metrics' },
-              { name: 'svg', desc: 'Natal, synastry, transit chart images' },
-              { name: 'lunar', desc: 'Phases, void-of-course, mansions, calendar' },
-              { name: 'traditional', desc: 'Dignities, profections, lots, sect' },
-              { name: 'numerology', desc: 'Core numbers, compatibility, reports' },
-              { name: 'tarot', desc: 'Card draws, tree of life, timing' },
-              { name: 'chinese', desc: 'BaZi, yearly forecast, compatibility' },
-              { name: 'eclipses', desc: 'Upcoming, natal check, interpretation' },
-              { name: 'fixedStars', desc: 'Positions, conjunctions, reports' },
-              { name: 'astrocartography', desc: 'Lines, maps, relocation, power zones' },
-              { name: 'insights', desc: 'Relationship, pet, wellness, financial, business' },
-              { name: 'enhanced', desc: 'Global analysis, personal analysis' },
-              { name: 'glossary', desc: 'Cities, countries, house systems, points' },
-            ].map((cat) => (
-              <div key={cat.name} className="p-3 bg-white/5 rounded-lg">
-                <div className="font-mono text-accent-purple">{cat.name}</div>
-                <div className="text-xs text-white/50 mt-1">{cat.desc}</div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

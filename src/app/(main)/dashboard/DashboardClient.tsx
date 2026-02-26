@@ -342,7 +342,7 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
               <div>
                 <p className="font-semibold text-white text-sm">Місячний</p>
                 <p className="font-semibold text-white text-sm">Календар</p>
-                <p className="text-xs text-white/40 mt-1">Фази та void periods</p>
+                <p className="text-xs text-white/40 mt-1">Фази та Місяць без курсу</p>
               </div>
             </a>
             <a

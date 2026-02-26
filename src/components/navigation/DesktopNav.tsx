@@ -58,7 +58,7 @@ const FREE_TOOLS_GROUPS: DropdownGroup[] = [
     items: [
       { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією' },
       { href: '/compatibility', label: 'Сумісність партнерів', icon: 'users', description: 'Синастрія двох карт' },
-      { href: '/moon', label: 'Місячний календар', icon: 'moon', description: 'Фази та void periods' },
+      { href: '/moon', label: 'Місячний календар', icon: 'moon', description: 'Фази та Місяць без курсу' },
     ],
   },
   {
