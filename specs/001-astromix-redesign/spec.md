@@ -3,7 +3,7 @@
 **Feature Branch**: `001-astromix-redesign`
 **Created**: 2026-02-26
 **Status**: Draft
-**Input**: Full platform redesign transforming astro-web into a monetizable astrology product inspired by Astromix.net — quiz sales funnel, 16 paid horoscope products, user dashboard, payment integration, comprehensive analytics, blog, reviews, and redesigned landing page.
+**Input**: Full platform redesign transforming astro-web into a monetizable astrology product inspired by Astromix.net — quiz sales funnel, 16 paid horoscope product pages, user dashboard, comprehensive analytics, blog, reviews, and redesigned landing page. Payment integration deferred.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -13,7 +13,7 @@ A visitor arrives at the landing page and clicks the primary call-to-action. The
 
 **Why this priority**: The quiz funnel is the core revenue engine — it captures user data, builds engagement through progressive disclosure, and converts visitors into paying customers. Without this, there is no monetization path.
 
-**Independent Test**: Can be fully tested by walking through all 6 quiz steps with valid and invalid inputs, verifying the mini-horoscope appears with real astrological data, and confirming the paywall displays with purchase options.
+**Independent Test**: Can be fully tested by walking through all 6 quiz steps with valid and invalid inputs, verifying the mini-horoscope appears with real astrological data, and confirming the display-only paywall appears with product tiers and "coming soon" message.
 
 **Acceptance Scenarios**:
 
@@ -22,7 +22,7 @@ A visitor arrives at the landing page and clicks the primary call-to-action. The
 3. **Given** a user on any quiz step (2-6), **When** they click "Back", **Then** they return to the previous step with their previously entered data preserved.
 4. **Given** a user on step 4, **When** they check "I don't know my birth time", **Then** the time input is disabled, a reassuring message appears, and they can proceed to step 5.
 5. **Given** a user completing step 6 with a valid email, **When** they click "Open horoscope", **Then** a mini-horoscope is generated showing their natal chart visualization and 2-3 key aspects with brief interpretations.
-6. **Given** a user viewing their mini-horoscope, **When** they scroll below the teaser, **Then** a paywall section appears with at least one purchase option and a list of benefits they'll unlock with the full report.
+6. **Given** a user viewing their mini-horoscope, **When** they scroll below the teaser, **Then** a display-only paywall section appears with at least one product tier, a list of benefits they'll unlock with the full report, and a "coming soon" message on interaction.
 
 ---
 
@@ -61,7 +61,7 @@ A user who completed the quiz or browses the product catalog navigates to a paid
 
 ### User Story 4 - User Dashboard (Priority: P2)
 
-A registered user logs in and sees their personal dashboard showing a daily horoscope summary (love/career/finance percentages generated via OpenAI based on zodiac sign, cached per sign per day), recommended products, and the ability to manage profiles for family members/friends (for compatibility features).
+A registered user logs in and sees their personal dashboard showing a daily horoscope summary (love/career/finance percentages fetched via Astrology API SDK based on zodiac sign, cached per sign per day), recommended products, and the ability to manage profiles for family members/friends (for compatibility features).
 
 **Why this priority**: The dashboard increases retention and lifetime value. Users return for daily horoscopes and discover new products. However, it is not required for the initial purchase flow.
 
@@ -69,7 +69,7 @@ A registered user logs in and sees their personal dashboard showing a daily horo
 
 **Acceptance Scenarios**:
 
-1. **Given** a logged-in user, **When** they visit the dashboard, **Then** they see a personalized greeting with their name and a daily horoscope summary with percentage indicators for love, career, and finance (generated via OpenAI based on their zodiac sign, cached per sign per day).
+1. **Given** a logged-in user, **When** they visit the dashboard, **Then** they see a personalized greeting with their name and a daily horoscope summary with percentage indicators for love, career, and finance (fetched via Astrology API SDK based on their zodiac sign, cached per sign per day).
 2. **Given** a user on the dashboard, **When** they click "Add profile" in the profiles section, **Then** a form appears to enter birth data for a family member or friend (maximum 5 additional profiles per account).
 3. **Given** a user on the dashboard, **When** they view "Recommended for you", **Then** product cards are shown for horoscopes relevant to their zodiac sign.
 
@@ -138,11 +138,11 @@ A content section includes a blog with categorized articles (Astrology, Zodiac, 
 - **FR-002**: System MUST calculate the user's zodiac sign from their birth date and display it with the correct Ukrainian name and custom SVG icon at quiz step 2.
 - **FR-003**: System MUST generate a free mini-horoscope after quiz completion, showing a natal chart visualization and 2-3 key aspects with brief AI interpretations.
 - **FR-004**: System MUST display a paywall after the mini-horoscope showing product tiers and pricing. Actual payment processing is deferred — the paywall serves as a conversion measurement point and placeholder for future checkout. A "coming soon" message is shown when a user interacts with purchase options, and the interaction is tracked for analytics.
-- **FR-005**: System MUST support at least 16 paid horoscope product types, each with its own product page containing value proposition, birth data form, and checkout flow.
+- **FR-005**: System MUST support at least 16 paid horoscope product types, each with its own product page containing value proposition, birth data form, and display-only paywall.
 - **FR-006**: (Deferred) Full AI-powered horoscope reports of 30+ structured sections require payment integration. Only the free mini-horoscope (2-3 aspects) is generated in this phase via FR-003.
 - **FR-007**: (Deferred) Email delivery of reports and notifications is out of scope. Email collection and storage only.
 - **FR-008**: (Removed — merged into FR-004.)
-- **FR-009**: System MUST provide a user dashboard showing daily horoscope summary (love/career/finance percentages generated via AI, cached per sign per day), recommended products, and profile management.
+- **FR-009**: System MUST provide a user dashboard showing daily horoscope summary (love/career/finance percentages fetched via Astrology API SDK, cached per sign per day), recommended products, and profile management.
 - **FR-010**: System MUST allow users to create additional profiles for family/friends for use in compatibility features, with a maximum of 5 additional profiles per account.
 - **FR-011**: System MUST redesign the landing page with 11 content sections: hero, pain points, how it works, product catalog, book of life USPs, testimonials, statistics, account benefits, blog preview, email subscription, and SEO text.
 - **FR-012**: System MUST implement dropdown navigation menus for "Horoscopes" (paid products by category) and "Free" (free tools).
