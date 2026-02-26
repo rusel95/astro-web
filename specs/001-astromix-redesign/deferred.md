@@ -37,6 +37,17 @@
 - Mobile native app (iOS/Android)
 - Multi-language support (Ukrainian only for now)
 
+### Blog, Reviews & Content (US7 — Phase 9)
+- **FR-018**: Blog with categorized articles and reviews page with ratings
+- Blog listing page (`/blog`) with category filters
+- BlogCard, BlogCategoryFilter components
+- Reviews page (`/reviews`) with ratings, product filter, "Залишити відгук" form
+- Reviews API (`GET/POST /api/reviews`)
+- 2026 yearly horoscope page (`/2026`)
+- BlogPreviewSection on landing page (replace with simpler CTA or remove)
+- Sample/seed reviews data
+- **Tasks**: T074, T075, T076, T077, T078, T079, T080
+
 ### Marketing & Growth
 - A/B testing implementation
 - Affiliate/partner program
@@ -62,6 +73,7 @@
 | **Next** | Order management & purchase history | Payments + reports |
 | **Soon** | Magic link auth | Independent |
 | **Soon** | Email sending (Resend) | Email addresses already collected |
+| **Soon** | Blog, Reviews & 2026 page (US7) | Landing page + products must exist |
 | **Soon** | AEO / structured data | Blog + content pages must exist |
 | **Later** | Email marketing automation | Resend must be integrated |
 | **Later** | A/B testing | Analytics baseline needed first |

@@ -85,10 +85,12 @@ body:has(.quiz-theme)::before, body:has(.quiz-theme)::after { display: none; }
 
 ## Decision 8: Daily Horoscope Data Source
 
-**Decision**: AI-generated via OpenAI, cached per sign per day in Supabase or ISR
+**Decision**: ~~AI-generated via OpenAI~~ **REVISED** — Fetched via Astrology API SDK, cached per sign per day
 
-**Rationale**: There are 12 zodiac signs × 1 daily horoscope = 12 texts per day. Generate once per day per sign using OpenAI, cache the result. ISR with `revalidate = 86400` (24 hours) ensures fresh content without repeated API calls.
+**Rationale**: ~~There are 12 zodiac signs × 1 daily horoscope = 12 texts per day. Generate once per day per sign using OpenAI, cache the result.~~ The Astrology API SDK provides daily forecast data with love/career/health categories out of the box. This avoids OpenAI cost and latency for a feature that doesn't require AI narrative generation. ISR with `revalidate = 86400` (24 hours) ensures fresh content without repeated API calls.
+
+**Revision note**: Originally planned as OpenAI-generated content. Revised to use Astrology API SDK directly — the SDK's daily forecast endpoint provides structured category data (love/career/health) which is sufficient for the daily horoscope feature without AI generation overhead.
 
 **Alternatives considered**:
 - Static pre-written horoscopes: Rejected — not personalized, feels generic
-- Astrology API-based transits: Good for accuracy, but OpenAI adds the narrative layer users expect. Can combine both: use transit data as input to OpenAI prompt
+- OpenAI-generated daily text: Originally chosen, then rejected — unnecessary cost and complexity when SDK provides structured daily data directly
