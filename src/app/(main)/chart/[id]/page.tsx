@@ -3,7 +3,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Share2, Check, Download, Gift, Cake, ChevronDown } from 'lucide-react';
+import { Loader2, Share2, Check, Download, Gift, Cake, ChevronDown, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
@@ -442,6 +443,32 @@ export default function ChartPage() {
             </motion.div>
           )}
         </AnimatePresence>
+      </motion.div>
+
+      {/* Cross-sell CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <Link href="/horoscope/personality" className="block">
+          <div className="glass-card p-5 border border-zorya-purple/30 bg-zorya-purple/5 hover:border-zorya-purple/50 hover:shadow-lg hover:shadow-zorya-purple/20 transition-all cursor-pointer group">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center flex-shrink-0">
+                <Sparkles size={18} className="text-zorya-violet" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-text-primary group-hover:text-zorya-violet transition-colors">
+                  Отримати повний Гороскоп Особистості
+                </p>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  Детальний AI-аналіз вашої натальної карти з персональними рекомендаціями
+                </p>
+              </div>
+              <span className="text-text-muted group-hover:text-zorya-violet transition-colors text-lg">→</span>
+            </div>
+          </div>
+        </Link>
       </motion.div>
 
     </div>

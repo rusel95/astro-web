@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { MoonCalendar } from '@/components/moon/MoonCalendar';
 import { VoidPeriodAlert } from '@/components/moon/VoidPeriodAlert';
 import { MoonTransitCard } from '@/components/moon/MoonTransitCard';
@@ -177,6 +178,20 @@ export default async function MoonPage() {
           </ul>
         </div>
       </div>
+
+      {/* Cross-sell CTA */}
+      <Link href="/horoscope/calendar" className="block">
+        <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-500/5 to-blue-500/5 border-purple-500/20 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">📅</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Персональний Місячний Календар</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Індивідуальний прогноз місячних транзитів для вашої натальної карти</p>
+            </div>
+            <span className="text-muted-foreground text-lg">→</span>
+          </div>
+        </div>
+      </Link>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
@@ -502,6 +503,23 @@ export default function CompatibilityPage() {
             >
               ← Нова пара
             </button>
+
+            {/* Cross-sell CTA */}
+            <Link href="/horoscope/love-compatibility" className="block mt-4">
+              <div
+                className="p-4 rounded-xl border transition-all hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/10"
+                style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.25)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">💞</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-white">Гороскоп Сумісності Кохання</p>
+                    <p className="text-xs text-white/50 mt-0.5">Повний аналіз вашої пари з AI-інтерпретацією</p>
+                  </div>
+                  <span className="text-white/40 text-lg">→</span>
+                </div>
+              </div>
+            </Link>
           </motion.div>
         )}
 

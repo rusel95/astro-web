@@ -173,13 +173,13 @@
 
 ### Implementation for User Story 6
 
-- [ ] T067 [P] [US6] Create Ascendant Calculator page at `src/app/(main)/ascendant/page.tsx` — hero section, birth data form (date + time REQUIRED + city), call existing Astrology API to get ascendant, display result with ZodiacIcon + description in Ukrainian, "Велика трійка" explanation, CTA to /horoscope/personality, SEO metadata
+- [x] T067 [P] [US6] Create Ascendant Calculator page at `src/app/(main)/ascendant/page.tsx` — hero section, birth data form (date + time REQUIRED + city), call existing Astrology API to get ascendant, display result with ZodiacIcon + description in Ukrainian, "Велика трійка" explanation, CTA to /horoscope/personality, SEO metadata
 - [x] T068 [P] [US6] Create GET `/api/daily-horoscope` route at `src/app/api/daily-horoscope/route.ts` — accept sign query param, fetch daily forecast via Astrology API SDK (love/career/health categories), format in Ukrainian, cache per sign per day (ISR or in-memory), return per contracts/products-api.md
-- [ ] T069 [US6] Create Daily Horoscope page at `src/app/(main)/daily/page.tsx` — hero, 2-step form (step 1: birth data — date/time/city; step 2: email), "безкоштовно" badge prominently highlighted, after form submit fetch daily forecast from /api/daily-horoscope and display with love/career/health categories, CTA to /horoscope/monthly, SEO metadata
-- [ ] T070 [US6] Add cross-sell CTA to existing natal chart result page at `src/app/(main)/chart/[id]/page.tsx` — below chart results, add GlassCard with "Отримати повний Гороскоп Особистості" linking to /horoscope/personality
-- [ ] T071 [US6] Add cross-sell CTA to existing compatibility page at `src/app/(main)/compatibility/page.tsx` — after results, add CTA to /horoscope/love-compatibility
-- [ ] T072 [US6] Add cross-sell CTA to existing moon page at `src/app/(main)/moon/page.tsx` — subtle banner linking to /horoscope/calendar (Персональний календар)
-- [ ] T073 [US6] Verify free tools: /ascendant calculates and shows result, /daily shows forecast, cross-sell CTAs appear on chart/compatibility/moon pages
+- [x] T069 [US6] Create Daily Horoscope page at `src/app/(main)/daily/page.tsx` — hero, 2-step form (step 1: birth data — date/time/city; step 2: email), "безкоштовно" badge prominently highlighted, after form submit fetch daily forecast from /api/daily-horoscope and display with love/career/health categories, CTA to /horoscope/monthly, SEO metadata
+- [x] T070 [US6] Add cross-sell CTA to existing natal chart result page at `src/app/(main)/chart/[id]/page.tsx` — below chart results, add GlassCard with "Отримати повний Гороскоп Особистості" linking to /horoscope/personality
+- [x] T071 [US6] Add cross-sell CTA to existing compatibility page at `src/app/(main)/compatibility/page.tsx` — after results, add CTA to /horoscope/love-compatibility
+- [x] T072 [US6] Add cross-sell CTA to existing moon page at `src/app/(main)/moon/page.tsx` — subtle banner linking to /horoscope/calendar (Персональний календар)
+- [x] T073 [US6] Verify free tools: /ascendant calculates and shows result, /daily shows forecast, cross-sell CTAs appear on chart/compatibility/moon pages
 
 **Checkpoint**: Two new free tools live, existing tools drive users toward paid products
 
