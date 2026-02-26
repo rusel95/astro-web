@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import DashboardClient from './DashboardClient';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Мій кабінет | Зоря',
+  description:
+    'Ваш персональний астрологічний кабінет. Щоденний гороскоп, натальні карти та рекомендовані продукти.',
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ChartRow = any;

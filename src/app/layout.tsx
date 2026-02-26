@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
     apple: '/logo-192.png',
   },
+  openGraph: {
+    title: 'Зоря — Персональна Астрологія',
+    description: 'Натальна карта, гороскопи та астрологічні прогнози з AI-інтерпретацією',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'Зоря',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
