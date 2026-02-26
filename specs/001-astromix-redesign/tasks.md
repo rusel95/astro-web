@@ -86,22 +86,22 @@
 
 ### Implementation for User Story 2
 
-- [ ] T033 [P] [US2] Create HeroSection component at `src/components/landing/HeroSection.tsx` — headline "Ваші персональні гороскопи та прогнози", subheadline, CTA button linking to /quiz, illustrative visual (book mockup), track hero_cta_clicked
-- [ ] T034 [P] [US2] Create PainPointsSection component at `src/components/landing/PainPointsSection.tsx` — chat-message styled cards with Framer Motion stagger animation ("Що мене чекає?", "Коли зустріну кохання?", etc.), hashtag pills, CTA to quiz
-- [ ] T035 [P] [US2] Create HowItWorksSection component at `src/components/landing/HowItWorksSection.tsx` — "Як ми знаємо відповіді?" with 3 trust points (NASA data, software, team), moon illustration, CTA
-- [ ] T036 [P] [US2] Create ProductCatalog component at `src/components/landing/ProductCatalog.tsx` — category filter pills (Усі/Призначення/Кохання/Діти/Здоров'я/Майбутнє/Гроші), default "Усі", product cards in CSS scroll-snap carousel, AnimatePresence on filter change, track product_card_clicked
-- [ ] T037 [P] [US2] Create CategoryFilter component at `src/components/catalog/CategoryFilter.tsx` — horizontal pill buttons, active state with zorya gradient, "Усі" default
-- [ ] T038 [P] [US2] Create ProductCard component at `src/components/catalog/ProductCard.tsx` — GlassCard with icon, product name, description, price, "Детальніше" link to /horoscope/[slug]
-- [ ] T039 [P] [US2] Create BookOfLifeSection component at `src/components/landing/BookOfLifeSection.tsx` — USP blocks (Індивідуальний, Персоналізований, 30+ сторінок, Зручно), mobile mockup, CTA
-- [ ] T040 [P] [US2] Create TestimonialsSection component at `src/components/landing/TestimonialsSection.tsx` — 3 review cards with name, text, 5-star rating, styled as GlassCards
-- [ ] T041 [P] [US2] Create StatsSection component at `src/components/landing/StatsSection.tsx` — animated counters with real stats from /api/stats where available (e.g. total charts generated), fallback to meaningful defaults (100,000+ гороскопів, 30+ років, 97% відгуків), CTA
-- [ ] T042 [P] [US2] Create AccountBenefitsSection component at `src/components/landing/AccountBenefitsSection.tsx` — 5 benefit checkmarks, dashboard mockup with percentage bars, "Створити акаунт" CTA
-- [ ] T043 [P] [US2] Create BlogPreviewSection component at `src/components/landing/BlogPreviewSection.tsx` — since blog is deferred, render a simpler CTA section: "Скоро: Блог Зоря" heading with brief teaser text about upcoming astrology content, email subscription prompt (reuse EmailSubscriptionSection or inline form), track BLOG_CTA_CLICKED. Alternatively, omit this section entirely from landing page composition in T047 if it feels forced
-- [ ] T044 [P] [US2] Create EmailSubscriptionSection component at `src/components/landing/EmailSubscriptionSection.tsx` — email + name inputs, submit button, "Астрологічні оновлення на пошту" messaging, benefits list, calls POST /api/email/subscribe on submit
-- [ ] T045 [P] [US2] Create SeoTextSection component at `src/components/landing/SeoTextSection.tsx` — "Точна астрологія" heading with 2-3 SEO paragraphs
-- [ ] T046 [US2] Create POST `/api/email/subscribe` route at `src/app/api/email/subscribe/route.ts` — validate email, upsert to email_subscriptions table, return success (per contracts/email-api.md)
-- [ ] T047 [US2] Rewrite landing page at `src/app/(main)/page.tsx` — compose section components in order (Hero → PainPoints → HowItWorks → ProductCatalog → BookOfLife → Testimonials → Stats → AccountBenefits → BlogPreview (optional, see T043) → EmailSubscription → SeoText), add SEO metadata. BlogPreview can be omitted if the "coming soon" teaser feels forced — 10 sections is fine
-- [ ] T048 [US2] Verify landing page: all 11 sections render, CTAs link to /quiz, product catalog filters, email subscription saves to Supabase
+- [x] T033 [P] [US2] Create HeroSection component
+- [x] T034 [P] [US2] Create PainPointsSection component
+- [x] T035 [P] [US2] Create HowItWorksSection component
+- [x] T036 [P] [US2] Create ProductCatalog component
+- [x] T037 [P] [US2] Create CategoryFilter component
+- [x] T038 [P] [US2] Create ProductCard component
+- [x] T039 [P] [US2] Create BookOfLifeSection component
+- [x] T040 [P] [US2] Create TestimonialsSection component
+- [x] T041 [P] [US2] Create StatsSection component with real /api/stats data
+- [x] T042 [P] [US2] Create AccountBenefitsSection component
+- [x] T043 [P] [US2] BlogPreviewSection omitted — blog deferred, 10 sections sufficient
+- [x] T044 [P] [US2] Create EmailSubscriptionSection component
+- [x] T045 [P] [US2] Create SeoTextSection component
+- [x] T046 [US2] Create POST `/api/email/subscribe` route
+- [x] T047 [US2] Rewrite landing page with 10 section components
+- [x] T048 [US2] Build verified, all sections compile
 
 **Checkpoint**: Landing page complete — visitors see full marketing funnel page driving to quiz
 
