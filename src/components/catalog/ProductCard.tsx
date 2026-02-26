@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.07]">
-          <span className="text-zorya-gold font-bold">${product.price_usd}</span>
+          <span className="text-zorya-violet font-semibold">Скоро</span>
           <span className="text-xs text-zorya-violet font-medium">
             Детальніше →
           </span>

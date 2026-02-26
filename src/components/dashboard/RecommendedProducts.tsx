@@ -95,7 +95,7 @@ export default function RecommendedProducts({ userSign }: Props) {
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-xs font-medium text-zorya-gold">${product.price_usd}</span>
+                <span className="text-xs font-medium text-zorya-violet">Скоро</span>
                 <ChevronRight size={14} className="text-white/25 group-hover:text-white/50 transition-colors" />
               </div>
             </a>
