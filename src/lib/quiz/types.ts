@@ -30,9 +30,9 @@ export interface QuizState {
 export type QuizAction =
   | { type: 'NEXT' }
   | { type: 'BACK' }
-  | { type: 'SET_BIRTH_DATE'; day: number; month: number; year: number }
+  | { type: 'SET_BIRTH_DATE'; day: number | null; month: number | null; year: number | null }
   | { type: 'SET_ZODIAC_SIGN'; sign: string }
-  | { type: 'SET_BIRTHPLACE'; city: string; countryCode: string; lat: number; lng: number }
+  | { type: 'SET_BIRTHPLACE'; city: string; countryCode: string; lat: number | null; lng: number | null }
   | { type: 'SET_BIRTH_TIME'; time: string }
   | { type: 'SET_BIRTH_TIME_UNKNOWN'; unknown: boolean }
   | { type: 'SET_NAME'; name: string }

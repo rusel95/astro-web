@@ -47,7 +47,36 @@ export default function ProfileManager({ charts, userId, onChartAdded }: Props) 
     setError(null);
 
     try {
-      // Use the existing chart creation flow via Supabase
+      // First geocode the city to get real coordinates
+      const geoRes = await fetch(`/api/geocode?q=${encodeURIComponent(form.city)}`);
+      const cities = await geoRes.json();
+      const city = cities[0];
+      if (!city) {
+        setError('Місто не знайдено. Перевірте назву.');
+        setSaving(false);
+        return;
+      }
+
+      // Use /api/chart to generate full chart data (natal chart calculation)
+      const chartRes = await fetch('/api/chart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          birthDate: form.birth_date,
+          birthTime: form.birth_time || '12:00',
+          city: city.name,
+          countryCode: city.countryCode || 'UA',
+          latitude: city.lat,
+          longitude: city.lon,
+          gender: form.gender,
+        }),
+      });
+
+      if (!chartRes.ok) throw new Error('Chart calculation failed');
+      const chartData = await chartRes.json();
+
+      // Save to Supabase with real chart_data
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();
 
@@ -58,11 +87,12 @@ export default function ProfileManager({ charts, userId, onChartAdded }: Props) 
           name: form.name,
           birth_date: form.birth_date,
           birth_time: form.birth_time || '12:00',
-          city: form.city,
-          country_code: 'UA',
-          latitude: 0,
-          longitude: 0,
+          city: city.name,
+          country_code: city.countryCode || 'UA',
+          latitude: city.lat,
+          longitude: city.lon,
           gender: form.gender,
+          chart_data: chartData,
         })
         .select('id, name, birth_date, city, country_code, gender, created_at')
         .single();

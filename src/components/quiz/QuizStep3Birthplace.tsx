@@ -25,9 +25,9 @@ export default function QuizStep3Birthplace({ state, dispatch, onNext, onBack }:
 
   const search = useCallback((q: string) => {
     setQuery(q);
-    // Reset selection when user types
+    // Reset selection when user types — null out coords so validation fails
     if (state.latitude !== null) {
-      dispatch({ type: 'SET_BIRTHPLACE', city: q, countryCode: '', lat: 0, lng: 0 });
+      dispatch({ type: 'SET_BIRTHPLACE', city: q, countryCode: '', lat: null, lng: null });
     }
     if (timer.current) clearTimeout(timer.current);
     if (q.length < 2) {

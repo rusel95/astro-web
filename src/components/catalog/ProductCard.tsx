@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
+import ProductIcon from '@/components/icons/ProductIcon';
 import type { Product } from '@/lib/products/types';
 
 interface ProductCardProps {
@@ -29,7 +30,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="glass-card block p-5 h-full"
       >
         <div className="flex items-start gap-3 mb-3">
-          <span className="text-2xl">{product.icon}</span>
+          <ProductIcon name={product.icon} size={24} className="text-zorya-violet shrink-0" />
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-text-primary truncate">
               {product.name_uk}

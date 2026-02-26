@@ -39,8 +39,8 @@ export default function QuizStep1Birthday({ state, dispatch, onNext }: QuizStepP
             dispatch({
               type: 'SET_BIRTH_DATE',
               day,
-              month: state.birthMonth ?? 1,
-              year: state.birthYear ?? 2000,
+              month: state.birthMonth,
+              year: state.birthYear,
             });
           }}
           className="quiz-select flex-1"
@@ -58,9 +58,9 @@ export default function QuizStep1Birthday({ state, dispatch, onNext }: QuizStepP
             const month = Number(e.target.value);
             dispatch({
               type: 'SET_BIRTH_DATE',
-              day: state.birthDay ?? 1,
+              day: state.birthDay,
               month,
-              year: state.birthYear ?? 2000,
+              year: state.birthYear,
             });
           }}
           className="quiz-select flex-[1.5]"
@@ -78,8 +78,8 @@ export default function QuizStep1Birthday({ state, dispatch, onNext }: QuizStepP
             const year = Number(e.target.value);
             dispatch({
               type: 'SET_BIRTH_DATE',
-              day: state.birthDay ?? 1,
-              month: state.birthMonth ?? 1,
+              day: state.birthDay,
+              month: state.birthMonth,
               year,
             });
           }}

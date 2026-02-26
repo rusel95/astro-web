@@ -104,8 +104,8 @@ export default function NewFooter() {
               ))}
             </ul>
             <div className="mt-6">
-              <a href="mailto:ruslan.popesku@gmail.com" className="text-sm text-white/50 hover:text-white transition-colors">
-                ruslan.popesku@gmail.com
+              <a href="mailto:ruslanpopesku95@gmail.com" className="text-sm text-white/50 hover:text-white transition-colors">
+                ruslanpopesku95@gmail.com
               </a>
             </div>
           </div>

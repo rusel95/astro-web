@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ProductValueProps from './ProductValueProps';
 import ProductForm from './ProductForm';
+import ProductIcon from '@/components/icons/ProductIcon';
 import type { Product } from '@/lib/products/types';
 import { CATEGORY_NAMES_UK } from '@/lib/products/types';
 import { getProductsByCategory, PRODUCTS } from '@/lib/products/data';
@@ -56,7 +57,7 @@ export default function ProductPageTemplate({ product }: ProductPageTemplateProp
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <span className="text-4xl mb-4 block">{product.icon}</span>
+        <div className="mb-4 flex justify-center"><ProductIcon name={product.icon} size={48} className="text-zorya-violet" /></div>
         <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-3">
           {product.name_uk}
         </h1>

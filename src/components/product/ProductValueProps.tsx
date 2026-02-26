@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import ProductIcon from '@/components/icons/ProductIcon';
 
 interface ProductValuePropsProps {
   valueProps: string[];
@@ -18,7 +19,7 @@ export default function ProductValueProps({ valueProps, icon }: ProductValueProp
           transition={{ delay: 0.2 + i * 0.1 }}
           className="glass-card p-5 flex items-start gap-3"
         >
-          <span className="text-xl shrink-0">{icon}</span>
+          <ProductIcon name={icon} size={20} className="text-zorya-violet shrink-0" />
           <p className="text-text-secondary text-sm leading-relaxed">{prop}</p>
         </motion.div>
       ))}

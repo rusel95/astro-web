@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 import { PRODUCTS } from '@/lib/products/data';
 import { track } from '@/lib/analytics';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
+import ProductIcon from '@/components/icons/ProductIcon';
 
 interface Props {
   userSign?: string | null;
@@ -84,7 +85,7 @@ export default function RecommendedProducts({ userSign }: Props) {
                   className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(108,60,225,0.12)', border: '1px solid rgba(108,60,225,0.2)' }}
                 >
-                  <span className="text-base">{product.icon}</span>
+                  <ProductIcon name={product.icon} size={18} className="text-zorya-violet" />
                 </div>
                 <div>
                   <p className="font-medium text-white text-sm group-hover:text-purple-300 transition-colors">
