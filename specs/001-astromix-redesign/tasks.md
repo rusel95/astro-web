@@ -115,13 +115,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T049 [P] [US3] Create ProductValueProps component at `src/components/product/ProductValueProps.tsx` — render 3-4 value proposition blocks with icons from product data
-- [ ] T050 [P] [US3] Create ProductForm component at `src/components/product/ProductForm.tsx` — birth data form (name, gender, DOB, time, city, email) pre-filled from quiz session via sessionStorage. "Продовжити" CTA button shows "Скоро буде доступно" toast on click (payment deferred), tracks PAYWALL_CTA_CLICKED event
-- [ ] T051 [P] [US3] Create ProductPageTemplate component at `src/components/product/ProductPageTemplate.tsx` — compose breadcrumb, hero (name + subtitle), ProductValueProps, divider, ProductForm, CTA, SEO content, cross-sell cards
-- [ ] T052 [US3] Create GET `/api/products` route at `src/app/api/products/route.ts` — query Supabase products table, optional category filter, return sorted product list (per contracts/products-api.md)
-- [ ] T053 [US3] Create dynamic product page at `src/app/(main)/horoscope/[slug]/page.tsx` — look up product by slug from static data, render ProductPageTemplate, generate SEO metadata per product, track PRODUCT_PAGE_VIEWED
-- [ ] T054 [US3] Add generateStaticParams to product page for all 16 slugs (SSG) at `src/app/(main)/horoscope/[slug]/page.tsx`
-- [ ] T055 [US3] Verify product pages: navigate to /horoscope/personality and /horoscope/love, verify template renders correctly, form pre-fills from quiz session if available
+- [x] T049 [P] [US3] Create ProductValueProps component at `src/components/product/ProductValueProps.tsx` — render 3-4 value proposition blocks with icons from product data
+- [x] T050 [P] [US3] Create ProductForm component at `src/components/product/ProductForm.tsx` — birth data form (name, gender, DOB, time, city, email) pre-filled from quiz session via sessionStorage. "Продовжити" CTA button shows "Скоро буде доступно" toast on click (payment deferred), tracks PAYWALL_CTA_CLICKED event
+- [x] T051 [P] [US3] Create ProductPageTemplate component at `src/components/product/ProductPageTemplate.tsx` — compose breadcrumb, hero (name + subtitle), ProductValueProps, divider, ProductForm, CTA, SEO content, cross-sell cards
+- [x] T052 [US3] Create GET `/api/products` route at `src/app/api/products/route.ts` — query Supabase products table, optional category filter, return sorted product list (per contracts/products-api.md)
+- [x] T053 [US3] Create dynamic product page at `src/app/(main)/horoscope/[slug]/page.tsx` — look up product by slug from static data, render ProductPageTemplate, generate SEO metadata per product, track PRODUCT_PAGE_VIEWED
+- [x] T054 [US3] Add generateStaticParams to product page for all 16 slugs (SSG) at `src/app/(main)/horoscope/[slug]/page.tsx`
+- [x] T055 [US3] Verify product pages: navigate to /horoscope/personality and /horoscope/love, verify template renders correctly, form pre-fills from quiz session if available
 
 **Checkpoint**: All 16 product pages accessible via /horoscope/[slug] — quiz users see pre-filled forms
 
@@ -135,11 +135,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T056 [P] [US4] Create DailySummary component at `src/components/dashboard/DailySummary.tsx` — personalized greeting, today's date, love/career/health text forecast cards (fetched from /api/daily-horoscope for user's zodiac sign via Astrology API SDK, cached per sign per day), "Фокус дня" derived from mood_uk or general_uk text
-- [ ] T057 [P] [US4] Create ProfileManager component at `src/components/dashboard/ProfileManager.tsx` — list current profiles, enforce max 5 additional profiles per account (FR-010), disable "Додати профіль" button when limit reached with message, form (name, DOB, time, city, gender), save to Supabase charts table linked to user
-- [ ] T058 [P] [US4] Create RecommendedProducts component at `src/components/dashboard/RecommendedProducts.tsx` — show 3-4 product cards from catalog that user hasn't purchased, prioritize by zodiac relevance
-- [ ] T059 [US4] Enhance dashboard page at `src/app/(main)/dashboard/page.tsx` — integrate DailySummary, existing chart list, RecommendedProducts, ProfileManager sections. Keep existing "Мої карти" functionality
-- [ ] T060 [US4] Verify dashboard: log in, check daily summary renders with user's zodiac sign, verify add profile form works, verify recommended products display
+- [x] T056 [P] [US4] Create DailySummary component at `src/components/dashboard/DailySummary.tsx` — personalized greeting, today's date, love/career/health text forecast cards (fetched from /api/daily-horoscope for user's zodiac sign via Astrology API SDK, cached per sign per day), "Фокус дня" derived from mood_uk or general_uk text
+- [x] T057 [P] [US4] Create ProfileManager component at `src/components/dashboard/ProfileManager.tsx` — list current profiles, enforce max 5 additional profiles per account (FR-010), disable "Додати профіль" button when limit reached with message, form (name, DOB, time, city, gender), save to Supabase charts table linked to user
+- [x] T058 [P] [US4] Create RecommendedProducts component at `src/components/dashboard/RecommendedProducts.tsx` — show 3-4 product cards from catalog that user hasn't purchased, prioritize by zodiac relevance
+- [x] T059 [US4] Enhance dashboard page at `src/app/(main)/dashboard/page.tsx` — integrate DailySummary, existing chart list, RecommendedProducts, ProfileManager sections. Keep existing "Мої карти" functionality
+- [x] T060 [US4] Verify dashboard: log in, check daily summary renders with user's zodiac sign, verify add profile form works, verify recommended products display
 
 **Checkpoint**: Dashboard provides daily value and product discovery for returning users
 
@@ -174,7 +174,7 @@
 ### Implementation for User Story 6
 
 - [ ] T067 [P] [US6] Create Ascendant Calculator page at `src/app/(main)/ascendant/page.tsx` — hero section, birth data form (date + time REQUIRED + city), call existing Astrology API to get ascendant, display result with ZodiacIcon + description in Ukrainian, "Велика трійка" explanation, CTA to /horoscope/personality, SEO metadata
-- [ ] T068 [P] [US6] Create GET `/api/daily-horoscope` route at `src/app/api/daily-horoscope/route.ts` — accept sign query param, fetch daily forecast via Astrology API SDK (love/career/health categories), format in Ukrainian, cache per sign per day (ISR or in-memory), return per contracts/products-api.md
+- [x] T068 [P] [US6] Create GET `/api/daily-horoscope` route at `src/app/api/daily-horoscope/route.ts` — accept sign query param, fetch daily forecast via Astrology API SDK (love/career/health categories), format in Ukrainian, cache per sign per day (ISR or in-memory), return per contracts/products-api.md
 - [ ] T069 [US6] Create Daily Horoscope page at `src/app/(main)/daily/page.tsx` — hero, 2-step form (step 1: birth data — date/time/city; step 2: email), "безкоштовно" badge prominently highlighted, after form submit fetch daily forecast from /api/daily-horoscope and display with love/career/health categories, CTA to /horoscope/monthly, SEO metadata
 - [ ] T070 [US6] Add cross-sell CTA to existing natal chart result page at `src/app/(main)/chart/[id]/page.tsx` — below chart results, add GlassCard with "Отримати повний Гороскоп Особистості" linking to /horoscope/personality
 - [ ] T071 [US6] Add cross-sell CTA to existing compatibility page at `src/app/(main)/compatibility/page.tsx` — after results, add CTA to /horoscope/love-compatibility

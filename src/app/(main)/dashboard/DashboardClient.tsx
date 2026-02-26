@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Cake, Moon, Heart, Plus, ChevronRight } from 'lucide-react';
+import DailySummary from '@/components/dashboard/DailySummary';
+import ProfileManager from '@/components/dashboard/ProfileManager';
+import RecommendedProducts from '@/components/dashboard/RecommendedProducts';
+import { track } from '@/lib/analytics';
+import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
 const BTN_GRAD = 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)';
@@ -64,6 +69,26 @@ interface MoonData {
   is_void: boolean;
 }
 
+// Derive zodiac sign from birth date string "YYYY-MM-DD"
+function getZodiacSignFromDate(dateStr: string): string | null {
+  if (!dateStr) return null;
+  const parts = dateStr.split('-').map(Number);
+  const month = parts[1];
+  const day = parts[2];
+  if (!month || !day) return null;
+  const dates: [number, number, string][] = [
+    [1, 20, 'Capricorn'], [2, 19, 'Aquarius'], [3, 20, 'Pisces'],
+    [4, 20, 'Aries'], [5, 21, 'Taurus'], [6, 21, 'Gemini'],
+    [7, 22, 'Cancer'], [8, 23, 'Leo'], [9, 23, 'Virgo'],
+    [10, 23, 'Libra'], [11, 22, 'Scorpio'], [12, 22, 'Sagittarius'],
+  ];
+  for (let i = dates.length - 1; i >= 0; i--) {
+    const [m, d, sign] = dates[i];
+    if (month > m || (month === m && day >= d)) return sign;
+  }
+  return 'Capricorn';
+}
+
 interface Chart {
   id: string;
   name: string;
@@ -100,21 +125,29 @@ function getTodayUA() {
   return new Date().toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
-export default function DashboardClient({ user, charts }: Props) {
+export default function DashboardClient({ user, charts: initialCharts }: Props) {
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
   const [moonData, setMoonData] = useState<MoonData | null>(null);
   const [showAllCharts, setShowAllCharts] = useState(false);
+  const [charts, setCharts] = useState(initialCharts);
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'Мандрівнику';
   const avatarUrl = user.user_metadata?.avatar_url;
   const initials = displayName.charAt(0).toUpperCase();
+
+  // Derive zodiac sign from the first (primary) chart
+  const primaryChart = charts[0] || null;
+  const userSign = primaryChart ? getZodiacSignFromDate(primaryChart.birth_date) : null;
 
   useEffect(() => {
     fetch('/api/moon/current')
       .then(r => r.ok ? r.json() : null)
       .then(data => data?.current && setMoonData(data.current))
       .catch(() => null);
+
+    // Track dashboard view
+    track(ANALYTICS_EVENTS.DAILY_HOROSCOPE_VIEWED, { source: 'dashboard' });
   }, []);
 
   const handleSignOut = async () => {
@@ -327,28 +360,21 @@ export default function DashboardClient({ user, charts }: Props) {
           </div>
         </div>
 
-        {/* ── Coming Soon ── */}
+        {/* ── Daily Summary ── */}
         <div>
-          <p className="text-xs text-white/25 uppercase tracking-widest mb-3 font-medium">Незабаром</p>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { emoji: '☀️', title: 'Щоденний гороскоп', desc: 'Прогноз на сьогодні' },
-              { emoji: '📅', title: 'Місячний прогноз', desc: 'Огляд місяця' },
-            ].map(({ emoji, title, desc }) => (
-              <div
-                key={title}
-                className="flex flex-col gap-3 p-4 rounded-2xl"
-                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}
-              >
-                <span className="text-xl opacity-35">{emoji}</span>
-                <div>
-                  <p className="font-semibold text-white/35 text-sm">{title}</p>
-                  <p className="text-xs text-white/20 mt-1">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h2 className="font-semibold text-white mb-3">Прогноз на сьогодні</h2>
+          <DailySummary userSign={userSign} userName={displayName} />
         </div>
+
+        {/* ── Recommended Products ── */}
+        <RecommendedProducts userSign={userSign} />
+
+        {/* ── Profile Manager ── */}
+        <ProfileManager
+          charts={charts}
+          userId={user.id}
+          onChartAdded={(newChart) => setCharts(prev => [newChart, ...prev])}
+        />
 
       </div>
     </div>
