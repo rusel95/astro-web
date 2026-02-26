@@ -17,10 +17,10 @@ function getZodiacSignFromDate(dateStr: string): ZodiacSign | null {
   const day = parts[2];
   if (!month || !day) return null;
   const dates: [number, number, ZodiacSign][] = [
-    [1, 20, 'Capricorn'], [2, 19, 'Aquarius'], [3, 20, 'Pisces'],
-    [4, 20, 'Aries'], [5, 21, 'Taurus'], [6, 21, 'Gemini'],
-    [7, 22, 'Cancer'], [8, 23, 'Leo'], [9, 23, 'Virgo'],
-    [10, 23, 'Libra'], [11, 22, 'Scorpio'], [12, 22, 'Sagittarius'],
+    [1, 20, 'Aquarius'], [2, 19, 'Pisces'], [3, 21, 'Aries'],
+    [4, 20, 'Taurus'], [5, 21, 'Gemini'], [6, 21, 'Cancer'],
+    [7, 23, 'Leo'], [8, 23, 'Virgo'], [9, 23, 'Libra'],
+    [10, 23, 'Scorpio'], [11, 22, 'Sagittarius'], [12, 22, 'Capricorn'],
   ];
   for (let i = dates.length - 1; i >= 0; i--) {
     const [m, d, sign] = dates[i];
