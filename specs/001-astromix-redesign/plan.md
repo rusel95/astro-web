@@ -25,14 +25,15 @@ Transform astro-web from a free natal chart tool into a full astrology product p
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-The project constitution is not yet configured (template placeholders only). Using project conventions from CLAUDE.md as governance:
+Validated against Constitution v1.0.0 (`.specify/memory/constitution.md`, ratified 2026-02-26):
 
-- **Simplicity First**: Each change minimal. New pages use existing UI components (GlassCard, CosmicBackground, ZodiacIcon). Product pages are template-based, not individually coded. PASS
-- **No Unicode Zodiac Symbols**: All zodiac rendering uses `<ZodiacIcon>` component. PASS
-- **Ukrainian UI**: All user-facing text in Ukrainian. Code/comments in English. PASS
-- **Date Handling**: Server dates as "YYYY-MM-DD" strings. Client parses with `new Date(y, m-1, d)`. PASS
-- **Consistent Design**: Cosmic dark theme for main site. Light theme for quiz (scoped via CSS). Brand colors preserved (zorya-gold, zorya-violet, zorya-blue). PASS
-- **Deploy Often**: Each phase ships independently to production. PASS
+- **I. Ukrainian-First**: All user-facing text in Ukrainian. Code/comments in English. PASS
+- **II. Simplicity & Minimal Impact**: Each change minimal. Product pages template-based, not individually coded. Reuse existing components. PASS
+- **III. Design System Consistency**: Cosmic dark theme for main site. Light theme for quiz (scoped via CSS). Brand colors preserved. `<ZodiacIcon>` for all zodiac rendering. PASS
+- **IV. Date Handling Safety**: Server dates as "YYYY-MM-DD" strings. Client parses with `new Date(y, m-1, d)`. PASS
+- **V. Deploy Often, Verify Always**: Each phase ships independently to production. `npm run build` before every push. PASS
+- **VI. Analytics-Driven Development**: All features emit PostHog events. Quiz tracks per-step completion/abandonment. PASS
+- **VII. Existing Infrastructure First**: Astrology API SDK for calculations. OpenAI for AI interpretations. Supabase for auth/DB. Nominatim for geocoding. PASS
 
 No violations. No complexity tracking needed.
 
@@ -158,9 +159,7 @@ src/
 │   └── ... (existing lib preserved)
 │
 ├── types/
-│   ├── products.ts                # NEW: Product types
-│   ├── quiz.ts                    # NEW: Quiz types
-│   └── ... (existing types preserved)
+│   └── ... (existing types preserved — new types in lib/products/types.ts and lib/quiz/types.ts)
 │
 tests/
 └── ... (existing Playwright tests + new quiz/landing tests)
