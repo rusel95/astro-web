@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import { PRODUCTS } from '@/lib/products/data';
 import type { Product } from '@/lib/products/types';
+import ProductIcon from '@/components/icons/ProductIcon';
 
 interface PaywallSectionProps {
   quizCompleted: boolean;
@@ -75,7 +76,7 @@ export default function PaywallSection({ quizCompleted }: PaywallSectionProps) {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl">{product.icon}</span>
+                  <ProductIcon name={product.icon} size={22} className="text-zorya-violet" />
                   <h4 className="font-semibold text-gray-900 group-hover:text-zorya-violet transition-colors">
                     {product.name_uk}
                   </h4>
@@ -90,8 +91,8 @@ export default function PaywallSection({ quizCompleted }: PaywallSectionProps) {
                 </ul>
               </div>
               <div className="text-right shrink-0 ml-4">
-                <span className="text-lg font-bold text-zorya-violet">
-                  ${product.price_usd}
+                <span className="text-sm font-semibold text-zorya-violet">
+                  Скоро
                 </span>
               </div>
             </div>

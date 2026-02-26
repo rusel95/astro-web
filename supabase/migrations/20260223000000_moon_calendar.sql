@@ -3,9 +3,9 @@
 
 -- Таблиця місячних даних (pre-calculated для швидкості)
 CREATE TABLE IF NOT EXISTS moon_calendar (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   date DATE NOT NULL UNIQUE,
-  
+
   -- Moon position
   moon_sign TEXT NOT NULL,
   moon_longitude DECIMAL(8,4) NOT NULL,
@@ -33,7 +33,7 @@ CREATE INDEX idx_moon_calendar_void ON moon_calendar USING GIN (void_of_course);
 
 -- Персональні місячні транзити (cached per user)
 CREATE TABLE IF NOT EXISTS moon_transits_cache (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   date DATE NOT NULL,
   

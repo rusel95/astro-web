@@ -65,7 +65,7 @@ export default function ProductPageTemplate({ product }: ProductPageTemplateProp
           {product.description_uk}
         </p>
         <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zorya-violet/10 text-zorya-violet font-semibold">
-          ${product.price_usd}
+          Скоро
         </div>
       </motion.div>
 
@@ -139,13 +139,13 @@ export default function ProductPageTemplate({ product }: ProductPageTemplateProp
                 href={`/horoscope/${p.slug}`}
                 className="glass-card p-5 hover:border-zorya-violet/30 transition-all group"
               >
-                <span className="text-2xl mb-2 block">{p.icon}</span>
+                <span className="mb-2 block"><ProductIcon name={p.icon} size={28} className="text-zorya-violet" /></span>
                 <h3 className="font-semibold text-text-primary group-hover:text-zorya-violet transition-colors text-sm">
                   {p.name_uk}
                 </h3>
                 <p className="text-text-muted text-xs mt-1">{p.description_uk}</p>
                 <span className="text-zorya-violet font-semibold text-sm mt-2 block">
-                  ${p.price_usd}
+                  Скоро
                 </span>
               </Link>
             ))}

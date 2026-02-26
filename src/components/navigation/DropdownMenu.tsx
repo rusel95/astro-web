@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
+import ProductIcon from '@/components/icons/ProductIcon';
 
 export interface DropdownItem {
   href: string;
@@ -109,7 +110,9 @@ export default function DropdownMenu({ label, groups, icon }: DropdownMenuProps)
                     className="flex items-center gap-3 px-4 py-2 hover:bg-white/[0.05] transition-all group"
                   >
                     {item.icon && (
-                      <span className="text-base w-6 text-center flex-shrink-0">{item.icon}</span>
+                      <span className="w-6 text-center flex-shrink-0">
+                        <ProductIcon name={item.icon} size={18} className="text-zorya-violet/70" />
+                      </span>
                     )}
                     <div>
                       <p className="text-sm text-white/80 group-hover:text-white font-medium transition-colors">

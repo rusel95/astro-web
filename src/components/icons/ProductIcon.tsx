@@ -17,6 +17,10 @@ import {
   Briefcase,
   TrendingUp,
   CalendarRange,
+  Star,
+  Moon,
+  FlaskConical,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -37,6 +41,10 @@ const ICON_MAP: Record<string, LucideIcon> = {
   briefcase: Briefcase,
   'trending-up': TrendingUp,
   'calendar-range': CalendarRange,
+  star: Star,
+  moon: Moon,
+  flask: FlaskConical,
+  users: Users,
 };
 
 interface ProductIconProps {

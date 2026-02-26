@@ -21,33 +21,33 @@ const HOROSCOPE_GROUPS: DropdownGroup[] = [
   {
     title: 'Призначення',
     items: [
-      { href: '/horoscope/personality', label: 'Гороскоп особистості', icon: '✨', description: 'Доля та призначення' },
-      { href: '/horoscope/talent', label: 'Звіт талантів', icon: '💎', description: 'Приховані здібності' },
+      { href: '/horoscope/personality', label: 'Гороскоп особистості', icon: 'sparkles', description: 'Доля та призначення' },
+      { href: '/horoscope/talent', label: 'Звіт талантів', icon: 'gem', description: 'Приховані здібності' },
     ],
   },
   {
     title: 'Кохання',
     items: [
-      { href: '/horoscope/love', label: 'Любовний гороскоп', icon: '❤️', description: 'Де ви зустрінете кохання' },
-      { href: '/horoscope/love-compatibility', label: 'Сумісність кохання', icon: '💕', description: 'Синастрійний звіт' },
-      { href: '/horoscope/marriage', label: 'Коли я одружуся?', icon: '💍', description: 'Прогноз шлюбу' },
+      { href: '/horoscope/love', label: 'Любовний гороскоп', icon: 'heart', description: 'Де ви зустрінете кохання' },
+      { href: '/horoscope/love-compatibility', label: 'Сумісність кохання', icon: 'heart-handshake', description: 'Синастрійний звіт' },
+      { href: '/horoscope/marriage', label: 'Коли я одружуся?', icon: 'ring', description: 'Прогноз шлюбу' },
     ],
   },
   {
     title: 'Майбутнє',
     items: [
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026', icon: '📅', description: 'Річний прогноз' },
-      { href: '/horoscope/monthly', label: 'Прогноз на місяць', icon: '🗓', description: 'Детальний місячний' },
-      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки', icon: '🔭', description: 'Довгостроковий прогноз' },
+      { href: '/horoscope/2026', label: 'Гороскоп на 2026', icon: 'calendar-range', description: 'Річний прогноз' },
+      { href: '/horoscope/monthly', label: 'Прогноз на місяць', icon: 'calendar-days', description: 'Детальний місячний' },
+      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки', icon: 'telescope', description: 'Довгостроковий прогноз' },
     ],
   },
   {
     title: 'Ще',
     items: [
-      { href: '/horoscope/health', label: "Звіт здоров'я", icon: '🏥', description: 'Вразливі зони' },
-      { href: '/horoscope/career', label: "Кар'єрний гороскоп", icon: '💼', description: 'Кар\'єрне призначення' },
-      { href: '/horoscope/finance', label: 'Фінансовий успіх', icon: '💰', description: 'Фінансове становище' },
-      { href: '/horoscope/children', label: 'Дитячий гороскоп', icon: '👶', description: 'Для батьків' },
+      { href: '/horoscope/health', label: "Звіт здоров'я", icon: 'activity', description: 'Вразливі зони' },
+      { href: '/horoscope/career', label: "Кар'єрний гороскоп", icon: 'briefcase', description: 'Кар\'єрне призначення' },
+      { href: '/horoscope/finance', label: 'Фінансовий успіх', icon: 'coins', description: 'Фінансове становище' },
+      { href: '/horoscope/children', label: 'Дитячий гороскоп', icon: 'baby', description: 'Для батьків' },
     ],
   },
 ];
@@ -56,16 +56,16 @@ const FREE_TOOLS_GROUPS: DropdownGroup[] = [
   {
     title: 'Безкоштовні інструменти',
     items: [
-      { href: '/chart/new', label: 'Натальна карта', icon: '🌟', description: 'Розрахунок з AI-інтерпретацією' },
-      { href: '/compatibility', label: 'Сумісність партнерів', icon: '💞', description: 'Синастрія двох карт' },
-      { href: '/moon', label: 'Місячний календар', icon: '🌙', description: 'Фази та void periods' },
+      { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією' },
+      { href: '/compatibility', label: 'Сумісність партнерів', icon: 'users', description: 'Синастрія двох карт' },
+      { href: '/moon', label: 'Місячний календар', icon: 'moon', description: 'Фази та void periods' },
     ],
   },
   {
     title: 'Зодіак',
     items: [
-      { href: '/zodiac/aries', label: 'Знаки зодіаку', icon: '♈', description: 'Характеристики 12 знаків' },
-      { href: '/quiz', label: 'Астро-тест', icon: '🧪', description: 'Дізнайтесь своє призначення' },
+      { href: '/zodiac/aries', label: 'Знаки зодіаку', icon: 'sparkles', description: 'Характеристики 12 знаків' },
+      { href: '/quiz', label: 'Астро-тест', icon: 'flask', description: 'Дізнайтесь своє призначення' },
     ],
   },
 ];

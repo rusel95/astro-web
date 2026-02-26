@@ -64,7 +64,10 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error('Supabase insert error:', error);
-        // Continue without DB — data is still returned to client
+        return NextResponse.json(
+          { error: 'Не вдалося зберегти сесію. Спробуйте ще раз.' },
+          { status: 500 }
+        );
       } else {
         dbId = data?.id;
       }

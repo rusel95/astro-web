@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function PersonalityPage() {
   return (
     <ProductPage
-      icon="⭐"
+      icon="sparkles"
       title="Гороскоп особистості"
       subtitle="Хто ви насправді? Глибинний астрологічний портрет"
       description="Дізнайтесь свої справжні сильні та слабкі сторони, приховані таланти та життєву місію через детальний аналіз вашої натальної карти."
