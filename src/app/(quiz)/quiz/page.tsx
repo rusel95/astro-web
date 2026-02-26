@@ -136,11 +136,15 @@ export default function QuizPage() {
     setIsLoading(true);
     setError(null);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
     try {
       // Step 1: Save quiz session
       const sessionRes = await fetch('/api/quiz/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           session_id: state.sessionId,
           birth_date: `${state.birthYear}-${String(state.birthMonth).padStart(2, '0')}-${String(state.birthDay).padStart(2, '0')}`,
@@ -163,11 +167,13 @@ export default function QuizPage() {
       }
 
       const sessionData = await sessionRes.json();
+      dispatch({ type: 'SET_SESSION_ID', sessionId: sessionData.session_id });
 
       // Step 2: Generate mini-horoscope
       const completeRes = await fetch('/api/quiz/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           session_id: sessionData.session_id,
         }),
@@ -183,8 +189,13 @@ export default function QuizPage() {
       dispatch({ type: 'SET_COMPLETED' });
       trackMiniHoroscopeViewed();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Щось пішло не так. Спробуйте ще раз.');
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setError('Час очікування вийшов. Натисніть "Спробувати ще раз".');
+      } else {
+        setError(err instanceof Error ? err.message : 'Щось пішло не так. Спробуйте ще раз.');
+      }
     } finally {
+      clearTimeout(timeout);
       setIsLoading(false);
     }
   }, [state]);
@@ -240,9 +251,15 @@ export default function QuizPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm text-center"
+          className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-center"
         >
-          {error}
+          <p className="text-red-700 text-sm mb-3">{error}</p>
+          <button
+            onClick={handleSubmit}
+            className="px-5 py-2 bg-zorya-violet text-white text-sm font-medium rounded-xl hover:bg-zorya-violet/90 transition-colors"
+          >
+            Спробувати ще раз
+          </button>
         </motion.div>
       )}
 

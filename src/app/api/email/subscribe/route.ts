@@ -27,7 +27,6 @@ export async function POST(request: Request) {
               email: body.email.toLowerCase().trim(),
               name: body.name?.trim() || null,
               source: body.source || 'landing',
-              subscribed_at: new Date().toISOString(),
             },
             { onConflict: 'email' }
           );

@@ -95,6 +95,10 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       newState = { ...state, completed: true };
       break;
 
+    case 'SET_SESSION_ID':
+      newState = { ...state, sessionId: action.sessionId };
+      break;
+
     case 'RESET':
       newState = { ...initialQuizState };
       clearQuizState();

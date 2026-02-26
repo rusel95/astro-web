@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { PLANET_NAMES_UK, ASPECT_NAMES_UK } from '@/lib/constants';
+import { PLANET_NAMES_UK, ASPECT_NAMES_UK, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
-import type { PlanetName } from '@/types/astrology';
+import type { PlanetName, ZodiacSign } from '@/types/astrology';
 
 interface KeyAspect {
   planet1: string;
@@ -82,7 +82,7 @@ export default function MiniHoroscope({ data, userName }: MiniHoroscopeProps) {
               </div>
               <span className="text-xs text-gray-400 uppercase tracking-wide">Місяць</span>
               <span className="font-semibold text-gray-900">
-                {moonPlanet.sign}
+                {ZODIAC_NAMES_UK[moonPlanet.sign as ZodiacSign] || moonPlanet.sign}
               </span>
             </div>
           )}

@@ -40,6 +40,7 @@ export type QuizAction =
   | { type: 'SET_EMAIL'; email: string }
   | { type: 'SET_CONSENT'; accepted: boolean }
   | { type: 'SET_COMPLETED' }
+  | { type: 'SET_SESSION_ID'; sessionId: string }
   | { type: 'RESET' }
   | { type: 'RESTORE'; state: QuizState };
 

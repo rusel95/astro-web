@@ -12,9 +12,9 @@ interface PaywallSectionProps {
 
 // Show a curated selection of products for the paywall
 const FEATURED_SLUGS = [
-  'natal-chart-report',
+  'personality',
   'love-compatibility',
-  'year-forecast',
+  '2026',
 ];
 
 export default function PaywallSection({ quizCompleted }: PaywallSectionProps) {

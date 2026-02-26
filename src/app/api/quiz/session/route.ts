@@ -41,35 +41,32 @@ export async function POST(request: Request) {
     // Save to Supabase if configured
     let dbId: string | null = null;
     if (isSupabaseConfigured()) {
-      try {
-        const supabase = createServiceClient();
-        const { data, error } = await supabase
-          .from('quiz_sessions')
-          .insert({
-            session_id: sessionId,
-            birth_date: body.birth_date,
-            birth_time: body.birth_time,
-            birth_time_unknown: body.birth_time_unknown,
-            birth_city: body.birth_city,
-            birth_lat: body.birth_lat,
-            birth_lng: body.birth_lng,
-            country_code: body.country_code,
-            name: body.name,
-            gender: body.gender,
-            email: body.email,
-            zodiac_sign: body.zodiac_sign,
-            completed: true,
-          })
-          .select('id')
-          .single();
+      const supabase = createServiceClient();
+      const { data, error } = await supabase
+        .from('quiz_sessions')
+        .insert({
+          session_id: sessionId,
+          birth_date: body.birth_date,
+          birth_time: body.birth_time,
+          birth_time_unknown: body.birth_time_unknown,
+          birth_city: body.birth_city,
+          birth_lat: body.birth_lat,
+          birth_lng: body.birth_lng,
+          country_code: body.country_code,
+          name: body.name,
+          gender: body.gender,
+          email: body.email,
+          zodiac_sign: body.zodiac_sign,
+          completed: true,
+        })
+        .select('id')
+        .single();
 
-        if (error) {
-          console.error('Supabase insert error:', error);
-        } else {
-          dbId = data?.id;
-        }
-      } catch (err) {
-        console.error('Supabase error:', err);
+      if (error) {
+        console.error('Supabase insert error:', error);
+        // Continue without DB — data is still returned to client
+      } else {
+        dbId = data?.id;
       }
     }
 
