@@ -53,7 +53,7 @@ A user who completed the quiz or browses the product catalog navigates to a paid
 
 **Acceptance Scenarios**:
 
-1. **Given** a product page for "Personality Horoscope", **When** a user views it, **Then** they see the product name, 3-4 value proposition blocks, and a birth data form (name, gender, DOB, time, city, email) with no submit button (payment deferred).
+1. **Given** a product page for "Personality Horoscope", **When** a user views it, **Then** they see the product name, 3-4 value proposition blocks, and a birth data form (name, gender, DOB, time, city, email) with a "Продовжити" CTA button that shows a "Скоро буде доступно" toast on click (payment deferred).
 2. **Given** a user who completed the quiz visits a product page, **When** the form loads, **Then** their birth data is pre-filled from the quiz session.
 3. **Given** a user on the paywall page, **When** they click a product tier, **Then** they see a "coming soon" message indicating payment integration is planned, and the interaction is tracked for conversion analytics.
 
@@ -69,7 +69,7 @@ A registered user logs in and sees their personal dashboard showing a daily horo
 
 **Acceptance Scenarios**:
 
-1. **Given** a logged-in user, **When** they visit the dashboard, **Then** they see a personalized greeting with their name and a daily horoscope summary with percentage indicators for love, career, and health (fetched via Astrology API SDK based on their zodiac sign, cached per sign per day).
+1. **Given** a logged-in user, **When** they visit the dashboard, **Then** they see a personalized greeting with their name and a daily horoscope summary with text forecasts for love, career, and health categories (fetched via Astrology API SDK based on their zodiac sign, cached per sign per day).
 2. **Given** a user on the dashboard, **When** they click "Add profile" in the profiles section, **Then** a form appears to enter birth data for a family member or friend (maximum 5 additional profiles per account).
 3. **Given** a user on the dashboard, **When** they view "Recommended for you", **Then** product cards are shown for horoscopes relevant to their zodiac sign.
 
@@ -142,7 +142,7 @@ A content section includes a blog with categorized articles (Astrology, Zodiac, 
 - **FR-006**: (Deferred) Full AI-powered horoscope reports of 30+ structured sections require payment integration. Only the free mini-horoscope (2-3 aspects) is generated in this phase via FR-003.
 - **FR-007**: (Deferred) Email delivery of reports and notifications is out of scope. Email collection and storage only.
 - **FR-008**: (Removed — merged into FR-004.)
-- **FR-009**: System MUST provide a user dashboard showing daily horoscope summary (love/career/health percentages fetched via Astrology API SDK, cached per sign per day), recommended products, and profile management.
+- **FR-009**: System MUST provide a user dashboard showing daily horoscope summary (love/career/health text forecasts fetched via Astrology API SDK, cached per sign per day), recommended products, and profile management.
 - **FR-010**: System MUST allow users to create additional profiles for family/friends for use in compatibility features, with a maximum of 5 additional profiles per account.
 - **FR-011**: System MUST redesign the landing page with 11 content sections: hero, pain points, how it works, product catalog, book of life USPs, testimonials, statistics, account benefits, blog preview, email subscription, and SEO text.
 - **FR-012**: System MUST implement dropdown navigation menus for "Horoscopes" (paid products by category) and "Free" (free tools).

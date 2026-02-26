@@ -116,7 +116,7 @@
 ### Implementation for User Story 3
 
 - [ ] T049 [P] [US3] Create ProductValueProps component at `src/components/product/ProductValueProps.tsx` — render 3-4 value proposition blocks with icons from product data
-- [ ] T050 [P] [US3] Create ProductForm component at `src/components/product/ProductForm.tsx` — birth data form (name, gender, DOB, time, city, email) pre-filled from quiz session via sessionStorage. No submit/CTA button — form only collects data (payment integration deferred)
+- [ ] T050 [P] [US3] Create ProductForm component at `src/components/product/ProductForm.tsx` — birth data form (name, gender, DOB, time, city, email) pre-filled from quiz session via sessionStorage. "Продовжити" CTA button shows "Скоро буде доступно" toast on click (payment deferred), tracks PAYWALL_CTA_CLICKED event
 - [ ] T051 [P] [US3] Create ProductPageTemplate component at `src/components/product/ProductPageTemplate.tsx` — compose breadcrumb, hero (name + subtitle), ProductValueProps, divider, ProductForm, CTA, SEO content, cross-sell cards
 - [ ] T052 [US3] Create GET `/api/products` route at `src/app/api/products/route.ts` — query Supabase products table, optional category filter, return sorted product list (per contracts/products-api.md)
 - [ ] T053 [US3] Create dynamic product page at `src/app/(main)/horoscope/[slug]/page.tsx` — look up product by slug from static data, render ProductPageTemplate, generate SEO metadata per product, track PRODUCT_PAGE_VIEWED
@@ -135,7 +135,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] T056 [P] [US4] Create DailySummary component at `src/components/dashboard/DailySummary.tsx` — personalized greeting, today's date, love/career/health percentage bars (fetched from /api/daily-horoscope for user's zodiac sign via Astrology API), "Фокус дня" indicator
+- [ ] T056 [P] [US4] Create DailySummary component at `src/components/dashboard/DailySummary.tsx` — personalized greeting, today's date, love/career/health text forecast cards (fetched from /api/daily-horoscope for user's zodiac sign via Astrology API SDK, cached per sign per day), "Фокус дня" derived from mood_uk or general_uk text
 - [ ] T057 [P] [US4] Create ProfileManager component at `src/components/dashboard/ProfileManager.tsx` — list current profiles, enforce max 5 additional profiles per account (FR-010), disable "Додати профіль" button when limit reached with message, form (name, DOB, time, city, gender), save to Supabase charts table linked to user
 - [ ] T058 [P] [US4] Create RecommendedProducts component at `src/components/dashboard/RecommendedProducts.tsx` — show 3-4 product cards from catalog that user hasn't purchased, prioritize by zodiac relevance
 - [ ] T059 [US4] Enhance dashboard page at `src/app/(main)/dashboard/page.tsx` — integrate DailySummary, existing chart list, RecommendedProducts, ProfileManager sections. Keep existing "Мої карти" functionality

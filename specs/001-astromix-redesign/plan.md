@@ -19,7 +19,7 @@ Transform astro-web from a free natal chart tool into a full astrology product p
 **Project Type**: Full-stack web application
 **Performance Goals**: Landing page loads <3s on 3G. Quiz transitions <200ms. Mini-horoscope generation <15s
 **Constraints**: Ukrainian-only UI. No payment processing yet. Existing Astrology API rate limits (cache aggressively). OpenAI costs ~$0.10-0.50/report
-**Scale/Scope**: ~80 existing source files, ~30 new/modified files. 15+ new pages/routes. 4 new Supabase tables
+**Scale/Scope**: ~80 existing source files, ~50+ new/modified files. 15+ new pages/routes. 4 new Supabase tables
 
 ## Constitution Check
 
