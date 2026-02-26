@@ -40,6 +40,10 @@ export async function POST(request: Request) {
         }
       } catch (err) {
         console.error('Supabase error:', err);
+        return NextResponse.json(
+          { error: 'Не вдалося зберегти підписку' },
+          { status: 500 }
+        );
       }
     }
 

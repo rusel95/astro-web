@@ -18,12 +18,12 @@ CREATE INDEX IF NOT EXISTS idx_email_subscriptions_email ON public.email_subscri
 -- Enable RLS
 ALTER TABLE public.email_subscriptions ENABLE ROW LEVEL SECURITY;
 
--- RLS: service role inserts (via API), no direct client access needed
+-- RLS: only service_role can manage subscriptions (no public/anon access)
 CREATE POLICY "Service role can manage email subscriptions"
   ON public.email_subscriptions
   FOR ALL
-  USING (true)
-  WITH CHECK (true);
+  USING (auth.role() = 'service_role')
+  WITH CHECK (auth.role() = 'service_role');
 
 -- Comments
 COMMENT ON TABLE public.email_subscriptions IS 'Newsletter email subscriptions from landing page and other sources';
