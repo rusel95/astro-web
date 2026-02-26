@@ -22,8 +22,8 @@ cp tests/.env.test.example tests/.env.test
 Fill in real credentials (for authenticated tests):
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://jrjshwhgpbmttmxbsqtn.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJh...
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 TEST_USER_EMAIL=test@example.com
 TEST_USER_PASSWORD=your-password
 NEXT_PUBLIC_APP_URL=http://localhost:3000
