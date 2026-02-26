@@ -53,12 +53,19 @@ test.describe('Accessibility — Keyboard Navigation', () => {
   test('/chart/new: can navigate form with keyboard', async ({ page }) => {
     await page.goto('/chart/new');
     await page.waitForTimeout(1000);
-    
+
+    // Dismiss cookie consent if visible
+    const dismissBtn = page.locator('button', { hasText: 'Відхилити' });
+    if (await dismissBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await dismissBtn.click();
+      await page.waitForTimeout(500);
+    }
+
     // Tab to navigate and press Enter on "Далі" button
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press('Tab');
     }
-    
+
     // Find and click Далі
     const nextBtn = page.locator('button', { hasText: 'Далі' });
     if (await nextBtn.isVisible()) {

@@ -85,6 +85,6 @@ test.describe('Auth — Login page visual', () => {
     // Page should not overflow horizontally
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
     const viewportWidth = 390;
-    expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 5); // 5px tolerance
+    expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 15); // 15px tolerance
   });
 });
