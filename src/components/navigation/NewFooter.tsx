@@ -36,11 +36,11 @@ export default function NewFooter() {
 
   return (
     <footer
-      className="border-t border-white/[0.07] py-12 hidden md:block"
+      className="border-t border-white/[0.07] py-12"
       style={{ background: 'rgba(8,8,26,0.6)' }}
     >
       <div className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-10">
           {/* Column 1: Products */}
           <div>
             <h3 className="text-xs uppercase tracking-widest text-white/40 font-semibold mb-4">
@@ -112,7 +112,7 @@ export default function NewFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-6 flex items-center justify-between">
+        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 pb-20 md:pb-0">
           <div className="flex items-center gap-2.5">
             <span className="font-display text-lg font-semibold text-zorya-violet">✦ Зоря</span>
             <span className="text-xs text-white/25">Астрологічна платформа</span>

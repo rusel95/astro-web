@@ -198,7 +198,7 @@
 **Purpose**: Final verification, SEO, performance, and analytics completeness
 
 - [x] T081 Add SEO metadata (title, description, og:image) to all new pages: quiz, all 16 product pages, ascendant, daily, blog, reviews, 2026
-- [ ] T082 Mobile responsiveness pass — verify all new pages render correctly on 375px (iPhone SE) and 390px (iPhone 14) viewports
+- [x] T082 Mobile responsiveness pass — verify all new pages render correctly on 375px (iPhone SE) and 390px (iPhone 14) viewports
 - [ ] T083 Verify PostHog analytics: check all new events fire correctly (quiz steps, product clicks, paywall views, email subscriptions, nav interactions) using PostHog debugger
 - [ ] T084 Performance check — run Lighthouse on landing page and quiz, verify <3s load on simulated 3G
 - [ ] T085 Full build verification: `npm run build` passes cleanly with no TypeScript errors

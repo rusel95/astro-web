@@ -90,7 +90,7 @@ export default function DailySummary({ userSign, userName }: Props) {
     return (
       <div className="space-y-3">
         <div className="h-24 rounded-2xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {[1, 2, 3].map(i => (
             <div key={i} className="h-28 rounded-xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
           ))}
@@ -142,7 +142,7 @@ export default function DailySummary({ userSign, userName }: Props) {
         </div>
 
         {/* Life Areas Grid */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {AREA_CONFIG.map(({ key, icon: Icon, label, color, border, iconColor }) => (
             <div
               key={key}
