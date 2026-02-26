@@ -153,13 +153,13 @@
 
 ### Implementation for User Story 5
 
-- [ ] T061 [P] [US5] Create DropdownMenu component at `src/components/navigation/DropdownMenu.tsx` — hover-triggered on desktop, click-triggered on mobile, supports grouped items by category, close on outside click, Framer Motion enter/exit animation
-- [ ] T062 [P] [US5] Create DesktopNav component at `src/components/navigation/DesktopNav.tsx` — logo, "2026" link, "Гороскопи" dropdown (products by 6 categories), "Безкоштовно" dropdown (6 free tools), "Блог" link, "UA" language indicator, auth button/user menu
-- [ ] T063 [P] [US5] Create NewFooter component at `src/components/navigation/NewFooter.tsx` — 4-column layout (Персональні сервіси, Для партнерів, Про компанію, Контакти), all links, copyright
-- [ ] T064 [US5] Update MobileNav at `src/components/MobileNav.tsx` — add hamburger menu that expands with nested sections for "Гороскопи" and "Безкоштовно" categories, keep bottom bar with key shortcuts
-- [ ] T065 [US5] Update main layout at `src/app/(main)/layout.tsx` — replace current nav with DesktopNav, replace Footer with NewFooter, track nav_dropdown_opened and nav_item_clicked events
-- [ ] T065b [US5] Create placeholder legal pages at `src/app/(main)/legal/terms/page.tsx`, `src/app/(main)/legal/privacy/page.tsx`, `src/app/(main)/legal/cookies/page.tsx` — simple pages with "Сторінка в розробці" text, basic SEO metadata (title, description), consistent styling with GlassCard
-- [ ] T066 [US5] Verify navigation: desktop dropdowns open on hover with all products/tools listed, mobile hamburger works, footer renders 4 columns, all links resolve, legal pages accessible
+- [x] T061 [P] [US5] Create DropdownMenu component at `src/components/navigation/DropdownMenu.tsx` — hover-triggered on desktop, click-triggered on mobile, supports grouped items by category, close on outside click, Framer Motion enter/exit animation
+- [x] T062 [P] [US5] Create DesktopNav component at `src/components/navigation/DesktopNav.tsx` — logo, "2026" link, "Гороскопи" dropdown (products by 6 categories), "Безкоштовно" dropdown (6 free tools), "Блог" link, "UA" language indicator, auth button/user menu
+- [x] T063 [P] [US5] Create NewFooter component at `src/components/navigation/NewFooter.tsx` — 4-column layout (Персональні сервіси, Для партнерів, Про компанію, Контакти), all links, copyright
+- [x] T064 [US5] Update MobileNav at `src/components/MobileNav.tsx` — add hamburger menu that expands with nested sections for "Гороскопи" and "Безкоштовно" categories, keep bottom bar with key shortcuts
+- [x] T065 [US5] Update main layout at `src/app/(main)/layout.tsx` — replace current nav with DesktopNav, replace Footer with NewFooter, track nav_dropdown_opened and nav_item_clicked events
+- [x] T065b [US5] Create placeholder legal pages at `src/app/(main)/legal/terms/page.tsx`, `src/app/(main)/legal/privacy/page.tsx`, `src/app/(main)/legal/cookies/page.tsx` — simple pages with "Сторінка в розробці" text, basic SEO metadata (title, description), consistent styling with GlassCard
+- [x] T066 [US5] Verify navigation: desktop dropdowns open on hover with all products/tools listed, mobile hamburger works, footer renders 4 columns, all links resolve, legal pages accessible
 
 **Checkpoint**: Full navigation system with product discoverability across desktop and mobile
 
