@@ -21,30 +21,15 @@ import QuizStep5NameGender from '@/components/quiz/QuizStep5NameGender';
 import QuizStep6Email from '@/components/quiz/QuizStep6Email';
 import MiniHoroscope from '@/components/quiz/MiniHoroscope';
 import PaywallSection from '@/components/product/PaywallSection';
+import type { Planet, House, Aspect } from '@/types/astrology';
 
 interface MiniHoroscopeData {
   natal_chart: {
     ascendant: number;
-    planets: Array<{
-      name: string;
-      longitude: number;
-      sign: string;
-      house: number;
-      isRetrograde: boolean;
-      speed: number;
-    }>;
-    houses: Array<{
-      number: number;
-      cusp: number;
-      sign: string;
-    }>;
-    aspects: Array<{
-      planet1: string;
-      planet2: string;
-      type: string;
-      orb: number;
-      isApplying: boolean;
-    }>;
+    midheaven?: number;
+    planets: Planet[];
+    houses: House[];
+    aspects: Aspect[];
   };
   key_aspects: Array<{
     planet1: string;

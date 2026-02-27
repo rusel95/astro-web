@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import ChartNewClient from './ChartNewClient';
 
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function NewChartPage() {
-  return <ChartNewClient />;
+  return (
+    <Suspense>
+      <ChartNewClient />
+    </Suspense>
+  );
 }

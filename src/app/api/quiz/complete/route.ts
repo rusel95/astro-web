@@ -190,6 +190,7 @@ export async function POST(request: Request) {
     const miniHoroscope = {
       natal_chart: {
         ascendant: natalChart.ascendant,
+        midheaven: natalChart.midheaven,
         planets: natalChart.planets,
         houses: natalChart.houses,
         aspects: natalChart.aspects,

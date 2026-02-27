@@ -397,13 +397,13 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
 
         {/* CTA */}
         <div className="text-center p-8 rounded-3xl" style={{ background: `${zodiac.color}10`, border: `2px solid ${zodiac.color}30` }}>
-          <h3 className="text-2xl font-bold text-white mb-4">Хочете дізнатися більше про вашу натальну карту?</h3>
+          <h3 className="text-2xl font-bold text-white mb-4">Дізнайтесь більше про вашу натальну карту</h3>
           <Link
-            href="/chart/new"
+            href="/dashboard"
             className="inline-block px-8 py-4 rounded-2xl font-bold text-white transition-all hover:scale-105"
             style={{ background: `linear-gradient(135deg, ${zodiac.color} 0%, ${zodiac.color}dd 100%)` }}
           >
-            Розрахувати мою карту →
+            Мій кабінет →
           </Link>
         </div>
       </div>

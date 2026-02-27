@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import { PLANET_NAMES_UK, ASPECT_NAMES_UK, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
-import type { PlanetName, ZodiacSign } from '@/types/astrology';
+import NatalChartWheel from '@/components/chart/NatalChartWheel';
+import type { PlanetName, ZodiacSign, Planet, House, Aspect } from '@/types/astrology';
 
 interface KeyAspect {
   planet1: string;
@@ -17,26 +18,10 @@ interface MiniHoroscopeProps {
   data: {
     natal_chart: {
       ascendant: number;
-      planets: Array<{
-        name: string;
-        longitude: number;
-        sign: string;
-        house: number;
-        isRetrograde: boolean;
-        speed: number;
-      }>;
-      houses: Array<{
-        number: number;
-        cusp: number;
-        sign: string;
-      }>;
-      aspects: Array<{
-        planet1: string;
-        planet2: string;
-        type: string;
-        orb: number;
-        isApplying: boolean;
-      }>;
+      midheaven?: number;
+      planets: Planet[];
+      houses: House[];
+      aspects: Aspect[];
     };
     key_aspects: KeyAspect[];
     zodiac_sign_uk: string;
@@ -57,10 +42,10 @@ export default function MiniHoroscope({ data, userName }: MiniHoroscopeProps) {
     >
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-2">
-          {userName}, ваш міні-гороскоп готовий!
+          {userName}, ваша натальна карта готова!
         </h2>
         <p className="text-gray-500">
-          Ось ключові аспекти вашої натальної карти
+          Ось ваша повна натальна карта з ключовими аспектами
         </p>
       </div>
 
@@ -93,6 +78,49 @@ export default function MiniHoroscope({ data, userName }: MiniHoroscopeProps) {
             </div>
             <span className="text-xs text-gray-400 uppercase tracking-wide">Асцендент</span>
             <span className="font-semibold text-gray-900">{data.ascendant_sign_uk}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Full Natal Chart Wheel */}
+      <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-cosmic-900 p-4 mb-6">
+        <NatalChartWheel
+          planets={data.natal_chart.planets}
+          houses={data.natal_chart.houses}
+          aspects={data.natal_chart.aspects}
+          ascendant={data.natal_chart.ascendant}
+          midheaven={data.natal_chart.midheaven ?? 0}
+        />
+      </div>
+
+      {/* Planets Table */}
+      <div className="mb-6">
+        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">
+          Планети у вашій карті
+        </h3>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="divide-y divide-gray-50">
+            {data.natal_chart.planets
+              .filter((p) => !['TrueNode', 'SouthNode', 'Lilith'].includes(p.name))
+              .map((planet) => {
+                const nameUk = PLANET_NAMES_UK[planet.name as PlanetName] || planet.name;
+                const signUk = ZODIAC_NAMES_UK[planet.sign as ZodiacSign] || planet.sign;
+                return (
+                  <div key={planet.name} className="flex items-center justify-between px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <ZodiacIcon sign={planet.sign} size={18} className="text-zorya-violet" />
+                      <span className="font-medium text-gray-900 text-sm">{nameUk}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-gray-600">{signUk}</span>
+                      <span className="text-gray-400">· {planet.house} дім</span>
+                      {planet.isRetrograde && (
+                        <span className="text-xs text-red-400">℞</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>
@@ -131,43 +159,11 @@ export default function MiniHoroscope({ data, userName }: MiniHoroscopeProps) {
         })}
       </div>
 
-      {/* Planets Table */}
-      <div className="mt-6">
-        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">
-          Планети у вашій карті
-        </h3>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="divide-y divide-gray-50">
-            {data.natal_chart.planets
-              .filter((p) => !['TrueNode', 'SouthNode', 'Lilith'].includes(p.name))
-              .map((planet) => {
-                const nameUk = PLANET_NAMES_UK[planet.name as PlanetName] || planet.name;
-                const signUk = ZODIAC_NAMES_UK[planet.sign as ZodiacSign] || planet.sign;
-                return (
-                  <div key={planet.name} className="flex items-center justify-between px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <ZodiacIcon sign={planet.sign} size={18} className="text-zorya-violet" />
-                      <span className="font-medium text-gray-900 text-sm">{nameUk}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="text-gray-600">{signUk}</span>
-                      <span className="text-gray-400">· {planet.house} дім</span>
-                      {planet.isRetrograde && (
-                        <span className="text-xs text-red-400">℞</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-      </div>
-
-      {/* Teaser + CTA */}
+      {/* CTA */}
       <div className="mt-8 p-6 bg-gradient-to-br from-zorya-violet/10 to-zorya-violet/5 rounded-2xl border border-zorya-violet/15 text-center">
-        <p className="text-gray-700 text-sm mb-4">
-          Це лише частина вашої натальної карти. Повний аналіз включає
-          детальні інтерпретації для кожної планети, будинку та аспекту.
+        <p className="text-gray-700 text-sm">
+          Це ваша натальна карта. Отримайте персональний аналіз кожної
+          планети, будинку та аспекту з детальними інтерпретаціями.
         </p>
       </div>
     </motion.div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
@@ -83,6 +83,7 @@ const STEP_SUBTITLES = [
 
 export default function ChartNewClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
 
@@ -98,6 +99,7 @@ export default function ChartNewClient() {
   const [lon, setLon] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const autoSubmitAttempted = useRef(false);
 
   const zodiacSign = getZodiacSign(birthDate);
 
@@ -219,6 +221,98 @@ export default function ChartNewClient() {
   useEffect(() => {
     handleSubmitRef.current = handleSubmit;
   }, [handleSubmit]);
+
+  // ─── Auto-submit when all query params are provided ─────────────────────
+  useEffect(() => {
+    if (autoSubmitAttempted.current) return;
+    const qName = searchParams.get('name');
+    const qBirthDate = searchParams.get('birthDate');
+    const qBirthTime = searchParams.get('birthTime');
+    const qCity = searchParams.get('city');
+
+    if (!qName || !qBirthDate || !qCity) return;
+    autoSubmitAttempted.current = true;
+
+    setName(qName);
+    setBirthDate(qBirthDate);
+    if (qBirthTime) setBirthTime(qBirthTime);
+    setLoading(true);
+
+    (async () => {
+      try {
+        // 1. Geocode city
+        const geoRes = await fetch(`/api/geocode?q=${encodeURIComponent(qCity)}`);
+        const cities: Array<{ name: string; countryCode: string; lat: number; lon: number }> = await geoRes.json();
+        if (!cities.length) throw new Error('Місто не знайдено');
+        const c = cities[0];
+        setCity(c.name);
+        setCountryCode(c.countryCode);
+        setLat(c.lat);
+        setLon(c.lon);
+
+        // 2. Create chart
+        const chartRes = await fetch('/api/chart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: qName,
+            birthDate: qBirthDate,
+            birthTime: qBirthTime || '12:00',
+            city: c.name,
+            countryCode: c.countryCode,
+            latitude: c.lat,
+            longitude: c.lon,
+            gender: '',
+          }),
+        });
+        const data: { id?: string; chart?: unknown; error?: string } = await chartRes.json();
+        if (data.error) throw new Error(data.error);
+        if (!data.id) throw new Error('Помилка відповіді сервера');
+
+        // 3. Cache locally
+        const chartJson = JSON.stringify(data.chart);
+        const inputJson = JSON.stringify({ name: qName, gender: '' });
+        sessionStorage.setItem(`chart-${data.id}`, chartJson);
+        sessionStorage.setItem(`chart-input-${data.id}`, inputJson);
+        localStorage.setItem(`chart-${data.id}`, chartJson);
+        localStorage.setItem(`chart-input-${data.id}`, inputJson);
+
+        // 4. Save to Supabase if logged in
+        if (isSupabaseConfigured()) {
+          try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase.from('charts').upsert({
+                id: data.id,
+                user_id: user.id,
+                name: qName,
+                birth_date: qBirthDate,
+                birth_time: qBirthTime || '12:00',
+                city: c.name,
+                country_code: c.countryCode,
+                latitude: c.lat,
+                longitude: c.lon,
+                gender: '',
+                chart_data: data.chart,
+              });
+            }
+          } catch {
+            // Non-critical
+          }
+        }
+
+        track(ANALYTICS_EVENTS.CHART_CREATED, {
+          chart_id: data.id,
+          source: 'auto_submit_query_params',
+        });
+        router.push(`/chart/${data.id}`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Помилка розрахунку');
+        setLoading(false);
+      }
+    })();
+  }, [searchParams, router]);
 
   // ─── Loading screen ───────────────────────────────────────────────────────
   if (loading) {
