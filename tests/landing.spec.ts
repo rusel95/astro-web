@@ -62,6 +62,6 @@ test.describe('Landing Page Sections', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 });

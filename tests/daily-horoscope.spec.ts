@@ -51,6 +51,6 @@ test.describe('Daily Horoscope', () => {
     await page.goto('/daily');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 });

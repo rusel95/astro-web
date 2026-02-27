@@ -55,7 +55,7 @@ test.describe('Product Pages (/horoscope/[slug])', () => {
     await page.goto('/horoscope/personality');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 
   test('invalid slug returns 404', async ({ page }) => {

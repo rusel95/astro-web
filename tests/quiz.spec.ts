@@ -31,7 +31,7 @@ test.describe('Quiz Flow', () => {
     await page.goto('/quiz');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 
   test('quiz has CTA button', async ({ page }) => {

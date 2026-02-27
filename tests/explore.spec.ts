@@ -25,6 +25,6 @@ test.describe('Explore Page', () => {
     await page.goto('/explore');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 });

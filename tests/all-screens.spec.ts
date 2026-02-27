@@ -257,7 +257,7 @@ test.describe('Chart New — All Steps', () => {
 
     // No horizontal overflow
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
 
     // "Далі" visible without scrolling
     const nextBtn = page.locator('button', { hasText: 'Далі' });

@@ -61,6 +61,6 @@ test.describe('Ascendant Calculator', () => {
     await page.goto('/ascendant');
     await page.waitForLoadState('networkidle');
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(395);
+    expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 });

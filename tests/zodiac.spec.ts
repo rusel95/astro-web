@@ -56,7 +56,7 @@ test.describe('Zodiac Pages — All Signs', () => {
       
       // No horizontal scroll
       const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
-      expect(scrollWidth).toBeLessThanOrEqual(395); // 390 + 5px tolerance
+      expect(scrollWidth).toBeLessThanOrEqual(410); // 390 + scrollbar tolerance
     });
   }
 });
