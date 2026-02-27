@@ -34,7 +34,7 @@ export function MoonTransitCard({ moon }: MoonTransitCardProps) {
             <p className="text-lg">{moon.illumination.toFixed(0)}%</p>
           </div>
         </div>
-        
+
         {/* Персоналізована рекомендація */}
         <div className="mt-4 p-4 bg-muted rounded-lg">
           <p className="text-sm">

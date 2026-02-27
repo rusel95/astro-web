@@ -10,18 +10,19 @@ interface CalendarProps {
   modifiers?: Record<string, Date[]>;
   modifiersStyles?: Record<string, React.CSSProperties>;
   className?: string;
+  defaultMonth?: Date;
 }
 
 export function Calendar({
-  mode = 'single',
   selected,
   onSelect,
   onMonthChange,
   modifiers = {},
   modifiersStyles = {},
-  className = ''
+  className = '',
+  defaultMonth
 }: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = React.useState(new Date());
+  const [currentMonth, setCurrentMonth] = React.useState(defaultMonth || new Date());
   
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
