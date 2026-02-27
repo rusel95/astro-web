@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
-import { getAstrologyClient, toSdkChartOptions } from '@/lib/astrology-client';
+import { getAstrologyClient, toSdkSubject, toSdkChartOptions } from '@/lib/astrology-client';
 import { mapAPIResponse } from '@/lib/api-mapper';
 import { createServiceClient, isSupabaseConfigured } from '@/lib/supabase/service';
 import { ZODIAC_NAMES_UK, PLANET_NAMES_UK, ASPECT_NAMES_UK } from '@/lib/constants';
@@ -146,37 +146,32 @@ export async function POST(request: Request) {
 
     // Calculate natal chart using Astrology SDK
     const client = getAstrologyClient();
-    const [year, month, day] = sessionData.birth_date.split('-').map(Number);
     const birthTime = sessionData.birth_time ?? '12:00';
-    const [hour, minute] = birthTime.split(':').map(Number);
-
-    const subject = {
-      name: sessionData.name,
-      birth_data: {
-        year,
-        month,
-        day,
-        hour,
-        minute,
-        second: 0,
-        city: sessionData.birth_city,
-        country_code: sessionData.country_code,
-      },
-    };
-
-    const options = toSdkChartOptions();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const chartResponse = await client.charts.getNatalChart({ subject, options } as any);
 
     const chartInput = {
       birthDate: sessionData.birth_date,
-      birthTime: sessionData.birth_time,
+      birthTime: birthTime,
       city: sessionData.birth_city,
       countryCode: sessionData.country_code,
       latitude: sessionData.birth_lat,
       longitude: sessionData.birth_lng,
       name: sessionData.name,
     };
+
+    // Use toSdkSubject for consistent subject creation (same as /api/chart)
+    const subject = toSdkSubject(chartInput);
+    const options = toSdkChartOptions();
+
+    let chartResponse;
+    try {
+      chartResponse = await client.charts.getNatalChart({ subject, options });
+    } catch (apiErr: any) {
+      Sentry.captureException(apiErr, {
+        tags: { route: 'quiz/complete', step: 'astrology_api' },
+        extra: { subject, options, message: apiErr?.message },
+      });
+      throw new Error(`Astrology API failed: ${apiErr?.message}`);
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const natalChart = mapAPIResponse(chartResponse as any, chartInput);
@@ -221,11 +216,14 @@ export async function POST(request: Request) {
       session_id: body.session_id,
       mini_horoscope: miniHoroscope,
     });
-  } catch (err) {
-    Sentry.captureException(err, { tags: { route: 'quiz/complete' } });
-    console.error('Quiz complete error:', err);
+  } catch (err: any) {
+    Sentry.captureException(err, {
+      tags: { route: 'quiz/complete' },
+      extra: { message: err?.message, stack: err?.stack },
+    });
+    console.error('Quiz complete error:', err?.message, err?.stack);
     return NextResponse.json(
-      { error: 'Не вдалося створити міні-гороскоп. Спробуйте пізніше.' },
+      { error: 'Не вдалося створити міні-гороскоп. Спробуйте пізніше.', detail: err?.message },
       { status: 500 }
     );
   }
