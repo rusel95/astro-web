@@ -80,7 +80,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <span>Місяць</span>
               </a>
               <a
-                href="/compatibility"
+                href="/horoscopes/compatibility"
                 aria-label="Сумісність"
                 className="hidden md:flex items-center gap-1.5 px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
               >
