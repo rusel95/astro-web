@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { NatalChart, ReportArea } from '@/types/astrology';
 import { PLANET_NAMES_UK, ZODIAC_NAMES_UK, PLANET_SYMBOLS, getPlanetDignityStatus, DIGNITY_NAMES_UK } from '@/lib/constants';
 
@@ -152,6 +153,7 @@ ${formatChartContext(chart)}
     const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     return NextResponse.json(JSON.parse(cleaned));
   } catch (error: any) {
+    Sentry.captureException(error, { tags: { route: 'report' } });
     console.error('Report generation error:', error);
     return NextResponse.json(
       { error: error.message || 'Report generation failed' },

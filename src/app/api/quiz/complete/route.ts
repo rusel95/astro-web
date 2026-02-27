@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { getAstrologyClient, toSdkChartOptions } from '@/lib/astrology-client';
 import { mapAPIResponse } from '@/lib/api-mapper';
 import { createServiceClient, isSupabaseConfigured } from '@/lib/supabase/service';
@@ -221,6 +222,7 @@ export async function POST(request: Request) {
       mini_horoscope: miniHoroscope,
     });
   } catch (err) {
+    Sentry.captureException(err, { tags: { route: 'quiz/complete' } });
     console.error('Quiz complete error:', err);
     return NextResponse.json(
       { error: 'Не вдалося створити міні-гороскоп. Спробуйте пізніше.' },

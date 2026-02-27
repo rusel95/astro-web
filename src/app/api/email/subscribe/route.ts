@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { createServiceClient, isSupabaseConfigured } from '@/lib/supabase/service';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
           );
         }
       } catch (err) {
+        Sentry.captureException(err, { tags: { route: 'email/subscribe', step: 'supabase' } });
         console.error('Supabase error:', err);
         return NextResponse.json(
           { error: 'Не вдалося зберегти підписку' },
@@ -49,6 +51,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    Sentry.captureException(err, { tags: { route: 'email/subscribe' } });
     console.error('Subscribe error:', err);
     return NextResponse.json(
       { error: 'Помилка сервера' },

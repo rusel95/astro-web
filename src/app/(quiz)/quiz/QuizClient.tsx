@@ -244,7 +244,7 @@ export default function QuizClient() {
   const isLastStep = state.currentStep === 5;
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6">
+    <div className="max-w-lg md:max-w-2xl mx-auto px-4 py-6 md:py-12">
       <QuizProgressBar currentStep={state.currentStep} />
 
       {error && (
@@ -263,7 +263,7 @@ export default function QuizClient() {
         </motion.div>
       )}
 
-      <div className="mt-8 relative overflow-hidden min-h-[400px]">
+      <div className="mt-8 md:mt-12 relative overflow-hidden min-h-[400px] md:min-h-[500px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={state.currentStep}

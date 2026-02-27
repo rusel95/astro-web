@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { getAstrologyClient } from '@/lib/astrology-client';
 
 const VALID_SIGNS = [

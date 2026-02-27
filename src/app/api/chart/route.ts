@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { mapAPIResponse } from '@/lib/api-mapper';
 import { saveChart, generateId } from '@/lib/chart-store';
 import { ChartInput } from '@/types/astrology';
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id, chart });
   } catch (error: any) {
+    Sentry.captureException(error, { tags: { route: 'chart' } });
     if (error instanceof AstrologyError) {
       console.error('Astrology API error:', error.statusCode, error.message);
     }

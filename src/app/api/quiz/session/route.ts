@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { createServiceClient, isSupabaseConfigured } from '@/lib/supabase/service';
 import { ZODIAC_NAMES_UK } from '@/lib/constants';
 import type { ZodiacSign } from '@/types/astrology';
@@ -63,6 +64,7 @@ export async function POST(request: Request) {
         .single();
 
       if (error) {
+        Sentry.captureException(error, { tags: { route: 'quiz/session', step: 'supabase_insert' } });
         console.error('Supabase insert error:', error);
         return NextResponse.json(
           { error: 'Не вдалося зберегти сесію. Спробуйте ще раз.' },
@@ -81,6 +83,7 @@ export async function POST(request: Request) {
       completed: true,
     });
   } catch (err) {
+    Sentry.captureException(err, { tags: { route: 'quiz/session' } });
     console.error('Quiz session error:', err);
     return NextResponse.json(
       { error: 'Не вдалося зберегти сесію' },
