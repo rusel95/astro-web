@@ -14,15 +14,15 @@ const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
 const BTN_GRAD = 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)';
 
 function isBirthdayToday(birthDate: string): boolean {
-  const birth = new Date(birthDate);
+  const [, m, d] = birthDate.split('-').map(Number);
   const today = new Date();
-  return birth.getMonth() === today.getMonth() && birth.getDate() === today.getDate();
+  return today.getMonth() + 1 === m && today.getDate() === d;
 }
 
 function isBirthdaySoon(birthDate: string): { isSoon: boolean; daysUntil: number } {
-  const birth = new Date(birthDate);
+  const [, m, d] = birthDate.split('-').map(Number);
   const today = new Date();
-  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  const thisYearBirthday = new Date(today.getFullYear(), m - 1, d);
 
   if (thisYearBirthday < today) {
     thisYearBirthday.setFullYear(today.getFullYear() + 1);

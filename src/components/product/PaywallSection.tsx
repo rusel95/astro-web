@@ -23,7 +23,7 @@ export default function PaywallSection({ quizCompleted }: PaywallSectionProps) {
 
   const featuredProducts = FEATURED_SLUGS
     .map((slug) => PRODUCTS.find((p) => p.slug === slug))
-    .filter((p): p is Product => p !== null);
+    .filter((p): p is Product => p != null);
 
   useEffect(() => {
     track(ANALYTICS_EVENTS.PAYWALL_VIEWED, { quiz_completed: quizCompleted });

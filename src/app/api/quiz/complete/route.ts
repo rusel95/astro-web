@@ -146,7 +146,8 @@ export async function POST(request: Request) {
     // Calculate natal chart using Astrology SDK
     const client = getAstrologyClient();
     const [year, month, day] = sessionData.birth_date.split('-').map(Number);
-    const [hour, minute] = sessionData.birth_time.split(':').map(Number);
+    const birthTime = sessionData.birth_time ?? '12:00';
+    const [hour, minute] = birthTime.split(':').map(Number);
 
     const subject = {
       name: sessionData.name,

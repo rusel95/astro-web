@@ -16,15 +16,15 @@ import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
 
 function isBirthdayToday(birthDate: string): boolean {
-  const birth = new Date(birthDate);
+  const [, m, d] = birthDate.split('-').map(Number);
   const today = new Date();
-  return birth.getMonth() === today.getMonth() && birth.getDate() === today.getDate();
+  return today.getMonth() + 1 === m && today.getDate() === d;
 }
 
 function isBirthdaySoon(birthDate: string): { isSoon: boolean; daysUntil: number } {
-  const birth = new Date(birthDate);
+  const [, m, d] = birthDate.split('-').map(Number);
   const today = new Date();
-  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  const thisYearBirthday = new Date(today.getFullYear(), m - 1, d);
 
   if (thisYearBirthday < today) {
     thisYearBirthday.setFullYear(today.getFullYear() + 1);
