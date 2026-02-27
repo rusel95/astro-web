@@ -14,8 +14,8 @@ export default function PrivacyPage() {
         </h1>
         <div className="text-text-secondary space-y-4 text-sm leading-relaxed">
           <p>
-            Ця сторінка знаходиться в розробці. Повний текст політики конфіденційності
-            буде доступний найближчим часом.
+            Платформа Зоря (далі — «Сервіс») поважає вашу приватність. Ця політика
+            описує, які дані ми збираємо, як їх використовуємо та які права ви маєте.
           </p>
           <h2 className="text-lg font-display font-semibold text-text-primary pt-2">
             Які дані ми збираємо
