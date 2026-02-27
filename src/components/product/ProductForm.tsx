@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import { createClient } from '@/lib/supabase/client';
 
@@ -24,7 +23,6 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     email: '',
   });
   const [tracked, setTracked] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
 
   // Pre-fill from auth session + chart data, then quiz session as fallback
@@ -113,8 +111,13 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
       product_slug: productSlug,
       action: 'product_form_submit',
     });
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 3000);
+    // Navigate to chart creation with pre-filled data
+    const params = new URLSearchParams();
+    if (form.name) params.set('name', form.name);
+    if (form.birthDate) params.set('birthDate', form.birthDate);
+    if (form.birthTime) params.set('birthTime', form.birthTime);
+    if (form.city) params.set('city', form.city);
+    window.location.href = `/chart/new?${params.toString()}`;
   };
 
   return (
@@ -211,17 +214,6 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
         Продовжити
       </button>
 
-      {/* Toast */}
-      {toastVisible && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg text-sm font-medium z-50"
-        >
-          Скоро буде доступно! Ми працюємо над оплатою.
-        </motion.div>
-      )}
     </div>
   );
 }

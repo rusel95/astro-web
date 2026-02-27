@@ -131,11 +131,43 @@ export default function MiniHoroscope({ data, userName }: MiniHoroscopeProps) {
         })}
       </div>
 
-      {/* Teaser */}
+      {/* Planets Table */}
+      <div className="mt-6">
+        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">
+          Планети у вашій карті
+        </h3>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="divide-y divide-gray-50">
+            {data.natal_chart.planets
+              .filter((p) => !['TrueNode', 'SouthNode', 'Lilith'].includes(p.name))
+              .map((planet) => {
+                const nameUk = PLANET_NAMES_UK[planet.name as PlanetName] || planet.name;
+                const signUk = ZODIAC_NAMES_UK[planet.sign as ZodiacSign] || planet.sign;
+                return (
+                  <div key={planet.name} className="flex items-center justify-between px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <ZodiacIcon sign={planet.sign} size={18} className="text-zorya-violet" />
+                      <span className="font-medium text-gray-900 text-sm">{nameUk}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-gray-600">{signUk}</span>
+                      <span className="text-gray-400">· {planet.house} дім</span>
+                      {planet.isRetrograde && (
+                        <span className="text-xs text-red-400">℞</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </div>
+
+      {/* Teaser + CTA */}
       <div className="mt-8 p-6 bg-gradient-to-br from-zorya-violet/10 to-zorya-violet/5 rounded-2xl border border-zorya-violet/15 text-center">
-        <p className="text-gray-700 text-sm">
+        <p className="text-gray-700 text-sm mb-4">
           Це лише частина вашої натальної карти. Повний аналіз включає
-          всі планети, будинки та аспекти з детальними інтерпретаціями.
+          детальні інтерпретації для кожної планети, будинку та аспекту.
         </p>
       </div>
     </motion.div>

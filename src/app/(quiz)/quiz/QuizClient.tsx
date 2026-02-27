@@ -212,6 +212,16 @@ export default function QuizClient() {
           userName={state.name}
         />
         <PaywallSection quizCompleted={true} />
+
+        {/* Navigate to dashboard */}
+        <div className="text-center pb-8">
+          <a
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-zorya-violet to-zorya-blue text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          >
+            Перейти до кабінету
+          </a>
+        </div>
       </div>
     );
   }

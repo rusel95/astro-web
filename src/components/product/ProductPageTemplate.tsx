@@ -65,7 +65,7 @@ export default function ProductPageTemplate({ product }: ProductPageTemplateProp
           {product.description_uk}
         </p>
         <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zorya-violet/10 text-zorya-violet font-semibold">
-          Скоро
+          Безкоштовно
         </div>
       </motion.div>
 
@@ -145,7 +145,7 @@ export default function ProductPageTemplate({ product }: ProductPageTemplateProp
                 </h3>
                 <p className="text-text-muted text-xs mt-1">{p.description_uk}</p>
                 <span className="text-zorya-violet font-semibold text-sm mt-2 block">
-                  Скоро
+                  Безкоштовно
                 </span>
               </Link>
             ))}
