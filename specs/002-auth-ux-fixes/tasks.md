@@ -269,6 +269,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Checkpoint**: All 8 specialized analyses working.
 
+### Phase 10 Gate
+
+- [ ] PG-10a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-10b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-10c Write Playwright tests: each analysis page loads, form submit works, results display with all sections, relocation page has location picker — mobile (375px) + desktop (1280px)
+- [ ] PG-10d Commit: `phase-10: specialized analyses (career, health, karmic, psychological, spiritual, vocational, lunar, relocation)`
+
 ---
 
 ## Phase 11: Tarot Section (US7, Priority: P2)
