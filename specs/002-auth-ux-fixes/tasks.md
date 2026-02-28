@@ -60,7 +60,7 @@
 **Independent Test**: Login → homepage shows greeting, daily horoscope, saved charts. Logout → homepage shows marketing CTAs.
 
 - [ ] T019 [US13] Refactor homepage `src/app/(main)/page.tsx` — detect auth state server-side or client-side. If auth: render personalized content (greeting with name, daily horoscope snippet, chart list). If unauth: keep existing marketing landing
-- [ ] T020 [US13] Create `DashboardHome` component in `src/components/home/DashboardHome.tsx` — personalized view: "Привіт, {name}", daily horoscope card (from `/api/horoscope/daily/{sign}`), list of saved charts, feature recommendations grid
+- [ ] T020 [US13] Create `DashboardHome` component in `src/components/home/DashboardHome.tsx` — personalized view: "Привіт, {name}", daily horoscope card (from `/api/horoscope/daily/{sign}` based on user's Sun sign), list of saved charts, feature grid showing top 6 most popular categories the user hasn't tried yet (transit, tarot, compatibility, numerology, Chinese, traditional)
 - [ ] T021 [US13] Remove auth-user-facing "Створити акаунт" CTAs — audit all components for signup CTAs that show to auth users, conditionally hide them
 
 **Checkpoint**: Homepage is auth-aware. Auth users see personalized content.
@@ -193,7 +193,7 @@
 
 ## Phase 11: Tarot Section (US7, Priority: P2)
 
-**Goal**: 7 tarot pages — daily card, single card, three-card, Celtic Cross, houses spread, Tree of Life, birth cards.
+**Goal**: 9 tarot pages — daily card, single card, three-card, Celtic Cross, houses spread, Tree of Life, birth cards, synastry tarot, transit tarot.
 
 **Independent Test**: Visit daily tarot → see today's card with image + interpretation. Visit Celtic Cross → draw 10 cards → see full spread interpretation.
 
@@ -327,7 +327,7 @@
 - [ ] T120 Remove remaining old product pages — delete `src/app/(main)/ascendant/page.tsx`, delete `src/app/(main)/horoscopes/*/page.tsx` (6 old product pages). Add redirects in next.config.js for any bookmarked URLs. Note: `/daily` and `/horoscope/[slug]` already handled by T041
 - [ ] T121 [P] Add Ukrainian SEO metadata to ALL new pages — title, description per page in `export const metadata`
 - [ ] T122 [P] Verify all PostHog analytics events fire correctly on each feature page
-- [ ] T123 Run `npm run build` — verify zero TypeScript errors, all pages build
+- [ ] T123 Run `npm run build` — verify zero TypeScript errors, all pages build. Spot-check 3 key new pages (tarot hub, transit, compatibility) at 375px viewport for mobile-first compliance
 - [ ] T124 Run `npm run test` — verify all existing Playwright tests still pass
 - [ ] T125 Verify zero "Скоро" instances remain — grep codebase for "Скоро", "coming soon", "незабаром", confirm zero matches (verification only, removal done in T018)
 
@@ -430,15 +430,15 @@ T041: Remove/redirect old pages (after all new pages exist)
 
 | Metric | Count |
 | ------ | ----- |
-| Total tasks | 125 |
+| Total tasks | 126 (T001-T125 + T079a, T079b; T054 merged) |
 | Phase 1 (Setup) | 11 tasks |
-| P1 User Stories (US1, US2, US3, US4, US13, US14, US15) | 55 tasks |
-| P2 User Stories (US5-US11) | 40 tasks |
+| P1 User Stories (US1, US2, US3, US4, US13, US14, US15) | 54 tasks |
+| P2 User Stories (US5-US11) | 42 tasks |
 | P3 User Stories (US12, US16) | 9 tasks |
 | Polish | 7 tasks |
-| Parallelizable tasks | 68 tasks (54%) |
+| Parallelizable tasks | 70 tasks (56%) |
 | New API routes | ~25 |
-| New pages | 42 |
+| New pages | 44 (42 + 2 tarot) |
 | Enhanced pages | 6 |
 
 ## Notes
