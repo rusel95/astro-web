@@ -467,6 +467,16 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [ ] T123 Run `npm run build` — verify zero TypeScript errors, all pages build. Spot-check 3 key new pages (tarot hub, transit, compatibility) at 375px viewport for mobile-first compliance
 - [ ] T124 Run `npm run test` — verify all existing Playwright tests still pass
 - [ ] T125 Verify zero "Скоро" instances remain — grep codebase for "Скоро", "coming soon", "незабаром", confirm zero matches (verification only, removal done in T018)
+- [ ] T126 Create GitHub Actions CI workflow `.github/workflows/ci.yml` — runs on every PR: `npm ci`, `npm run build`, `npx playwright install --with-deps`, `npm run test`. Fails PR if build or tests fail. Cache node_modules and Playwright browsers for speed
+- [ ] T127 Verify no duplicate personal data entry — audit all feature pages: auth users with complete chart data MUST never see a birth data form. Partner data entered once MUST be reusable via ChartSelector/PartnerSelector across all dual-input pages (compatibility, composite, relationship, Chinese compatibility, numerology compatibility, synastry tarot)
+
+### Phase 18 Gate
+
+- [ ] PG-18a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-18b Run `npm run test` — ALL Playwright tests pass (existing + all new phase tests)
+- [ ] PG-18c Write Playwright tests: old page redirects work (explore, ascendant, old horoscopes), SEO metadata present on sample pages, CI workflow passes — mobile (375px) + desktop (1280px)
+- [ ] PG-18d **FINAL MILESTONE**: Full end-to-end regression across all features. Verify on production after deploy
+- [ ] PG-18e Commit: `phase-18: polish, cleanup, CI, final validation`
 
 ---
 
@@ -551,15 +561,15 @@ T041: Remove/redirect old pages (after all new pages exist)
 
 ### Incremental Delivery (P2)
 
-8. Add P2 stories one at a time or in parallel
-9. Each story deployable independently
-10. Verify each on production after deploy
+1. Add P2 stories one at a time or in parallel
+2. Each story deployable independently
+3. Verify each on production after deploy
 
 ### Final Polish (P3 + Cleanup)
 
-11. Add P3 stories (insights, stats fix, glossary)
-12. Remove old pages, verify zero "Скоро"
-13. Final build + test validation
+1. Add P3 stories (insights, stats fix, glossary)
+2. Remove old pages, verify zero "Скоро"
+3. Final build + test validation
 
 ---
 
@@ -567,22 +577,28 @@ T041: Remove/redirect old pages (after all new pages exist)
 
 | Metric | Count |
 | ------ | ----- |
-| Total tasks | 126 (T001-T125 + T079a, T079b; T054 merged) |
-| Phase 1 (Setup) | 11 tasks |
-| P1 User Stories (US1, US2, US3, US4, US13, US14, US15) | 54 tasks |
-| P2 User Stories (US5-US11) | 42 tasks |
-| P3 User Stories (US12, US16) | 9 tasks |
-| Polish | 7 tasks |
-| Parallelizable tasks | 70 tasks (56%) |
+| Total tasks | 128 feature tasks (T001-T127 + T079a, T079b) |
+| Phase gate tasks | 68 (PG-01a through PG-18e) |
+| Phase 1 (Setup) | 11 tasks + 4 gate |
+| P1 User Stories (US1-US4, US13-US15) | 54 tasks + 28 gate |
+| P2 User Stories (US5-US11) | 42 tasks + 24 gate |
+| P3 User Stories (US12, US16) | 9 tasks + 8 gate |
+| Polish | 9 tasks + 5 gate |
+| Parallelizable tasks | 70 tasks (55%) |
 | New API routes | ~25 |
 | New pages | 44 (42 + 2 tarot) |
 | Enhanced pages | 6 |
+| CI/CD | GitHub Actions workflow for PR checks |
 
 ## Notes
 
 - [P] tasks = different files, no dependencies — can run concurrently
 - [Story] label maps task to specific user story for traceability
 - Each user story is independently completable and testable
-- Commit after each task or logical group
+- **Phase gates are mandatory** — no phase is complete without passing all PG-xx tasks
+- **Mobile-first testing** — all UI tests run at 375px (primary) and 1280px viewports
+- **No duplicate data entry** — auth users never re-enter data that's already saved (T127)
+- **CI on every PR** — GitHub Actions runs build + tests automatically (T126)
+- Commit after each phase gate passes. Never merge — merging is user's responsibility
 - Stop at any checkpoint to validate story independently
 - Suggested MVP scope: Phases 1-8 (all P1 stories)
