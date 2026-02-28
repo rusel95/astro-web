@@ -24,11 +24,11 @@
 - [ ] T003 [P] Create feature types file `src/types/features.ts` — FeatureType union type, FeatureResult interface, PartnerChart interface, cache TTL map
 - [ ] T004 [P] Create feature cache helper `src/lib/feature-cache.ts` — getCachedResult(), saveCachedResult(), clearExpiredResults() using Supabase `feature_results` table
 - [ ] T005 [P] Create `useAuthChart` hook in `src/hooks/useAuthChart.ts` — checks auth status, loads user's latest chart from Supabase, returns { user, chart, isComplete, isLoading }
-- [ ] T006 [P] Create `BirthDataForm` component in `src/components/feature/BirthDataForm.tsx` — compact inline form (name, gender, DOB, time, city), pre-fills from initialData, includes ChartSelector for auth users
+- [ ] T006 [P] Create `BirthDataForm` component in `src/components/feature/BirthDataForm.tsx` — compact inline form (name, gender, DOB, time, city), pre-fills from initialData, includes ChartSelector for auth users. Birth time field supports "Невідомо" option → defaults to 12:00, shows accuracy notice
 - [ ] T007 [P] Create `ChartSelector` component in `src/components/feature/ChartSelector.tsx` — dropdown fetching from `/api/charts/my`, shows chart name + birth date
 - [ ] T008 [P] Create `SvgChartViewer` component in `src/components/feature/SvgChartViewer.tsx` — renders API SVG string with dark background, responsive sizing, loading state
 - [ ] T009 [P] Create `AnalysisSection` component in `src/components/feature/AnalysisSection.tsx` — recursively renders structured API JSON data with Ukrainian labels for common keys, handles nested objects/arrays
-- [ ] T010 [P] Create `FeaturePageLayout` component in `src/components/feature/FeaturePageLayout.tsx` — standard layout: title, description, BirthDataForm (or auto-submit), result area, loading/error states
+- [ ] T010 [P] Create `FeaturePageLayout` component in `src/components/feature/FeaturePageLayout.tsx` — standard layout: title, description, BirthDataForm (or auto-submit), result area, loading/error states. Auto-emits `feature_page_view` PostHog event on mount. When useAuthChart detects missing gender on existing chart, shows one-time prompt to complete profile. Integrates feature-cache.ts: checks cached result before API call, saves result after fetch
 - [ ] T011 [P] Add new PostHog events in `src/lib/analytics/events.ts` — feature_page_view, feature_result_loaded, feature_error, feature_form_submit for each feature category
 
 **Checkpoint**: Shared infrastructure ready. All user story phases can begin.
@@ -47,7 +47,7 @@
 - [ ] T015 [US14] Add sessionStorage cleanup on logout — in the auth state change handler (likely `src/components/` auth provider or layout), clear all sessionStorage on `SIGNED_OUT` event
 - [ ] T016 [US14] Fix gender save — verify `src/app/api/chart/route.ts` saves gender from request body to charts table; if not, add gender to the INSERT/UPDATE query
 - [ ] T017 [US14] Fix product form auto-submit — update `src/components/product/ProductForm.tsx` to skip form entirely when auth user has complete chart data (name, DOB, time, city, gender all present). Auto-call API with chart data and show results directly
-- [ ] T018 [US14] Remove all "Скоро" text — search entire codebase for "Скоро", "coming soon", "незабаром" and remove/replace with actual functionality or remove the block entirely
+- [ ] T018 [US14] Remove all "Скоро" text — grep codebase for "Скоро", "coming soon", "незабаром", remove/replace with actual functionality or remove the block entirely. T125 will verify zero remain after all phases
 
 **Checkpoint**: Auth flow fixed. Users can navigate freely, forms auto-submit, privacy protected.
 
@@ -75,7 +75,7 @@
 
 - [ ] T022 [US15] Redesign desktop navigation in `src/components/nav/` — implement dropdown menus: Гороскопи, Карти, Таро, Аналіз, Ще (per contracts/pages.md navigation structure)
 - [ ] T023 [US15] Redesign mobile navigation in `src/components/nav/` — bottom tab bar (Головна, Карти, Гороскопи, Таро, Ще) + full-screen expandable menu for "Ще"
-- [ ] T024 [US15] Remove broken product page redirects — audit `src/app/(main)/horoscopes/*/page.tsx`, `src/app/(main)/ascendant/page.tsx`, `src/app/(main)/daily/page.tsx` and either redirect to new correct routes or replace with actual functionality
+- [ ] T024 [US15] Fix broken product page navigation — remove auth-only redirect logic from `src/app/(main)/horoscopes/*/page.tsx`, `src/app/(main)/ascendant/page.tsx` so pages load for all users. Actual page removal/redirects handled later in T041 (horoscopes) and T120 (others)
 
 **Checkpoint**: Users can navigate to every feature from the menu.
 
@@ -87,7 +87,7 @@
 
 **Independent Test**: Create chart → see API SVG, all planet positions, houses, aspects with orbs, essential dignities, full natal report with interpretations.
 
-- [ ] T025 [US1] Enhance `/api/chart` route in `src/app/api/chart/route.ts` — add calls to `client.analysis.getNatalReport()`, `client.data.getEnhancedPositions()`, `client.data.getEnhancedAspects()` alongside existing getNatalChart + getSvg. Return all data
+- [ ] T025 [US1] Enhance `/api/chart` route in `src/app/api/chart/route.ts` — add calls to `client.analysis.getNatalReport()`, `client.data.getEnhancedPositions()`, `client.data.getEnhancedAspects()`, `client.enhanced.getEnhancedNatalChart()` alongside existing getNatalChart + getSvg. Return all data
 - [ ] T026 [US1] Enhance chart results page `src/app/(main)/chart/[id]/page.tsx` — add new tabs/sections: "Звіт" (natal report), "Гідності" (dignities), "Розширені аспекти" (enhanced aspects). Display ALL fields from API responses
 - [ ] T027 [US1] Replace local NatalChartWheel with API SVG — in chart results page, use `SvgChartViewer` component to display the `svg_content` from API instead of the local SVG renderer. Keep local renderer as fallback only
 - [ ] T028 [US1] Display complete planet data — in PlanetsTable, show degree/minute, retrograde status, house placement, speed, dignity status for each planet (using enhanced positions data)
@@ -114,7 +114,7 @@
 - [ ] T038 [P] [US2] Create monthly horoscope page `src/app/(main)/horoscope/monthly/page.tsx` + client component — sign selector, full monthly forecast
 - [ ] T039 [P] [US2] Create yearly horoscope page `src/app/(main)/horoscope/yearly/page.tsx` + client component — sign selector, full yearly overview
 - [ ] T040 [US2] Create Chinese horoscope page `src/app/(main)/horoscope/chinese/page.tsx` + client component — uses FeaturePageLayout with BirthDataForm, displays Chinese horoscope data
-- [ ] T041 [US2] Remove/redirect old horoscope pages — redirect `/daily`, `/horoscopes/*` to new `/horoscope/*` routes. Remove or repurpose old files
+- [ ] T041 [US2] Remove/redirect old horoscope pages — delete `src/app/(main)/horoscope/[slug]/page.tsx` (catches new sub-routes), delete `src/app/(main)/daily/page.tsx`, redirect `/daily` → `/horoscope/daily` and `/horoscopes/*` → `/horoscope/*` via next.config.js
 
 **Checkpoint**: All 6 horoscope types working with complete API data.
 
@@ -126,7 +126,7 @@
 
 **Independent Test**: Enter two birth data sets → see synastry chart SVG, composite chart, compatibility scores by category, love languages, red flags.
 
-- [ ] T042 [US3] Enhance `/api/compatibility` route in `src/app/api/compatibility/route.ts` — replace local synastry with `getSynastryChart()` + `getSynastryChartSvg()` + `getSynastryReport()` + `getCompatibilityAnalysis()` + `getCompatibilityScore()`
+- [ ] T042 [US3] Enhance `/api/compatibility` route in `src/app/api/compatibility/route.ts` — replace local synastry with `getSynastryChart()` + `getSynastryChartSvg()` + `getSynastryReport()` + `getCompatibilityAnalysis()` + `getCompatibilityScore()` + `enhanced.getEnhancedSynastryChart()`
 - [ ] T043 [US3] Enhance compatibility page `src/app/(main)/compatibility/page.tsx` — redesign to show API SVG bi-wheel, full synastry report, compatibility scores by life area, all API fields
 - [ ] T044 [P] [US3] Create API route `src/app/api/composite/route.ts` — calls `getCompositeChart()` + `getCompositeChartSvg()` + `getCompositeReport()`
 - [ ] T045 [P] [US3] Create composite page `src/app/(main)/composite/page.tsx` + client component — dual BirthDataForm, composite chart SVG, full composite report
@@ -143,14 +143,13 @@
 
 **Independent Test**: Select a saved chart → see transit bi-wheel SVG, current transits list, upcoming exact dates, transit interpretation.
 
-- [ ] T048 [US4] Create API route `src/app/api/transit/route.ts` — calls `getTransitChart()` + `getTransitChartSvg()` + `getTransitReport()` + `getNatalTransitReport()` + `getNatalTransits()`
+- [ ] T048 [US4] Create API route `src/app/api/transit/route.ts` — calls `getTransitChart()` + `getTransitChartSvg()` + `getTransitReport()` + `getNatalTransitReport()` + `getNatalTransits()` + `enhanced.getEnhancedTransitChart()`
 - [ ] T049 [US4] Create transit page `src/app/(main)/transit/page.tsx` + client component — date picker for transit date, ChartSelector for natal chart, bi-wheel SVG, transit aspects list, upcoming transits timeline, transit report sections
 - [ ] T050 [P] [US4] Create API route `src/app/api/solar-return/route.ts` — calls `getSolarReturnChart()` + `getSolarReturnChartSvg()` + `getSolarReturnReport()` + `getSolarReturnTransits()`
 - [ ] T051 [P] [US4] Create solar return page `src/app/(main)/solar-return/page.tsx` + client component — year selector, chart SVG, yearly themes report
 - [ ] T052 [P] [US4] Create API route `src/app/api/lunar-return/route.ts` — calls `getLunarReturnChart()` + `getLunarReturnChartSvg()` + `getLunarReturnReport()` + `getLunarReturnTransits()`
 - [ ] T053 [P] [US4] Create lunar return page `src/app/(main)/lunar-return/page.tsx` + client component — date picker, chart SVG, monthly cycle report
-- [ ] T054 [P] [US4] Create API route `src/app/api/analysis/predictive/route.ts` — calls `getPredictiveAnalysis()`
-- [ ] T055 [P] [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + client component — upcoming trends and timing
+- [ ] T054 [P] [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + client component — upcoming trends and timing. Uses dynamic `/api/analysis/predictive` route (handled by T060's `[type]` route)
 
 **Checkpoint**: All P1 features complete. Core product fully functional.
 
@@ -201,15 +200,17 @@
 - [ ] T070 [P] [US7] Create API route `src/app/api/tarot/daily/route.ts` — calls `getDailyCard()`, returns card data
 - [ ] T071 [P] [US7] Create API route `src/app/api/tarot/draw/route.ts` — POST with count + spread_type, calls `drawCards()` + appropriate `generate*Report()` method
 - [ ] T072 [P] [US7] Create API route `src/app/api/tarot/birth-cards/route.ts` — POST with subject, calls `calculateBirthCards()`
-- [ ] T073 [US7] Create tarot hub page `src/app/(main)/tarot/page.tsx` + client component — daily card display, links to all spread types, tarot introduction text
+- [ ] T073 [US7] Create tarot hub page `src/app/(main)/tarot/page.tsx` + client component — daily card display, links to all spread types, card browser using `getAllCards()`, tarot introduction text
 - [ ] T074 [P] [US7] Create single card page `src/app/(main)/tarot/single/page.tsx` + client component — draw button, card display, single card report
 - [ ] T075 [P] [US7] Create three-card page `src/app/(main)/tarot/three-card/page.tsx` + client component — draw button, 3 cards in row (past/present/future), three-card report
 - [ ] T076 [P] [US7] Create Celtic Cross page `src/app/(main)/tarot/celtic-cross/page.tsx` + client component — draw button, 10-card layout, Celtic Cross report
 - [ ] T077 [P] [US7] Create houses spread page `src/app/(main)/tarot/houses/page.tsx` + client component — 12-card layout, houses report
 - [ ] T078 [P] [US7] Create Tree of Life page `src/app/(main)/tarot/tree-of-life/page.tsx` + client component — draw + Tree of Life layout, report
 - [ ] T079 [US7] Create birth cards page `src/app/(main)/tarot/birth-cards/page.tsx` + client component — BirthDataForm, personality + soul card display
+- [ ] T079a [P] [US7] Create synastry tarot page `src/app/(main)/tarot/synastry/page.tsx` + client component — dual BirthDataForm, calls `/api/tarot/draw` with `generateSynastryReport()`, shows paired card reading
+- [ ] T079b [P] [US7] Create transit tarot page `src/app/(main)/tarot/transit/page.tsx` + client component — BirthDataForm + date picker, calls `/api/tarot/draw` with `generateTransitReport()`, shows transit-themed card reading
 
-**Checkpoint**: Complete tarot section with 7 spread types.
+**Checkpoint**: Complete tarot section with 9 spread types (including synastry and transit tarot).
 
 ---
 
@@ -221,7 +222,7 @@
 
 - [ ] T080 [P] [US8] Create API route `src/app/api/chinese/bazi/route.ts` — POST, calls `calculateBaZi()` + `calculateLuckPillars()` + `calculateMingGua()` + `getZodiacAnimal()`
 - [ ] T081 [P] [US8] Create API route `src/app/api/chinese/compatibility/route.ts` — POST, calls `calculateCompatibility()`
-- [ ] T082 [P] [US8] Create API route `src/app/api/chinese/forecast/route.ts` — POST, calls `getYearlyForecast()` + `analyzeYearElements()`
+- [ ] T082 [P] [US8] Create API route `src/app/api/chinese/forecast/route.ts` — POST, calls `getYearlyForecast()` + `analyzeYearElements()` + `getSolarTerms()`
 - [ ] T083 [US8] Create Chinese astrology hub `src/app/(main)/chinese/page.tsx` + client component — BirthDataForm, BaZi four pillars display, luck pillars timeline, Ming Gua with directions, zodiac animal
 - [ ] T084 [P] [US8] Create Chinese compatibility page `src/app/(main)/chinese/compatibility/page.tsx` + client component — dual BirthDataForm, compatibility result
 - [ ] T085 [P] [US8] Create Chinese forecast page `src/app/(main)/chinese/forecast/page.tsx` + client component — year selector, yearly forecast, element analysis
@@ -274,8 +275,8 @@
 
 - [ ] T100 [P] [US11] Create API route `src/app/api/numerology/route.ts` — POST, calls `getCoreNumbers()` + `getComprehensiveReport()`
 - [ ] T101 [P] [US11] Create API route `src/app/api/numerology/compatibility/route.ts` — POST, calls `analyzeCompatibility()`
-- [ ] T102 [P] [US11] Create API route `src/app/api/fixed-stars/route.ts` — POST, calls `getConjunctions()` + `generateReport()`
-- [ ] T103 [P] [US11] Create API route `src/app/api/eclipses/route.ts` — GET for `getUpcoming()`, POST for `checkNatalImpact()`
+- [ ] T102 [P] [US11] Create API route `src/app/api/fixed-stars/route.ts` — POST for `getConjunctions()` + `generateReport()`, GET for `getAllStars()` + `getPositions()` (star catalog)
+- [ ] T103 [P] [US11] Create API route `src/app/api/eclipses/route.ts` — GET for `getUpcoming()` + `getHistory()` + `getSarosCycle()`, POST for `checkNatalImpact()`
 - [ ] T104 [P] [US11] Create API route `src/app/api/lunar/calendar/route.ts` — GET, calls `getMansions()` + `getEvents()` + `getCalendar()` + `getVoidOfCourse()` + `getGardeningCalendar()` + `getIngresses()`
 - [ ] T105 [US11] Create numerology page `src/app/(main)/numerology/page.tsx` + client component — BirthDataForm, core numbers display, comprehensive report sections
 - [ ] T106 [P] [US11] Create numerology compatibility page `src/app/(main)/numerology/compatibility/page.tsx` + client component — dual BirthDataForm, compatibility result
@@ -311,8 +312,8 @@
 **Independent Test**: Visit landing page → stats show real database counts. Visit glossary → search for terms.
 
 - [ ] T116 [US16] Fix StatsSection in `src/components/` — replace hardcoded "100,000+" with real Supabase counts or honest values
-- [ ] T117 [P] Create API route `src/app/api/glossary/route.ts` — GET, calls `glossary.getTerms()`, `getCategories()`, supports `?search=` query
-- [ ] T118 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions
+- [ ] T117 [P] Create API route `src/app/api/glossary/route.ts` — GET, calls `glossary.getTerms()`, `getCategories()`, `searchTerms()`, and reference data: `data.getZodiacSigns()`, `data.getPlanets()`, `data.getAspects()`, `data.getHouses()`, `data.getElements()`, `data.getModalities()`, `data.getPoints()`. Supports `?search=` and `?category=` query params
+- [ ] T118 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions, reference data sections (zodiac signs, planets, aspects, houses, elements, modalities)
 
 **Checkpoint**: All P3 features complete.
 
@@ -323,12 +324,12 @@
 **Purpose**: Cleanup, remove old pages, verify completeness.
 
 - [ ] T119 Remove explore page `src/app/(main)/explore/` — all demo functionality now has dedicated pages
-- [ ] T120 Remove old product pages that are replaced — `/horoscopes/*`, `/ascendant/`, `/daily/` (redirect to new routes via next.config.js redirects)
+- [ ] T120 Remove remaining old product pages — delete `src/app/(main)/ascendant/page.tsx`, delete `src/app/(main)/horoscopes/*/page.tsx` (6 old product pages). Add redirects in next.config.js for any bookmarked URLs. Note: `/daily` and `/horoscope/[slug]` already handled by T041
 - [ ] T121 [P] Add Ukrainian SEO metadata to ALL new pages — title, description per page in `export const metadata`
 - [ ] T122 [P] Verify all PostHog analytics events fire correctly on each feature page
 - [ ] T123 Run `npm run build` — verify zero TypeScript errors, all pages build
 - [ ] T124 Run `npm run test` — verify all existing Playwright tests still pass
-- [ ] T125 Audit for remaining "Скоро" text — grep codebase, confirm zero instances
+- [ ] T125 Verify zero "Скоро" instances remain — grep codebase for "Скоро", "coming soon", "незабаром", confirm zero matches (verification only, removal done in T018)
 
 ---
 
