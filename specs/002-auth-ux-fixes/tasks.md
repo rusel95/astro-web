@@ -307,11 +307,11 @@
 
 ## Phase 17: Stats Section Fix & Glossary (US16, Priority: P3)
 
-**Goal**: Honest stats on landing page. Astrology glossary page.
+**Goal**: Honest stats on landing page. Astrology glossary/reference page.
 
-**Independent Test**: Visit landing page → stats show real database counts. Visit glossary → search for terms.
+**Independent Test**: Visit landing page → stats show real database counts. Visit glossary → search for terms, browse zodiac signs/planets/aspects reference.
 
-- [ ] T116 [US16] Fix StatsSection in `src/components/` — replace hardcoded "100,000+" with real Supabase counts or honest values
+- [ ] T116 [US16] Fix StatsSection in `src/components/` — fetch real counts from Supabase (total charts, total users) via `/api/stats` route, display actual numbers
 - [ ] T117 [P] Create API route `src/app/api/glossary/route.ts` — GET, calls `glossary.getTerms()`, `getCategories()`, `searchTerms()`, and reference data: `data.getZodiacSigns()`, `data.getPlanets()`, `data.getAspects()`, `data.getHouses()`, `data.getElements()`, `data.getModalities()`, `data.getPoints()`. Supports `?search=` and `?category=` query params
 - [ ] T118 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions, reference data sections (zodiac signs, planets, aspects, houses, elements, modalities)
 
