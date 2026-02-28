@@ -31,7 +31,7 @@ Expose every Astrology API SDK endpoint (`@astro-api/astroapi-typescript`, 160+ 
 | III. Design System Consistency | PASS | All pages use GlassCard, CosmicBackground, ZodiacIcon, cosmic palette. No new design primitives |
 | IV. Date Handling Safety | PASS | Server dates as "YYYY-MM-DD" strings. Client parsing via `new Date(y, m-1, d)` |
 | V. Deploy Often, Verify Always | PASS | Phase-by-phase implementation (P1→P2→P3). Each phase deployable independently |
-| VI. Analytics & Error Monitoring | PASS | PostHog: each feature page emits events (view, interact, error). Sentry: all API calls wrapped with error capture, severity levels defined (timeout→warning, 4xx/5xx→error, auth→critical) |
+| VI. Analytics & Error Monitoring | PASS | PostHog: each feature page emits events (view, interact, error). Sentry: all API calls wrapped with error capture, severity levels defined (timeout→warning, 4xx/5xx→error, auth→critical, client-side unhandled→error) |
 | VII. Existing Infrastructure First | PASS | Uses existing SDK, Supabase, OpenAI, Sentry patterns. No new services. Extends existing `astrology-client.ts` |
 
 **Post-Phase 1 Re-check**: All principles still satisfied. `feature_results` table extends Supabase (not new infra). Shared components reuse existing UI primitives.
@@ -78,7 +78,7 @@ src/
 │   │   ├── composite/page.tsx           # NEW
 │   │   ├── relationship/page.tsx        # NEW: love languages, red flags
 │   │   ├── analysis/                    # NEW: 8 analysis pages
-│   │   ├── tarot/                       # NEW: 7 tarot pages
+│   │   ├── tarot/                       # NEW: 10 tarot pages (hub + 9 spreads incl. synastry & transit)
 │   │   ├── chinese/                     # NEW: 3 Chinese astrology pages
 │   │   ├── traditional/                 # NEW: 4 traditional pages
 │   │   ├── astrocartography/            # NEW: 2 pages
@@ -87,6 +87,7 @@ src/
 │   │   ├── eclipses/page.tsx            # NEW
 │   │   ├── insights/                    # NEW: 3 insight pages
 │   │   ├── glossary/page.tsx            # NEW
+│   │   ├── settings/page.tsx           # NEW: account settings & deletion (FR-051)
 │   │   └── moon/page.tsx               # Enhanced: lunar API data
 │   │
 │   └── api/
@@ -109,7 +110,10 @@ src/
 │       ├── fixed-stars/route.ts         # NEW
 │       ├── eclipses/route.ts            # NEW
 │       ├── lunar/calendar/route.ts      # NEW: enhanced lunar data
-│       ├── insights/[category]/route.ts # NEW: wellness, financial, business
+│       ├── insights/
+│       │   ├── wellness/route.ts       # NEW: wellness insights
+│       │   ├── financial/route.ts      # NEW: financial insights
+│       │   └── business/route.ts       # NEW: business insights
 │       ├── partner-charts/route.ts      # NEW: CRUD for partner charts (FR-027b)
 │       ├── stats/route.ts               # NEW: real DB counts for landing stats
 │       └── glossary/route.ts            # NEW
@@ -122,6 +126,7 @@ src/
 │   │   ├── SvgChartViewer.tsx           # API SVG renderer (with sanitization per FR-052)
 │   │   ├── AnalysisSection.tsx          # Structured data display (collapsible per FR-049)
 │   │   ├── FeaturePageLayout.tsx        # Standard layout for feature pages
+│   │   ├── AnalysisPageClient.tsx      # Reusable client component for analysis pages
 │   │   ├── ErrorState.tsx               # Standardized error component (FR-046)
 │   │   ├── PartialErrorBanner.tsx       # Inline error for partial API failures (FR-047)
 │   │   ├── Breadcrumb.tsx               # Breadcrumb navigation for nested pages (FR-044)
