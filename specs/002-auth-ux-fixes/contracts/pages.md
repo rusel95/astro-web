@@ -49,7 +49,9 @@ src/app/
 │   │   ├── celtic-cross/page.tsx         # Celtic Cross spread
 │   │   ├── houses/page.tsx               # 12-house spread
 │   │   ├── tree-of-life/page.tsx         # Tree of Life spread
-│   │   └── birth-cards/page.tsx          # Birth cards calculation
+│   │   ├── birth-cards/page.tsx          # Birth cards calculation
+│   │   ├── synastry/page.tsx             # Synastry tarot reading
+│   │   └── transit/page.tsx              # Transit tarot reading
 │   │
 │   ├── chinese/
 │   │   ├── page.tsx                      # Chinese astrology hub (BaZi + pillars)
@@ -80,6 +82,7 @@ src/app/
 │   │
 │   ├── moon/page.tsx                     # Moon calendar (existing, enhanced with lunar API)
 │   ├── glossary/page.tsx                 # Astrology glossary/dictionary
+│   ├── settings/page.tsx                 # Account settings & deletion (FR-051)
 │   │
 │   ├── zodiac/[sign]/page.tsx            # Zodiac pages (existing)
 │   ├── privacy/page.tsx                  # Privacy policy (existing)
@@ -98,7 +101,7 @@ src/app/
 | Horoscopes (daily, weekly, monthly, yearly, chinese) | 4 | 1 (daily) |
 | Relationships (composite, relationship insights) | 2 | 1 (compatibility) |
 | Analysis (8 types) | 8 | 0 |
-| Tarot (hub + 6 spreads) | 7 | 0 |
+| Tarot (hub + 9 spreads incl. synastry + transit) | 10 | 0 |
 | Chinese (hub + compatibility + forecast) | 3 | 0 |
 | Traditional (hub + profections + firdaria + ZR) | 4 | 0 |
 | Astrocartography (map + location) | 2 | 0 |
