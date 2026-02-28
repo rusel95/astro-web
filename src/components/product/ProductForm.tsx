@@ -144,7 +144,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     });
     // If auth user already has a chart, go there directly. Never create a duplicate.
     if (existingChartId) {
-      window.location.href = `/chart/${existingChartId}`;
+      window.location.href = `/chart/${existingChartId}?from=${productSlug}`;
       return;
     }
     // New user or no existing chart — create a new chart
@@ -153,6 +153,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     if (form.birthDate) params.set('birthDate', form.birthDate);
     if (form.birthTime) params.set('birthTime', form.birthTime);
     if (form.city) params.set('city', form.city);
+    params.set('from', productSlug);
     window.location.href = `/chart/new?${params.toString()}`;
   };
 

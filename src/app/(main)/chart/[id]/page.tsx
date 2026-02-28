@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Share2, Check, Download, Gift, Cake, ChevronDown, Sparkles } from 'lucide-react';
 
@@ -47,8 +47,28 @@ function zodiacFromDegree(deg: number) {
   return signs[Math.floor((deg % 360) / 30)];
 }
 
+// Map product slugs to AI report areas
+const PRODUCT_SLUG_TO_AREA: Record<string, ReportArea> = {
+  personality: 'general',
+  talent: 'general',
+  career: 'career',
+  business: 'career',
+  love: 'relationships',
+  'love-compatibility': 'relationships',
+  marriage: 'relationships',
+  health: 'health',
+  finance: 'finances',
+  children: 'general',
+  pregnancy: 'general',
+  conception: 'general',
+  calendar: 'general',
+  '3-years': 'general',
+  '2026': 'general',
+};
+
 export default function ChartPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const [chart, setChart] = useState<NatalChart | null>(null);
   const [inputData, setInputData] = useState<{ name?: string; gender?: string }>({});
   const [report, setReport] = useState<AIReport | null>(null);
@@ -100,6 +120,18 @@ export default function ChartPage() {
     loadChart();
     return () => { cancelled = true; };
   }, [id]);
+
+  // Auto-trigger report area when arriving from a product page (e.g. /horoscope/career)
+  const fromProduct = searchParams.get('from');
+  useEffect(() => {
+    if (!chart || !fromProduct) return;
+    const area = PRODUCT_SLUG_TO_AREA[fromProduct];
+    if (area && !generatedAreas.has(area)) {
+      generateReport(area);
+    }
+    // Only run once when chart first loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chart, fromProduct]);
 
   const sunPlanet = chart?.planets.find(p => p.name === 'Sun');
   const moonPlanet = chart?.planets.find(p => p.name === 'Moon');

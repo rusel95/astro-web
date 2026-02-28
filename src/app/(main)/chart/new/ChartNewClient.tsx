@@ -212,7 +212,9 @@ export default function ChartNewClient() {
         has_birth_time: !unknownTime,
         gender,
       });
-      router.push(`/chart/${data.id}`);
+      const fromProduct = searchParams.get('from');
+      const chartPath = fromProduct ? `/chart/${data.id}?from=${fromProduct}` : `/chart/${data.id}`;
+      router.push(chartPath);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Помилка розрахунку';
       setError(message);
@@ -310,7 +312,9 @@ export default function ChartNewClient() {
           chart_id: data.id,
           source: 'auto_submit_query_params',
         });
-        router.push(`/chart/${data.id}`);
+        const fromParam = searchParams.get('from');
+        const destPath = fromParam ? `/chart/${data.id}?from=${fromParam}` : `/chart/${data.id}`;
+        router.push(destPath);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Помилка розрахунку');
         setLoading(false);
