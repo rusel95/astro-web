@@ -256,6 +256,8 @@ Track all tasks in GitHub Issues: https://github.com/rusel95/astro-web/issues
 ## Active Technologies
 - TypeScript (strict) on Node.js, Next.js 14 (App Router) + Next.js 14, Tailwind CSS, Framer Motion, Supabase (auth + DB), `@astro-api/astroapi-typescript` SDK, `astronomy-engine`, OpenAI (GPT-4o), PostHog, Resend (001-astromix-redesign)
 - Supabase (PostgreSQL) with RLS. sessionStorage/localStorage for anonymous quiz state (001-astromix-redesign)
+- TypeScript (strict) on Node.js 18+ + Next.js 14 (App Router), Tailwind CSS, Framer Motion, `@astro-api/astroapi-typescript` v1.0.1, `astronomy-engine`, Supabase JS v2 (002-auth-ux-fixes)
+- Supabase (PostgreSQL) with RLS. New tables: `feature_results` (cache), `partner_charts` (002-auth-ux-fixes)
 
 ## Recent Changes
 - 001-astromix-redesign: Added TypeScript (strict) on Node.js, Next.js 14 (App Router) + Next.js 14, Tailwind CSS, Framer Motion, Supabase (auth + DB), `@astro-api/astroapi-typescript` SDK, `astronomy-engine`, OpenAI (GPT-4o), PostHog, Resend
