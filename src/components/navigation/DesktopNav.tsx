@@ -134,6 +134,7 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/insights/wellness', label: 'Велнес-аналіз', icon: 'heart', description: 'Біоритми, карта тіла, енергетичні патерни' },
       { href: '/insights/financial', label: 'Фінансові інсайти', icon: 'trending-up', description: 'Ринковий таймінг, аналіз Ганна' },
       { href: '/insights/business', label: 'Бізнес-аналіз', icon: 'briefcase', description: 'Лідерство, команда, бізнес-таймінг' },
+      { href: '/glossary', label: 'Глосарій', icon: 'book-open', description: 'Астрологічні терміни та довідник' },
     ],
   },
 ];

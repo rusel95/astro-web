@@ -92,6 +92,7 @@ const MENU_SECTIONS = [
       { href: '/insights/wellness', label: 'Велнес-аналіз' },
       { href: '/insights/financial', label: 'Фінансові інсайти' },
       { href: '/insights/business', label: 'Бізнес-аналіз' },
+      { href: '/glossary', label: 'Глосарій' },
     ],
   },
 ];

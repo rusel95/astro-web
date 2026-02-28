@@ -464,9 +464,9 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit landing page → stats show real database counts. Visit glossary → search for terms, browse reference data.
 
-- [ ] T126 [US16] Create API route `src/app/api/stats/route.ts` and fix StatsSection — GET route fetches real counts from Supabase (total charts from `charts` table, total users from auth.users count). Cache 1h server-side. Update StatsSection component to fetch from `/api/stats` and display actual numbers instead of hardcoded values (SC-007)
-- [ ] T127 [P] Create API route `src/app/api/glossary/route.ts` — GET, calls `glossary.getTerms()`, `getCategories()`, `searchTerms()`, and reference data: `data.getZodiacSigns()`, `data.getPlanets()`, `data.getAspects()`, `data.getHouses()`, `data.getElements()`, `data.getModalities()`, `data.getPoints()`. Supports `?search=` and `?category=` query params
-- [ ] T128 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions, reference data sections (zodiac signs, planets, aspects, houses, elements, modalities). Contextual help links from other pages point here (FR-029i)
+- [X] T126 [US16] Create API route `src/app/api/stats/route.ts` and fix StatsSection — GET route fetches real counts from Supabase (total charts from `charts` table, total users from auth.users count). Cache 1h server-side. Update StatsSection component to fetch from `/api/stats` and display actual numbers instead of hardcoded values (SC-007)
+- [X] T127 [P] Create API route `src/app/api/glossary/route.ts` — GET, calls `glossary.getTerms()`, `getCategories()`, `searchTerms()`, and reference data: `data.getZodiacSigns()`, `data.getPlanets()`, `data.getAspects()`, `data.getHouses()`, `data.getElements()`, `data.getModalities()`, `data.getPoints()`. Supports `?search=` and `?category=` query params
+- [X] T128 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions, reference data sections (zodiac signs, planets, aspects, houses, elements, modalities). Contextual help links from other pages point here (FR-029i)
 
 **Checkpoint**: All P3 features complete.
 
