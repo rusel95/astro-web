@@ -286,7 +286,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 **Acceptance Scenarios**:
 
-1. **Given** unauth visitor, **When** StatsSection renders, **Then** shows real DB counts or honest values.
+1. **Given** unauth visitor, **When** StatsSection renders, **Then** shows actual Supabase database counts (total charts created, total registered users).
 
 ---
 
