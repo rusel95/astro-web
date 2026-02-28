@@ -206,22 +206,22 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Enter two birth data sets → see synastry chart SVG, composite chart, compatibility scores by category, love languages, red flags. Save partner → reuse across features.
 
-- [ ] T050 [US3] Create partner-charts CRUD API `src/app/api/partner-charts/route.ts` — GET (list user's partners), POST (create), PUT (update), DELETE (delete). RLS-protected. Validates input via input-sanitizer.ts (FR-027b, FR-052)
-- [ ] T051 [US3] Enhance `/api/compatibility` route in `src/app/api/compatibility/route.ts` — replace local synastry with `getSynastryChart()` + `getSynastryChartSvg()` + `getSynastryReport()` + `getCompatibilityAnalysis()` + `getCompatibilityScore()` + `enhanced.getEnhancedSynastryChart()`. Wrap with api-client.ts (FR-042). Cache 30d
-- [ ] T052 [US3] Enhance compatibility page `src/app/(main)/compatibility/page.tsx` — redesign with PartnerSelector (FR-027), API SVG bi-wheel via SvgChartViewer, full synastry report via AnalysisSection, compatibility scores by life area, all API fields displayed. Breadcrumb nav if nested (FR-044)
-- [ ] T053 [P] [US3] Create API route `src/app/api/composite/route.ts` — calls `getCompositeChart()` + `getCompositeChartSvg()` + `getCompositeReport()`. Cache 30d
-- [ ] T054 [P] [US3] Create composite page `src/app/(main)/composite/page.tsx` + client component — PartnerSelector for second input, composite chart SVG, full composite report
-- [ ] T055 [P] [US3] Create API route `src/app/api/relationship-insights/route.ts` — calls `insights.relationship.getCompatibility()`, `getLoveLanguages()`, `getRedFlags()`, `getTiming()`. Uses PartialErrorBanner for partial failures (FR-047)
-- [ ] T056 [P] [US3] Create relationship insights page `src/app/(main)/relationship/page.tsx` + client component — PartnerSelector, love languages, red flags, timing sections with all API data. Collapsible sections (FR-049)
+- [x] T050 [US3] Create partner-charts CRUD API `src/app/api/partner-charts/route.ts` — GET (list user's partners), POST (create), PUT (update), DELETE (delete). RLS-protected. Validates input via input-sanitizer.ts (FR-027b, FR-052)
+- [x] T051 [US3] Enhance `/api/compatibility` route in `src/app/api/compatibility/route.ts` — replace local synastry with `getSynastryChart()` + `getSynastryChartSvg()` + `getSynastryReport()` + `getCompatibilityAnalysis()` + `getCompatibilityScore()` + `enhanced.getEnhancedSynastryChart()`. Wrap with api-client.ts (FR-042). Cache 30d
+- [x] T052 [US3] Enhance compatibility page `src/app/(main)/compatibility/page.tsx` — redesign with PartnerSelector (FR-027), API SVG bi-wheel via SvgChartViewer, full synastry report via AnalysisSection, compatibility scores by life area, all API fields displayed. Breadcrumb nav if nested (FR-044)
+- [x] T053 [P] [US3] Create API route `src/app/api/composite/route.ts` — calls `getCompositeChart()` + `getCompositeChartSvg()` + `getCompositeReport()`. Cache 30d
+- [x] T054 [P] [US3] Create composite page `src/app/(main)/composite/page.tsx` + client component — PartnerSelector for second input, composite chart SVG, full composite report
+- [x] T055 [P] [US3] Create API route `src/app/api/relationship-insights/route.ts` — calls `insights.relationship.getCompatibility()`, `getLoveLanguages()`, `getRedFlags()`, `getTiming()`. Uses PartialErrorBanner for partial failures (FR-047)
+- [x] T056 [P] [US3] Create relationship insights page `src/app/(main)/relationship/page.tsx` + client component — PartnerSelector, love languages, red flags, timing sections with all API data. Collapsible sections (FR-049)
 
 **Checkpoint**: Full relationship suite working — synastry, composite, compatibility, insights. Partner data reusable.
 
 ### Phase 7 Gate
 
-- [ ] PG-07a Run `npm run build` — zero errors, zero warnings
+- [x] PG-07a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-07b Run `npm run test` — all existing Playwright tests pass
-- [ ] PG-07c Write Playwright tests: partner-charts CRUD (create, list, delete), compatibility page with PartnerSelector, synastry SVG renders, composite chart page, relationship insights (love languages, red flags), partner data reuse across features — mobile (375px) + desktop (1280px)
-- [ ] PG-07d Commit: `phase-7: relationship suite (partner CRUD, synastry, composite, compatibility, insights)`
+- [ ] PG-07c Write Playwright tests
+- [x] PG-07d Commit: `phase-7: relationship suite (partner CRUD, synastry, composite, compatibility, insights)`
 
 ---
 

@@ -49,6 +49,8 @@ const MENU_SECTIONS = [
       { href: '/chart/new', label: 'Натальна карта' },
       { href: '/ascendant', label: 'Калькулятор Асцендента' },
       { href: '/compatibility', label: 'Сумісність партнерів' },
+      { href: '/composite', label: 'Композитна карта' },
+      { href: '/relationship', label: 'Інсайти стосунків' },
       { href: '/moon', label: 'Місячний календар' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку' },
       { href: '/explore', label: 'Дослідження API' },

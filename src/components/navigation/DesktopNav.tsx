@@ -56,6 +56,8 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією' },
       { href: '/ascendant', label: 'Калькулятор Асцендента', icon: 'compass', description: 'Висхідний знак та Велика Трійка' },
       { href: '/compatibility', label: 'Сумісність партнерів', icon: 'users', description: 'Синастрія двох карт' },
+      { href: '/composite', label: 'Композитна карта', icon: 'heart-handshake', description: 'Об\'єднана карта стосунків' },
+      { href: '/relationship', label: 'Інсайти стосунків', icon: 'heart', description: 'Мови кохання та тривожні знаки' },
     ],
   },
   {
