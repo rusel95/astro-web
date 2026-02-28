@@ -132,15 +132,15 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Desktop: hover each nav dropdown → see all feature links. Mobile: tap hamburger → see all categories with expandable sections + search. Every link goes to a working page.
 
-- [ ] T030 [US15] Redesign desktop navigation in `src/components/nav/DesktopNav.tsx` — implement dropdown menus per contracts/pages.md navigation structure: max 7 top-level categories (FR-061). Categories: Гороскопи, Карти, Таро, Аналіз, Традиційна, Ще, [User Menu]. Dropdown sub-items include one-line Ukrainian descriptions on hover (FR-043). Clear Ukrainian labels — no astrological jargon (FR-029e). Tooltips for advanced features. Only show links to pages that exist and work — zero dead links, zero placeholders (FR-025a)
-- [ ] T031 [US15] Redesign mobile navigation in `src/components/nav/MobileNav.tsx` — hamburger menu (FR-061) with expandable category sections, search/filter input for power users to find features quickly. All interactive elements 44px minimum touch targets (FR-029b). Only show links to implemented pages (FR-025a). No "Скоро" or disabled items — if it's in the nav, it works
-- [ ] T032 [US15] Fix broken product page navigation — remove auth-only redirect logic from `src/app/(main)/horoscopes/*/page.tsx`, `src/app/(main)/ascendant/page.tsx` so pages load for all users. Actual page removal/redirects handled later in T049 (horoscopes) and T130 (others)
+- [x] T030 [US15] Redesign desktop navigation in `src/components/nav/DesktopNav.tsx` — implement dropdown menus per contracts/pages.md navigation structure: max 7 top-level categories (FR-061). Categories: Гороскопи, Карти, Таро, Аналіз, Традиційна, Ще, [User Menu]. Dropdown sub-items include one-line Ukrainian descriptions on hover (FR-043). Clear Ukrainian labels — no astrological jargon (FR-029e). Tooltips for advanced features. Only show links to pages that exist and work — zero dead links, zero placeholders (FR-025a)
+- [x] T031 [US15] Redesign mobile navigation in `src/components/nav/MobileNav.tsx` — hamburger menu (FR-061) with expandable category sections, search/filter input for power users to find features quickly. All interactive elements 44px minimum touch targets (FR-029b). Only show links to implemented pages (FR-025a). No "Скоро" or disabled items — if it's in the nav, it works
+- [x] T032 [US15] Fix broken product page navigation — remove auth-only redirect logic from `src/app/(main)/horoscopes/*/page.tsx`, `src/app/(main)/ascendant/page.tsx` so pages load for all users. Actual page removal/redirects handled later in T049 (horoscopes) and T130 (others)
 
 **Checkpoint**: Users can navigate to every implemented feature from the menu.
 
 ### Phase 4 Gate
 
-- [ ] PG-04a Run `npm run build` — zero errors, zero warnings
+- [x] PG-04a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-04b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-04c Write Playwright tests: desktop dropdown menus open/close with feature descriptions, all nav links resolve to existing pages (zero 404s, zero placeholders), mobile hamburger menu expands with all categories, mobile search/filter finds features, touch targets ≥ 44px — mobile (375px) + desktop (1280px)
 - [ ] PG-04d Commit: `phase-4: navigation overhaul (dropdowns, hamburger, search, progressive disclosure)`

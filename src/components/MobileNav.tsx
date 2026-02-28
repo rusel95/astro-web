@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Home, Star, Moon, Heart, Plus, Menu, X, ChevronRight, Sparkles } from 'lucide-react';
+import { Home, Star, Moon, Heart, Plus, Menu, X, ChevronRight, Sparkles, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { track } from '@/lib/analytics';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
@@ -22,20 +22,30 @@ const MENU_SECTIONS = [
   {
     title: 'Гороскопи',
     items: [
+      { href: '/daily', label: 'Щоденний гороскоп' },
+      { href: '/horoscope/2026', label: 'Гороскоп на 2026' },
+      { href: '/horoscope/monthly', label: 'Прогноз на місяць' },
       { href: '/horoscope/personality', label: 'Гороскоп особистості' },
       { href: '/horoscope/love', label: 'Любовний гороскоп' },
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026' },
       { href: '/horoscope/career', label: "Кар'єрний гороскоп" },
       { href: '/horoscope/health', label: "Звіт здоров'я" },
+      { href: '/horoscope/talent', label: 'Звіт талантів' },
+      { href: '/horoscope/finance', label: 'Фінансовий успіх' },
       { href: '/horoscope/love-compatibility', label: 'Сумісність кохання' },
+      { href: '/horoscope/marriage', label: 'Коли я одружуся?' },
+      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки' },
+      { href: '/horoscope/children', label: 'Дитячий гороскоп' },
     ],
   },
   {
-    title: 'Безкоштовно',
+    title: 'Карти та інструменти',
     items: [
       { href: '/chart/new', label: 'Натальна карта' },
+      { href: '/ascendant', label: 'Калькулятор Асцендента' },
       { href: '/compatibility', label: 'Сумісність партнерів' },
       { href: '/moon', label: 'Місячний календар' },
+      { href: '/zodiac/aries', label: 'Знаки зодіаку' },
+      { href: '/explore', label: 'Дослідження API' },
       { href: '/quiz', label: 'Астро-тест' },
     ],
   },
@@ -44,6 +54,7 @@ const MENU_SECTIONS = [
 export default function MobileNav({ isLoggedIn }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (pathname?.startsWith('/chart/new')) return null;
 
@@ -93,7 +104,7 @@ export default function MobileNav({ isLoggedIn }: Props) {
                     track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'quiz', source: 'mobile_menu' });
                     setMenuOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 w-full py-3 text-white text-sm font-semibold rounded-xl"
+                  className="flex items-center justify-center gap-2 w-full min-h-[44px] text-white text-sm font-semibold rounded-xl"
                   style={{
                     background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
                     boxShadow: '0 2px 14px rgba(108,60,225,0.35)',
@@ -104,30 +115,52 @@ export default function MobileNav({ isLoggedIn }: Props) {
                 </a>
               </div>
 
-              {/* Sections */}
-              {MENU_SECTIONS.map(section => (
-                <div key={section.title} className="px-5 py-3">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-medium mb-2">
-                    {section.title}
-                  </p>
-                  <div className="space-y-0.5">
-                    {section.items.map(item => (
-                      <a
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => {
-                          track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: item.label, source: 'mobile_menu' });
-                          setMenuOpen(false);
-                        }}
-                        className="flex items-center justify-between py-2.5 text-sm text-white/60 hover:text-white transition-colors"
-                      >
-                        {item.label}
-                        <ChevronRight size={14} className="text-white/20" />
-                      </a>
-                    ))}
-                  </div>
+              {/* Search filter */}
+              <div className="px-5 pb-3">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Пошук функцій..."
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm text-white placeholder-white/30 focus:outline-none focus:border-zorya-violet/50"
+                  />
                 </div>
-              ))}
+              </div>
+
+              {/* Sections */}
+              {MENU_SECTIONS.map(section => {
+                const filteredItems = searchQuery
+                  ? section.items.filter(item =>
+                      item.label.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                  : section.items;
+                if (filteredItems.length === 0) return null;
+                return (
+                  <div key={section.title} className="px-5 py-3">
+                    <p className="text-[10px] uppercase tracking-widest text-white/30 font-medium mb-2">
+                      {section.title}
+                    </p>
+                    <div className="space-y-0.5">
+                      {filteredItems.map(item => (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => {
+                            track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: item.label, source: 'mobile_menu' });
+                            setMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between min-h-[44px] py-2 text-sm text-white/60 hover:text-white transition-colors"
+                        >
+                          {item.label}
+                          <ChevronRight size={14} className="text-white/20" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
 
               {/* Legal */}
               <div className="px-5 py-3 border-t border-white/[0.06]">
@@ -159,7 +192,7 @@ export default function MobileNav({ isLoggedIn }: Props) {
               <a
                 key={href}
                 href={href}
-                className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+                className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
                 style={{ color: active ? '#9966E6' : 'rgba(255,255,255,0.45)' }}
               >
                 <Icon
@@ -175,7 +208,7 @@ export default function MobileNav({ isLoggedIn }: Props) {
           {/* New Chart CTA */}
           <a
             href="/chart/new"
-            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
             style={{ color: '#9966E6' }}
             aria-label="Нова карта"
           >
@@ -193,8 +226,8 @@ export default function MobileNav({ isLoggedIn }: Props) {
 
           {/* Hamburger menu button */}
           <button
-            onClick={() => setMenuOpen(true)}
-            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+            onClick={() => { setMenuOpen(true); setSearchQuery(''); }}
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
             style={{ color: menuOpen ? '#9966E6' : 'rgba(255,255,255,0.45)' }}
           >
             <Menu size={22} strokeWidth={1.5} />

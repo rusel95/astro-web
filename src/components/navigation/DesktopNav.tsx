@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, Moon, Heart, Calculator, CalendarDays } from 'lucide-react';
+import { Sparkles, Moon, Calculator } from 'lucide-react';
 import DropdownMenu, { DropdownGroup } from './DropdownMenu';
 import AuthNav from '@/components/AuthNav';
 import { track } from '@/lib/analytics';
@@ -19,10 +19,22 @@ interface DesktopNavProps {
 
 const HOROSCOPE_GROUPS: DropdownGroup[] = [
   {
-    title: 'Призначення',
+    title: 'Прогнози',
+    items: [
+      { href: '/daily', label: 'Щоденний гороскоп', icon: 'sun', description: 'Прогноз на сьогодні за знаком' },
+      { href: '/horoscope/2026', label: 'Гороскоп на 2026', icon: 'calendar-range', description: 'Річний прогноз' },
+      { href: '/horoscope/monthly', label: 'Прогноз на місяць', icon: 'calendar-days', description: 'Детальний місячний' },
+      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки', icon: 'telescope', description: 'Довгостроковий прогноз' },
+    ],
+  },
+  {
+    title: 'Особистість',
     items: [
       { href: '/horoscope/personality', label: 'Гороскоп особистості', icon: 'sparkles', description: 'Доля та призначення' },
       { href: '/horoscope/talent', label: 'Звіт талантів', icon: 'gem', description: 'Приховані здібності' },
+      { href: '/horoscope/career', label: "Кар'єрний гороскоп", icon: 'briefcase', description: 'Кар\'єрне призначення' },
+      { href: '/horoscope/health', label: "Звіт здоров'я", icon: 'activity', description: 'Вразливі зони' },
+      { href: '/horoscope/finance', label: 'Фінансовий успіх', icon: 'coins', description: 'Фінансове становище' },
     ],
   },
   {
@@ -31,41 +43,26 @@ const HOROSCOPE_GROUPS: DropdownGroup[] = [
       { href: '/horoscope/love', label: 'Любовний гороскоп', icon: 'heart', description: 'Де ви зустрінете кохання' },
       { href: '/horoscope/love-compatibility', label: 'Сумісність кохання', icon: 'heart-handshake', description: 'Синастрійний звіт' },
       { href: '/horoscope/marriage', label: 'Коли я одружуся?', icon: 'ring', description: 'Прогноз шлюбу' },
-    ],
-  },
-  {
-    title: 'Майбутнє',
-    items: [
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026', icon: 'calendar-range', description: 'Річний прогноз' },
-      { href: '/horoscope/monthly', label: 'Прогноз на місяць', icon: 'calendar-days', description: 'Детальний місячний' },
-      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки', icon: 'telescope', description: 'Довгостроковий прогноз' },
-    ],
-  },
-  {
-    title: 'Ще',
-    items: [
-      { href: '/horoscope/health', label: "Звіт здоров'я", icon: 'activity', description: 'Вразливі зони' },
-      { href: '/horoscope/career', label: "Кар'єрний гороскоп", icon: 'briefcase', description: 'Кар\'єрне призначення' },
-      { href: '/horoscope/finance', label: 'Фінансовий успіх', icon: 'coins', description: 'Фінансове становище' },
       { href: '/horoscope/children', label: 'Дитячий гороскоп', icon: 'baby', description: 'Для батьків' },
     ],
   },
 ];
 
-const FREE_TOOLS_GROUPS: DropdownGroup[] = [
+const CHARTS_GROUPS: DropdownGroup[] = [
   {
-    title: 'Безкоштовні інструменти',
+    title: 'Карти',
     items: [
       { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією' },
+      { href: '/ascendant', label: 'Калькулятор Асцендента', icon: 'compass', description: 'Висхідний знак та Велика Трійка' },
       { href: '/compatibility', label: 'Сумісність партнерів', icon: 'users', description: 'Синастрія двох карт' },
-      { href: '/moon', label: 'Місячний календар', icon: 'moon', description: 'Фази та Місяць без курсу' },
     ],
   },
   {
-    title: 'Зодіак',
+    title: 'Інструменти',
     items: [
+      { href: '/moon', label: 'Місячний календар', icon: 'moon', description: 'Фази та Місяць без курсу' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку', icon: 'sparkles', description: 'Характеристики 12 знаків' },
-      { href: '/quiz', label: 'Астро-тест', icon: 'flask', description: 'Дізнайтесь своє призначення' },
+      { href: '/explore', label: 'Дослідження API', icon: 'flask', description: 'Розширені астрологічні інструменти' },
     ],
   },
 ];
@@ -92,14 +89,6 @@ export default function DesktopNav({ user }: DesktopNavProps) {
 
         {/* Center navigation — desktop only */}
         <div className="hidden md:flex items-center gap-1">
-          <a
-            href="/horoscope/2026"
-            onClick={() => track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: '2026' })}
-            className="px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
-          >
-            2026
-          </a>
-
           <DropdownMenu
             label="Гороскопи"
             groups={HOROSCOPE_GROUPS}
@@ -107,10 +96,21 @@ export default function DesktopNav({ user }: DesktopNavProps) {
           />
 
           <DropdownMenu
-            label="Безкоштовно"
-            groups={FREE_TOOLS_GROUPS}
-            icon={<CalendarDays size={14} className="text-green-400" />}
+            label="Карти"
+            groups={CHARTS_GROUPS}
+            icon={<Calculator size={14} className="text-green-400" />}
           />
+
+          <a
+            href="/moon"
+            onClick={() => track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'moon' })}
+            className="px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
+          >
+            <span className="flex items-center gap-1.5">
+              <Moon size={14} className="text-zorya-gold" />
+              Місяць
+            </span>
+          </a>
 
           {user && (
             <a
