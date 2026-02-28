@@ -18,6 +18,7 @@ export default defineConfig({
 
   use: {
     baseURL: process.env.BASE_URL || 'https://astro-web-five.vercel.app',
+    headless: false,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
