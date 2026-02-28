@@ -153,17 +153,17 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Create chart → see API SVG, all planet positions, houses, aspects with orbs, essential dignities, full natal report with interpretations.
 
-- [ ] T033 [US1] Enhance `/api/chart` route in `src/app/api/chart/route.ts` — add calls to `client.analysis.getNatalReport()`, `client.data.getEnhancedPositions()`, `client.data.getEnhancedAspects()`, `client.enhanced.getEnhancedNatalChart()` alongside existing getNatalChart + getSvg. Wrap all calls with api-client.ts (Sentry capture per FR-042). Return all data. Cache natal_report and enhanced_natal as "permanent" per FR-038
-- [ ] T034 [US1] Enhance chart results page `src/app/(main)/chart/[id]/page.tsx` — add new tabs/sections: "Звіт" (natal report), "Гідності" (dignities), "Розширені аспекти" (enhanced aspects). Display ALL fields from API responses using AnalysisSection (collapsible per FR-049). Show BirthTimeWarning when applicable (FR-050)
-- [ ] T035 [US1] Replace local NatalChartWheel with API SVG — in chart results page, use `SvgChartViewer` component to display `svg_content` from API as primary visualization (FR-004). Keep local renderer as fallback only when API SVG unavailable (network error, timeout). Fallback MUST be visually indicated to user
-- [ ] T036 [US1] Display complete planet data — in PlanetsTable, show degree/minute, retrograde status, house placement, speed, dignity status for each planet (using enhanced positions data). All API fields rendered
-- [ ] T037 [US1] Display complete aspect data — in AspectsTable, show applying/separating status, orb, reception data from enhanced aspects. All API fields rendered
+- [x] T033 [US1] Enhance `/api/chart` route in `src/app/api/chart/route.ts` — add calls to `client.analysis.getNatalReport()`, `client.data.getEnhancedPositions()`, `client.data.getEnhancedAspects()`, `client.enhanced.getEnhancedNatalChart()` alongside existing getNatalChart + getSvg. Wrap all calls with api-client.ts (Sentry capture per FR-042). Return all data. Cache natal_report and enhanced_natal as "permanent" per FR-038
+- [x] T034 [US1] Enhance chart results page `src/app/(main)/chart/[id]/page.tsx` — add new tabs/sections: "Звіт" (natal report), "Гідності" (dignities), "Розширені аспекти" (enhanced aspects). Display ALL fields from API responses using AnalysisSection (collapsible per FR-049). Show BirthTimeWarning when applicable (FR-050)
+- [x] T035 [US1] Replace local NatalChartWheel with API SVG — in chart results page, use `SvgChartViewer` component to display `svg_content` from API as primary visualization (FR-004). Keep local renderer as fallback only when API SVG unavailable (network error, timeout). Fallback MUST be visually indicated to user
+- [x] T036 [US1] Display complete planet data — in PlanetsTable, show degree/minute, retrograde status, house placement, speed, dignity status for each planet (using enhanced positions data). All API fields rendered
+- [x] T037 [US1] Display complete aspect data — in AspectsTable, show applying/separating status, orb, reception data from enhanced aspects. All API fields rendered
 
 **Checkpoint**: Natal chart shows complete, professional-grade data from API.
 
 ### Phase 5 Gate
 
-- [ ] PG-05a Run `npm run build` — zero errors, zero warnings
+- [x] PG-05a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-05b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-05c Write Playwright tests: chart creation flow end-to-end, API SVG renders (with fallback test), planets/houses/aspects/dignities/report tabs display data, enhanced aspects show orb + applying/separating, BirthTimeWarning when time unknown — mobile (375px) + desktop (1280px)
 - [ ] PG-05d Commit: `phase-5: complete natal chart (API SVG, report, dignities, enhanced aspects)`

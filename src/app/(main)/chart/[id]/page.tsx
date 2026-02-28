@@ -14,6 +14,9 @@ import HousesTable from '@/components/chart/HousesTable';
 import AspectsTable from '@/components/chart/AspectsTable';
 import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
+import SvgChartViewer from '@/components/feature/SvgChartViewer';
+import BirthTimeWarning from '@/components/feature/BirthTimeWarning';
+import AnalysisSection from '@/components/feature/AnalysisSection';
 
 function isBirthdayToday(birthDate: string): boolean {
   const [, m, d] = birthDate.split('-').map(Number);
@@ -53,6 +56,7 @@ export default function ChartPage() {
   const [selectedArea, setSelectedArea] = useState<ReportArea | null>(null);
   const [generatedAreas, setGeneratedAreas] = useState<Set<ReportArea>>(new Set());
   const [reports, setReports] = useState<Record<string, AIReport>>({});
+  const [enhanced, setEnhanced] = useState<Record<string, unknown> | null>(null);
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -67,6 +71,8 @@ export default function ChartPage() {
         if (cancelled) return;
         setChart(JSON.parse(stored));
         if (storedInput) setInputData(JSON.parse(storedInput));
+        const storedEnhanced = sessionStorage.getItem(`chart-enhanced-${id}`) || localStorage.getItem(`chart-enhanced-${id}`);
+        if (storedEnhanced) setEnhanced(JSON.parse(storedEnhanced));
         return;
       }
 
@@ -291,6 +297,20 @@ export default function ChartPage() {
         </motion.div>
       )}
 
+      {/* ── Birth Time Warning (FR-050) ── */}
+      {chart.birthTime === '12:00' && (
+        <div className="mb-5">
+          <BirthTimeWarning />
+        </div>
+      )}
+
+      {/* ── API SVG Chart (T035) ── */}
+      {chart.svgContent && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <SvgChartViewer svgContent={chart.svgContent} title="Натальна карта (API)" />
+        </motion.div>
+      )}
+
       {/* ── Quick Identity ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -415,15 +435,19 @@ export default function ChartPage() {
               className="overflow-hidden"
             >
               <div className="space-y-4 pt-4">
-                <div className="glass-card p-6">
-                  <NatalChartWheel
-                    planets={chart.planets}
-                    houses={chart.houses}
-                    aspects={chart.aspects}
-                    ascendant={chart.ascendant}
-                    midheaven={chart.midheaven}
-                  />
-                </div>
+                {/* Local chart visualization (fallback when API SVG unavailable) */}
+                {!chart.svgContent && (
+                  <div className="glass-card p-6">
+                    <p className="text-xs text-amber-400/70 mb-2">Локальна візуалізація (API SVG недоступне)</p>
+                    <NatalChartWheel
+                      planets={chart.planets}
+                      houses={chart.houses}
+                      aspects={chart.aspects}
+                      ascendant={chart.ascendant}
+                      midheaven={chart.midheaven}
+                    />
+                  </div>
+                )}
 
                 <div className="glass-card p-4">
                   <h3 className="text-sm font-semibold text-text-muted mb-3">Планети</h3>
@@ -439,6 +463,28 @@ export default function ChartPage() {
                   <h3 className="text-sm font-semibold text-text-muted mb-3">{chart.aspects.length} аспектів</h3>
                   <AspectsTable chart={chart} />
                 </div>
+
+                {/* Enhanced data sections (T034) */}
+                {!!enhanced?.natalReport && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Натальний звіт (API)</h3>
+                    <AnalysisSection title="Звіт" data={enhanced.natalReport as Record<string, unknown>} />
+                  </div>
+                )}
+
+                {!!enhanced?.enhancedPositions && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Гідності планет</h3>
+                    <AnalysisSection title="Гідності" data={enhanced.enhancedPositions as Record<string, unknown>} />
+                  </div>
+                )}
+
+                {!!enhanced?.enhancedAspects && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Розширені аспекти</h3>
+                    <AnalysisSection title="Аспекти" data={enhanced.enhancedAspects as Record<string, unknown>} />
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
