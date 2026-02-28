@@ -111,15 +111,15 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Login → homepage redirects to /dashboard with greeting, daily horoscope, saved charts. Logout → homepage shows marketing CTAs.
 
-- [ ] T027 [US13] Update homepage `src/app/(main)/page.tsx` — detect auth state. If auth: redirect to `/dashboard` (FR-017). If unauth: keep existing marketing landing
-- [ ] T028 [US13] Enhance dashboard `src/app/(main)/dashboard/` — personalized view per FR-023a: "Привіт, {name}" greeting, primary chart summary, quick links to most-used features, daily horoscope card (from `/api/horoscope/daily/{sign}` based on user's Sun sign), list of saved charts. Feature recommendations section: curated static list of 6 feature categories per FR-033 (Horoscopes, Compatibility, Tarot, Transits, Chinese, Numerology — defined in code, not algorithm-driven). First-time auth users see brief feature overview (3-4 key feature cards with short Ukrainian descriptions per FR-043). For zero-charts users: welcome message + CTA to `/chart/new`
-- [ ] T029 [US13] Remove auth-user-facing "Створити акаунт" CTAs — audit all components for signup CTAs visible to auth users, conditionally hide them (SC-006)
+- [x] T027 [US13] Update homepage `src/app/(main)/page.tsx` — detect auth state. If auth: redirect to `/dashboard` (FR-017). If unauth: keep existing marketing landing
+- [x] T028 [US13] Enhance dashboard `src/app/(main)/dashboard/` — personalized view per FR-023a: "Привіт, {name}" greeting, primary chart summary, quick links to most-used features, daily horoscope card (from `/api/horoscope/daily/{sign}` based on user's Sun sign), list of saved charts. Feature recommendations section: curated static list of 6 feature categories per FR-033 (Horoscopes, Compatibility, Tarot, Transits, Chinese, Numerology — defined in code, not algorithm-driven). First-time auth users see brief feature overview (3-4 key feature cards with short Ukrainian descriptions per FR-043). For zero-charts users: welcome message + CTA to `/chart/new`
+- [x] T029 [US13] Remove auth-user-facing "Створити акаунт" CTAs — audit all components for signup CTAs visible to auth users, conditionally hide them (SC-006)
 
 **Checkpoint**: Homepage is auth-aware. Auth users see personalized dashboard content.
 
 ### Phase 3 Gate
 
-- [ ] PG-03a Run `npm run build` — zero errors, zero warnings
+- [x] PG-03a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-03b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-03c Write Playwright tests: auth user redirected to /dashboard, dashboard shows greeting + charts + horoscope + curated feature list, first-time user sees feature overview, zero-charts user sees CTA, unauth sees marketing landing, zero "Створити акаунт" for auth users — mobile (375px) + desktop (1280px)
 - [ ] PG-03d Commit: `phase-3: auth-aware homepage & dashboard (redirect, personalized, feature overview)`
