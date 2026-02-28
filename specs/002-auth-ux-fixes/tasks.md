@@ -237,7 +237,7 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [ ] T060 [P] [US4] Create solar return page `src/app/(main)/solar-return/page.tsx` + client component — year selector, chart SVG, yearly themes report
 - [ ] T061 [P] [US4] Create API route `src/app/api/lunar-return/route.ts` — calls `getLunarReturnChart()` + `getLunarReturnChartSvg()` + `getLunarReturnReport()` + `getLunarReturnTransits()`. Cache 30d
 - [ ] T062 [P] [US4] Create lunar return page `src/app/(main)/lunar-return/page.tsx` + client component — date picker, chart SVG, monthly cycle report
-- [ ] T063 [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + client component — upcoming trends and timing. Uses dynamic `/api/analysis/predictive` route (handled by T068's `[type]` route). Cache 7d
+- [ ] T063 [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + standalone API route `src/app/api/analysis/predictive/route.ts` + client component — upcoming trends and timing. Standalone route calls `client.analysis.getPredictiveAnalysis()`, wrapped with api-client.ts (Sentry per FR-042). Cache 7d (per FR-038)
 
 **Checkpoint**: All P1 features complete. Core product fully functional.
 
@@ -275,11 +275,11 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 ## Phase 10: Specialized Analysis Reports (US6, Priority: P2)
 
-**Goal**: 8 unique analysis pages — career, health, karmic, psychological, spiritual, vocational, lunar, relocation.
+**Goal**: 8 unique analysis pages — career, health, karmic, psychological, spiritual, vocational, lunar, relocation. Note: predictive analysis is in Phase 8 (T063) with its own standalone route.
 
 **Independent Test**: Visit career analysis → enter birth data → see complete career report with all API sections.
 
-- [ ] T068 [US6] Create dynamic API route `src/app/api/analysis/[type]/route.ts` — maps type param to appropriate `client.analysis.get*Analysis()` method (career, health, karmic, psychological, spiritual, vocational, lunar, predictive). Validate type enum. Wrap with api-client.ts (Sentry per FR-042). Cache 30d for static analyses, 7d for predictive (per FR-038). Return full API response
+- [ ] T068 [US6] Create dynamic API route `src/app/api/analysis/[type]/route.ts` — maps type param to appropriate `client.analysis.get*Analysis()` method (career, health, karmic, psychological, spiritual, vocational, lunar). Validate type enum. Wrap with api-client.ts (Sentry per FR-042). Cache 30d (per FR-038). Return full API response. Note: predictive has its own standalone route (T063)
 - [ ] T069 [US6] Create shared analysis client component `src/components/feature/AnalysisPageClient.tsx` — reusable client component for all analysis pages: FeaturePageLayout + BirthDataForm (full variant per FR-054) + AnalysisSection (collapsible per FR-049). Takes analysisType prop. Shows ErrorState on failure, PartialErrorBanner on partial failure
 - [ ] T070 [P] [US6] Create career analysis page `src/app/(main)/analysis/career/page.tsx` — Ukrainian metadata + AnalysisPageClient with type="career"
 - [ ] T071 [P] [US6] Create health analysis page `src/app/(main)/analysis/health/page.tsx`
