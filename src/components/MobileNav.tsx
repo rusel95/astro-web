@@ -55,6 +55,8 @@ const MENU_SECTIONS = [
       { href: '/solar-return', label: 'Соляр' },
       { href: '/lunar-return', label: 'Лунар' },
       { href: '/analysis/predictive', label: 'Прогностика' },
+      { href: '/progressions', label: 'Прогресії' },
+      { href: '/directions', label: 'Дирекції' },
       { href: '/moon', label: 'Місячний календар' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку' },
       { href: '/explore', label: 'Дослідження API' },

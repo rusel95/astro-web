@@ -67,6 +67,8 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/solar-return', label: 'Соляр', icon: 'sun', description: 'Річний прогноз (Solar Return)' },
       { href: '/lunar-return', label: 'Лунар', icon: 'moon', description: 'Місячний цикл (Lunar Return)' },
       { href: '/analysis/predictive', label: 'Прогностика', icon: 'trending-up', description: 'Ключові тенденції та періоди' },
+      { href: '/progressions', label: 'Прогресії', icon: 'git-branch', description: 'Вторинні прогресії карти' },
+      { href: '/directions', label: 'Дирекції', icon: 'navigation', description: 'Сонячні дуги та дирекції' },
       { href: '/moon', label: 'Місячний календар', icon: 'calendar', description: 'Фази та Місяць без курсу' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку', icon: 'sparkles', description: 'Характеристики 12 знаків' },
       { href: '/explore', label: 'Дослідження API', icon: 'flask', description: 'Розширені астрологічні інструменти' },

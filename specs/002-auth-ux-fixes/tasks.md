@@ -231,22 +231,22 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Select a saved chart → see transit bi-wheel SVG, current transits list, upcoming exact dates, transit interpretation.
 
-- [ ] T057 [US4] Create API route `src/app/api/transit/route.ts` — calls `getTransitChart()` + `getTransitChartSvg()` + `getTransitReport()` + `getNatalTransitReport()` + `getNatalTransits()` + `enhanced.getEnhancedTransitChart()`. Cache 1h (FR-038). Wrap with api-client.ts. Uses PartialErrorBanner pattern for partial failures
-- [ ] T058 [US4] Create transit page `src/app/(main)/transit/page.tsx` + client component — date picker for transit date (BirthDataForm date-range variant per FR-054), ChartSelector for natal chart, bi-wheel SVG via SvgChartViewer, transit aspects list, upcoming transits timeline, transit report via AnalysisSection. Breadcrumb nav (FR-044)
-- [ ] T059 [P] [US4] Create API route `src/app/api/solar-return/route.ts` — calls `getSolarReturnChart()` + `getSolarReturnChartSvg()` + `getSolarReturnReport()` + `getSolarReturnTransits()`. Cache 365d
-- [ ] T060 [P] [US4] Create solar return page `src/app/(main)/solar-return/page.tsx` + client component — year selector, chart SVG, yearly themes report
-- [ ] T061 [P] [US4] Create API route `src/app/api/lunar-return/route.ts` — calls `getLunarReturnChart()` + `getLunarReturnChartSvg()` + `getLunarReturnReport()` + `getLunarReturnTransits()`. Cache 30d
-- [ ] T062 [P] [US4] Create lunar return page `src/app/(main)/lunar-return/page.tsx` + client component — date picker, chart SVG, monthly cycle report
-- [ ] T063 [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + standalone API route `src/app/api/analysis/predictive/route.ts` + client component — upcoming trends and timing. Standalone route calls `client.analysis.getPredictiveAnalysis()`, wrapped with api-client.ts (Sentry per FR-042). Cache 7d (per FR-038)
+- [x] T057 [US4] Create API route `src/app/api/transit/route.ts` — calls `getTransitChart()` + `getTransitChartSvg()` + `getTransitReport()` + `getNatalTransitReport()` + `getNatalTransits()` + `enhanced.getEnhancedTransitChart()`. Cache 1h (FR-038). Wrap with api-client.ts. Uses PartialErrorBanner pattern for partial failures
+- [x] T058 [US4] Create transit page `src/app/(main)/transit/page.tsx` + client component — date picker for transit date (BirthDataForm date-range variant per FR-054), ChartSelector for natal chart, bi-wheel SVG via SvgChartViewer, transit aspects list, upcoming transits timeline, transit report via AnalysisSection. Breadcrumb nav (FR-044)
+- [x] T059 [P] [US4] Create API route `src/app/api/solar-return/route.ts` — calls `getSolarReturnChart()` + `getSolarReturnChartSvg()` + `getSolarReturnReport()` + `getSolarReturnTransits()`. Cache 365d
+- [x] T060 [P] [US4] Create solar return page `src/app/(main)/solar-return/page.tsx` + client component — year selector, chart SVG, yearly themes report
+- [x] T061 [P] [US4] Create API route `src/app/api/lunar-return/route.ts` — calls `getLunarReturnChart()` + `getLunarReturnChartSvg()` + `getLunarReturnReport()` + `getLunarReturnTransits()`. Cache 30d
+- [x] T062 [P] [US4] Create lunar return page `src/app/(main)/lunar-return/page.tsx` + client component — date picker, chart SVG, monthly cycle report
+- [x] T063 [US4] Create predictive analysis page `src/app/(main)/analysis/predictive/page.tsx` + standalone API route `src/app/api/analysis/predictive/route.ts` + client component — upcoming trends and timing. Standalone route calls `client.analysis.getPredictiveAnalysis()`, wrapped with api-client.ts (Sentry per FR-042). Cache 7d (per FR-038)
 
 **Checkpoint**: All P1 features complete. Core product fully functional.
 
 ### Phase 8 Gate
 
-- [ ] PG-08a Run `npm run build` — zero errors, zero warnings
+- [x] PG-08a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-08b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-08c Write Playwright tests: transit page with date picker and chart selector, bi-wheel SVG renders, solar/lunar return pages with year/date selectors, predictive analysis page — mobile (375px) + desktop (1280px)
-- [ ] PG-08d Commit: `phase-8: transit & predictive (transit chart, solar/lunar return, predictive)`
+- [x] PG-08d Commit: `phase-8: transit & predictive (transit chart, solar/lunar return, predictive)`
 - [ ] PG-08e **P1 MILESTONE**: Full regression test of all P1 features together. Verify auth flow + nav + natal chart + horoscopes + compatibility + transit all work end-to-end on mobile and desktop
 
 ---
@@ -257,19 +257,19 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Enter birth data + target date → see progressed positions, progression report.
 
-- [ ] T064 [P] [US5] Create API route `src/app/api/progressions/route.ts` — calls `getProgressions()` + `getProgressionReport()`. Cache 30d. Wrap with api-client.ts
-- [ ] T065 [P] [US5] Create API route `src/app/api/directions/route.ts` — calls `getDirections()` + `getDirectionReport()`. Cache 30d
-- [ ] T066 [US5] Create progressions page `src/app/(main)/progressions/page.tsx` + client component — BirthDataForm (date-range variant per FR-054) for target date, progressed chart data via AnalysisSection (collapsible per FR-049), progression report. Breadcrumb nav
-- [ ] T067 [US5] Create directions page `src/app/(main)/directions/page.tsx` + client component — BirthDataForm (date-range variant), directed positions, direction report. Breadcrumb nav
+- [x] T064 [P] [US5] Create API route `src/app/api/progressions/route.ts` — calls `getProgressions()` + `getProgressionReport()`. Cache 30d. Wrap with api-client.ts
+- [x] T065 [P] [US5] Create API route `src/app/api/directions/route.ts` — calls `getDirections()` + `getDirectionReport()`. Cache 30d
+- [x] T066 [US5] Create progressions page `src/app/(main)/progressions/page.tsx` + client component — BirthDataForm (date-range variant per FR-054) for target date, progressed chart data via AnalysisSection (collapsible per FR-049), progression report. Breadcrumb nav
+- [x] T067 [US5] Create directions page `src/app/(main)/directions/page.tsx` + client component — BirthDataForm (date-range variant), directed positions, direction report. Breadcrumb nav
 
 **Checkpoint**: Advanced chart types available.
 
 ### Phase 9 Gate
 
-- [ ] PG-09a Run `npm run build` — zero errors, zero warnings
+- [x] PG-09a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-09b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-09c Write Playwright tests: progressions page with date picker, directions page, reports display with collapsible sections — mobile (375px) + desktop (1280px)
-- [ ] PG-09d Commit: `phase-9: progressions & directions`
+- [x] PG-09d Commit: `phase-9: progressions & directions`
 
 ---
 
