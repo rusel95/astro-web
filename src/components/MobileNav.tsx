@@ -78,6 +78,9 @@ const MENU_SECTIONS = [
       { href: '/tarot/birth-cards', label: 'Карти народження' },
       { href: '/tarot/synastry', label: 'Синастрійне таро' },
       { href: '/tarot/transit', label: 'Транзитне таро' },
+      { href: '/chinese', label: 'BaZi (Чотири стовпи)' },
+      { href: '/chinese/forecast', label: 'Китайський прогноз' },
+      { href: '/chinese/compatibility', label: 'Китайська сумісність' },
     ],
   },
 ];

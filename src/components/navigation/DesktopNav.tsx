@@ -97,6 +97,14 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/tarot/birth-cards', label: 'Карти народження', icon: 'star', description: 'Карта особистості та душі' },
     ],
   },
+  {
+    title: 'Китайська астрологія',
+    items: [
+      { href: '/chinese', label: 'BaZi (Чотири стовпи)', icon: 'sparkles', description: 'Класична китайська астрологія' },
+      { href: '/chinese/forecast', label: 'Китайський прогноз', icon: 'calendar', description: 'Річний прогноз та елементи' },
+      { href: '/chinese/compatibility', label: 'Китайська сумісність', icon: 'users', description: 'Сумісність за знаком та елементом' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

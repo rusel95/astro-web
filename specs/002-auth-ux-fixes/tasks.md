@@ -337,21 +337,21 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Enter birth data → see BaZi four pillars, luck pillars timeline, Ming Gua number.
 
-- [ ] T090 [P] [US8] Create API route `src/app/api/chinese/bazi/route.ts` — POST, calls `calculateBaZi()` + `calculateLuckPillars()` + `calculateMingGua()` + `getZodiacAnimal()`. Cache 30d. Wrap with api-client.ts
-- [ ] T091 [P] [US8] Create API route `src/app/api/chinese/compatibility/route.ts` — POST, calls `calculateCompatibility()`. Cache 30d
-- [ ] T092 [P] [US8] Create API route `src/app/api/chinese/forecast/route.ts` — POST, calls `getYearlyForecast()` + `analyzeYearElements()` + `getSolarTerms()`. Cache 30d
-- [ ] T093 [US8] Create Chinese astrology hub `src/app/(main)/chinese/page.tsx` + client component — BirthDataForm (full variant), BaZi four pillars display, luck pillars timeline, Ming Gua with directions, zodiac animal. AnalysisSection with collapsible blocks (FR-049). Breadcrumb nav
-- [ ] T094 [P] [US8] Create Chinese compatibility page `src/app/(main)/chinese/compatibility/page.tsx` + client component — PartnerSelector for second input, compatibility result
-- [ ] T095 [P] [US8] Create Chinese forecast page `src/app/(main)/chinese/forecast/page.tsx` + client component — year selector, yearly forecast, element analysis
+- [x] T090 [P] [US8] Create API route `src/app/api/chinese/bazi/route.ts` — POST, calls `calculateBaZi()` + `calculateLuckPillars()` + `calculateMingGua()` + `getZodiacAnimal()`. Cache 30d. Wrap with api-client.ts
+- [x] T091 [P] [US8] Create API route `src/app/api/chinese/compatibility/route.ts` — POST, calls `calculateCompatibility()`. Cache 30d
+- [x] T092 [P] [US8] Create API route `src/app/api/chinese/forecast/route.ts` — POST, calls `getYearlyForecast()` + `analyzeYearElements()` + `getSolarTerms()`. Cache 30d
+- [x] T093 [US8] Create Chinese astrology hub `src/app/(main)/chinese/page.tsx` + client component — BirthDataForm (full variant), BaZi four pillars display, luck pillars timeline, Ming Gua with directions, zodiac animal. AnalysisSection with collapsible blocks (FR-049). Breadcrumb nav
+- [x] T094 [P] [US8] Create Chinese compatibility page `src/app/(main)/chinese/compatibility/page.tsx` + client component — PartnerSelector for second input, compatibility result
+- [x] T095 [P] [US8] Create Chinese forecast page `src/app/(main)/chinese/forecast/page.tsx` + client component — year selector, yearly forecast, element analysis
 
 **Checkpoint**: Chinese astrology section complete.
 
 ### Phase 12 Gate
 
-- [ ] PG-12a Run `npm run build` — zero errors, zero warnings
+- [x] PG-12a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-12b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-12c Write Playwright tests: BaZi four pillars display, luck pillars timeline, Ming Gua directions, Chinese compatibility with PartnerSelector, yearly forecast — mobile (375px) + desktop (1280px)
-- [ ] PG-12d Commit: `phase-12: chinese astrology (BaZi, luck pillars, Ming Gua, compatibility, forecast)`
+- [x] PG-12d Commit: `phase-12: chinese astrology (BaZi, luck pillars, Ming Gua, compatibility, forecast)`
 
 ---
 
