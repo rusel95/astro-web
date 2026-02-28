@@ -81,6 +81,8 @@ const MENU_SECTIONS = [
       { href: '/chinese', label: 'BaZi (Чотири стовпи)' },
       { href: '/chinese/forecast', label: 'Китайський прогноз' },
       { href: '/chinese/compatibility', label: 'Китайська сумісність' },
+      { href: '/traditional', label: 'Традиційний аналіз' },
+      { href: '/traditional/profections', label: 'Профекції' },
     ],
   },
 ];

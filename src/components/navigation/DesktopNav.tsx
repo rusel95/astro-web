@@ -105,6 +105,13 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/chinese/compatibility', label: 'Китайська сумісність', icon: 'users', description: 'Сумісність за знаком та елементом' },
     ],
   },
+  {
+    title: 'Традиційна астрологія',
+    items: [
+      { href: '/traditional', label: 'Традиційний аналіз', icon: 'star', description: 'Гідності, арабські частки, секта' },
+      { href: '/traditional/profections', label: 'Профекції', icon: 'calendar', description: 'Річні тимелорди (0–90 років)' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

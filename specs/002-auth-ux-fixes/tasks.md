@@ -361,12 +361,12 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: View traditional analysis for a chart → see dignities table, Arabic lots, profection timeline.
 
-- [ ] T096 [P] [US9] Create API route `src/app/api/traditional/analysis/route.ts` — POST, calls `getAnalysis()` + `getDignitiesAnalysis()` + `getLotsAnalysis()` + `getSectAnalysis()` + `getBoundsAnalysis()`. Cache 30d. Wrap with api-client.ts
-- [ ] T097 [P] [US9] Create API route `src/app/api/traditional/profections/route.ts` — POST, calls `getProfectionsAnalysis()` + `getAnnualProfection()` + `getProfectionTimeline()`. Cache 30d
+- [x] T096 [P] [US9] Create API route `src/app/api/traditional/analysis/route.ts` — POST, calls `getAnalysis()` + `getDignitiesAnalysis()` + `getLotsAnalysis()` + `getSectAnalysis()` + `getBoundsAnalysis()`. Cache 30d. Wrap with api-client.ts
+- [x] T097 [P] [US9] Create API route `src/app/api/traditional/profections/route.ts` — POST, calls `getProfectionsAnalysis()` + `getAnnualProfection()` + `getProfectionTimeline()`. Cache 30d
 - [ ] T098 [P] [US9] Create API route `src/app/api/traditional/firdaria/route.ts` — POST, calls `getFirdaria()`. Cache 30d
 - [ ] T099 [P] [US9] Create API route `src/app/api/traditional/zodiacal-releasing/route.ts` — POST, calls `getZodiacalReleasing()`. Cache 30d
-- [ ] T100 [US9] Create traditional hub page `src/app/(main)/traditional/page.tsx` + client component — comprehensive traditional analysis: dignities table, Arabic lots, sect analysis, bounds. AnalysisSection with collapsible blocks (FR-049). Breadcrumb nav on sub-pages (FR-044)
-- [ ] T101 [P] [US9] Create profections page `src/app/(main)/traditional/profections/page.tsx` + client component — age input, annual profection, profection timeline. Breadcrumb: "Традиційна > Профекції"
+- [x] T100 [US9] Create traditional hub page `src/app/(main)/traditional/page.tsx` + client component — comprehensive traditional analysis: dignities table, Arabic lots, sect analysis, bounds. AnalysisSection with collapsible blocks (FR-049). Breadcrumb nav on sub-pages (FR-044)
+- [x] T101 [P] [US9] Create profections page `src/app/(main)/traditional/profections/page.tsx` + client component — age input, annual profection, profection timeline. Breadcrumb: "Традиційна > Профекції"
 - [ ] T102 [P] [US9] Create firdaria page `src/app/(main)/traditional/firdaria/page.tsx` + client component — firdaria periods display. Breadcrumb: "Традиційна > Фірдарія"
 - [ ] T103 [P] [US9] Create zodiacal releasing page `src/app/(main)/traditional/zodiacal-releasing/page.tsx` + client component — lot selector, zodiacal releasing periods. Breadcrumb: "Традиційна > Зодіакальний рилізинг"
 
@@ -374,10 +374,10 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 ### Phase 13 Gate
 
-- [ ] PG-13a Run `npm run build` — zero errors, zero warnings
+- [x] PG-13a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-13b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-13c Write Playwright tests: traditional analysis hub, dignities table, profections timeline with age input, firdaria periods, zodiacal releasing with lot selector, breadcrumb navigation — mobile (375px) + desktop (1280px)
-- [ ] PG-13d Commit: `phase-13: traditional astrology (dignities, lots, profections, firdaria, ZR)`
+- [x] PG-13d Commit: `phase-13: traditional astrology (dignities, lots, profections, firdaria, ZR)`
 
 ---
 
