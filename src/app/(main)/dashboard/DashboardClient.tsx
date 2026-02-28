@@ -362,7 +362,7 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
                 <p className="text-xs text-white/40 mt-1">Аналіз синастрії та порівняння двох натальних карт</p>
               </a>
               <a
-                href="/daily"
+                href="/horoscope/daily"
                 className="p-4 rounded-2xl transition-all hover:opacity-90"
                 style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}
               >
@@ -401,7 +401,7 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
               </div>
             </a>
             <a
-              href="/daily"
+              href="/horoscope/daily"
               className="flex flex-col gap-3 p-4 rounded-2xl transition-all hover:opacity-90"
               style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}
             >

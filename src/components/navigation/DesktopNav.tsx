@@ -21,10 +21,11 @@ const HOROSCOPE_GROUPS: DropdownGroup[] = [
   {
     title: 'Прогнози',
     items: [
-      { href: '/daily', label: 'Щоденний гороскоп', icon: 'sun', description: 'Прогноз на сьогодні за знаком' },
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026', icon: 'calendar-range', description: 'Річний прогноз' },
-      { href: '/horoscope/monthly', label: 'Прогноз на місяць', icon: 'calendar-days', description: 'Детальний місячний' },
-      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки', icon: 'telescope', description: 'Довгостроковий прогноз' },
+      { href: '/horoscope/daily', label: 'Щоденний гороскоп', icon: 'sun', description: 'Прогноз на сьогодні за знаком' },
+      { href: '/horoscope/weekly', label: 'Тижневий гороскоп', icon: 'calendar', description: 'Прогноз на тиждень' },
+      { href: '/horoscope/monthly', label: 'Місячний гороскоп', icon: 'calendar-days', description: 'Детальний місячний' },
+      { href: '/horoscope/yearly', label: 'Річний гороскоп', icon: 'calendar-range', description: 'Прогноз на рік' },
+      { href: '/horoscope/chinese', label: 'Китайський гороскоп', icon: 'sparkles', description: 'Тварина та елемент' },
     ],
   },
   {

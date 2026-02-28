@@ -20,20 +20,26 @@ const ITEMS = [
 
 const MENU_SECTIONS = [
   {
-    title: 'Гороскопи',
+    title: 'Прогнози',
     items: [
-      { href: '/daily', label: 'Щоденний гороскоп' },
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026' },
-      { href: '/horoscope/monthly', label: 'Прогноз на місяць' },
+      { href: '/horoscope/daily', label: 'Щоденний гороскоп' },
+      { href: '/horoscope/weekly', label: 'Тижневий гороскоп' },
+      { href: '/horoscope/monthly', label: 'Місячний гороскоп' },
+      { href: '/horoscope/yearly', label: 'Річний гороскоп' },
+      { href: '/horoscope/chinese', label: 'Китайський гороскоп' },
+    ],
+  },
+  {
+    title: 'Особистість та кохання',
+    items: [
       { href: '/horoscope/personality', label: 'Гороскоп особистості' },
-      { href: '/horoscope/love', label: 'Любовний гороскоп' },
+      { href: '/horoscope/talent', label: 'Звіт талантів' },
       { href: '/horoscope/career', label: "Кар'єрний гороскоп" },
       { href: '/horoscope/health', label: "Звіт здоров'я" },
-      { href: '/horoscope/talent', label: 'Звіт талантів' },
       { href: '/horoscope/finance', label: 'Фінансовий успіх' },
+      { href: '/horoscope/love', label: 'Любовний гороскоп' },
       { href: '/horoscope/love-compatibility', label: 'Сумісність кохання' },
       { href: '/horoscope/marriage', label: 'Коли я одружуся?' },
-      { href: '/horoscope/3-years', label: 'Прогноз на 3 роки' },
       { href: '/horoscope/children', label: 'Дитячий гороскоп' },
     ],
   },

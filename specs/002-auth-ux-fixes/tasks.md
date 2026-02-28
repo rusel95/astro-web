@@ -176,27 +176,27 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit each horoscope page → select sign → see complete forecast data with all categories, ratings, lucky numbers.
 
-- [ ] T038 [P] [US2] Create API route `src/app/api/horoscope/daily/[sign]/route.ts` — calls `getSignDailyHoroscope()` + `getSignDailyHoroscopeText()`, returns combined data. Wrap with api-client.ts (Sentry per FR-042). Cache 24h (FR-038)
-- [ ] T039 [P] [US2] Create API route `src/app/api/horoscope/weekly/[sign]/route.ts` — calls `getSignWeeklyHoroscope()`. Cache 7d
-- [ ] T040 [P] [US2] Create API route `src/app/api/horoscope/monthly/[sign]/route.ts` — calls `getSignMonthlyHoroscope()`. Cache 30d
-- [ ] T041 [P] [US2] Create API route `src/app/api/horoscope/yearly/[sign]/route.ts` — calls `getSignYearlyHoroscope()`. Cache 365d
-- [ ] T042 [P] [US2] Create API route `src/app/api/horoscope/personal/route.ts` — POST, calls `getPersonalDailyHoroscope()` with subject. Cache 24h
-- [ ] T043 [P] [US2] Create API route `src/app/api/horoscope/chinese/route.ts` — POST, calls `getChineseHoroscope()` with subject. Cache 30d
-- [ ] T044 [US2] Create daily horoscope page `src/app/(main)/horoscope/daily/page.tsx` + client component — sign selector (12 ZodiacIcon components), displays all horoscope categories (general, love, career, health), ratings, lucky numbers, mood. Personal horoscope section for auth users. Loading skeleton per FR-029g
-- [ ] T045 [P] [US2] Create weekly horoscope page `src/app/(main)/horoscope/weekly/page.tsx` + client component — sign selector, full weekly forecast with all API fields
-- [ ] T046 [P] [US2] Create monthly horoscope page `src/app/(main)/horoscope/monthly/page.tsx` + client component — sign selector, full monthly forecast
-- [ ] T047 [P] [US2] Create yearly horoscope page `src/app/(main)/horoscope/yearly/page.tsx` + client component — sign selector, full yearly overview
-- [ ] T048 [US2] Create Chinese horoscope page `src/app/(main)/horoscope/chinese/page.tsx` + client component — uses FeaturePageLayout with BirthDataForm (basic variant), displays Chinese horoscope data
-- [ ] T049 [US2] Remove/redirect old horoscope pages — delete `src/app/(main)/horoscope/[slug]/page.tsx` (if catches new sub-routes), delete `src/app/(main)/daily/page.tsx`. Add redirects in next.config.js: `/daily` → `/horoscope/daily`, `/horoscopes/*` → `/horoscope/*`
+- [x] T038 [P] [US2] Create API route `src/app/api/horoscope/daily/[sign]/route.ts` — calls `getSignDailyHoroscope()` + `getSignDailyHoroscopeText()`, returns combined data. Wrap with api-client.ts (Sentry per FR-042). Cache 24h (FR-038)
+- [x] T039 [P] [US2] Create API route `src/app/api/horoscope/weekly/[sign]/route.ts` — calls `getSignWeeklyHoroscope()`. Cache 7d
+- [x] T040 [P] [US2] Create API route `src/app/api/horoscope/monthly/[sign]/route.ts` — calls `getSignMonthlyHoroscope()`. Cache 30d
+- [x] T041 [P] [US2] Create API route `src/app/api/horoscope/yearly/[sign]/route.ts` — calls `getSignYearlyHoroscope()`. Cache 365d
+- [x] T042 [P] [US2] Create API route `src/app/api/horoscope/personal/route.ts` — POST, calls `getPersonalDailyHoroscope()` with subject. Cache 24h
+- [x] T043 [P] [US2] Create API route `src/app/api/horoscope/chinese/route.ts` — POST, calls `getChineseHoroscope()` with subject. Cache 30d
+- [x] T044 [US2] Create daily horoscope page `src/app/(main)/horoscope/daily/page.tsx` + client component — sign selector (12 ZodiacIcon components), displays all horoscope categories (general, love, career, health), ratings, lucky numbers, mood. Personal horoscope section for auth users. Loading skeleton per FR-029g
+- [x] T045 [P] [US2] Create weekly horoscope page `src/app/(main)/horoscope/weekly/page.tsx` + client component — sign selector, full weekly forecast with all API fields
+- [x] T046 [P] [US2] Create monthly horoscope page `src/app/(main)/horoscope/monthly/page.tsx` + client component — sign selector, full monthly forecast
+- [x] T047 [P] [US2] Create yearly horoscope page `src/app/(main)/horoscope/yearly/page.tsx` + client component — sign selector, full yearly overview
+- [x] T048 [US2] Create Chinese horoscope page `src/app/(main)/horoscope/chinese/page.tsx` + client component — uses FeaturePageLayout with BirthDataForm (basic variant), displays Chinese horoscope data
+- [x] T049 [US2] Remove/redirect old horoscope pages — delete `src/app/(main)/horoscope/[slug]/page.tsx` (if catches new sub-routes), delete `src/app/(main)/daily/page.tsx`. Add redirects in next.config.js: `/daily` → `/horoscope/daily`, `/horoscopes/*` → `/horoscope/*`
 
 **Checkpoint**: All 6 horoscope types working with complete API data.
 
 ### Phase 6 Gate
 
-- [ ] PG-06a Run `npm run build` — zero errors, zero warnings
+- [x] PG-06a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-06b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-06c Write Playwright tests: daily/weekly/monthly/yearly horoscope pages load with sign selector, Chinese horoscope form submit, personal horoscope for auth users, old horoscope URLs redirect correctly — mobile (375px) + desktop (1280px)
-- [ ] PG-06d Commit: `phase-6: horoscope forecasts (daily, weekly, monthly, yearly, chinese, personal)`
+- [x] PG-06d Commit: `phase-6: horoscope forecasts (daily, weekly, monthly, yearly, chinese, personal)`
 
 ---
 
