@@ -306,9 +306,9 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 **API Coverage:**
 
 - **FR-001**: Every endpoint in the Astrology API SDK MUST have a corresponding page or section that displays ALL data the endpoint returns.
-- **FR-002**: Data from the API MUST be displayed in full — no truncation, no hiding of fields. If the API returns it, the user sees it.
+- **FR-002**: Non-null data from the API MUST be displayed in full — no truncation of meaningful values. When the API returns null or empty values for optional fields, those sections MAY be hidden gracefully rather than showing empty space. Required fields MUST always be rendered, with an appropriate empty-state indicator if null.
 - **FR-003**: Each page MUST use the appropriate API endpoint(s) directly — not local calculations or AI-generated approximations when API data is available.
-- **FR-004**: The API-provided SVG charts (natal, synastry, composite, transit) MUST be used for chart visualization instead of the local NatalChartWheel SVG renderer.
+- **FR-004**: The API-provided SVG charts (natal, synastry, composite, transit) MUST be the primary visualization. The local NatalChartWheel SVG renderer MAY be retained as a fallback when the API SVG is unavailable (network error, API timeout). Fallback MUST be visually indicated to the user.
 
 **Pages by API namespace:**
 
@@ -329,14 +329,18 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 - **FR-017**: Homepage MUST render personalized content for auth users, marketing landing for unauth.
 - **FR-018**: `/quiz` MUST redirect auth users to `/chart/new`. All other pages accessible to all users.
-- **FR-019**: Pages requiring birth data MUST auto-submit from saved chart when auth user has complete data (name, DOB, time, city, gender all present). Form skipped entirely.
+- **FR-019**: Pages requiring birth data MUST auto-submit from saved chart when auth user has complete data (name, date of birth, birth time (not 'unknown'), birth city (with resolved latitude/longitude), and gender all present in the charts table). Form skipped entirely.
 - **FR-020**: Gender MUST be correctly saved and pre-filled from the charts table.
+- **FR-020a**: Gender field MUST support: 'male', 'female', and 'prefer not to say' (mapped to null for API calls). For API endpoints that require a binary gender parameter, 'prefer not to say' defaults to omitting the gender field or using the API's default behavior.
 - **FR-021**: SessionStorage MUST be cleared on logout.
 - **FR-022**: Moon page MUST hide "У вашому чарті" for unauth users.
 - **FR-023**: Login page MUST redirect auth users to `/dashboard`.
+- **FR-023a**: The `/dashboard` page MUST display: user greeting with name, primary chart summary, quick links to most-used features, and a daily insight snippet. For users with zero charts, show a welcome message and CTA to create first chart at `/chart/new`.
 - **FR-024**: Navigation MUST provide access to every feature category. No feature inaccessible from nav.
 - **FR-025**: Zero instances of "Скоро" or "coming soon" text anywhere on the site.
+- **FR-025a**: Navigation menus MUST only include links to pages that are implemented and functional. During phased rollout, nav items for unimplemented features MUST NOT appear — they are added as each phase ships. This ensures zero "Скоро" or dead links at any point.
 - **FR-026**: All user-facing text MUST be in Ukrainian.
+- **FR-026a**: When the Astrology API does not support Ukrainian (`language: 'uk'`) for a specific endpoint, the English API response is displayed as-is. UI chrome (labels, buttons, navigation, section headers) MUST always be Ukrainian regardless of API language support.
 
 ## Success Criteria *(mandatory)*
 
