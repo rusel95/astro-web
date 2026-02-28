@@ -15,6 +15,22 @@
 
 ---
 
+## Phase Gate Standard (applies to EVERY phase)
+
+Every phase MUST pass the following gate before it is considered complete. Gate tasks use `PG-XX` IDs.
+
+| Gate Step | Description |
+| --------- | ----------- |
+| **Build** | `npm run build` — zero TypeScript errors, zero warnings. Phase is not shippable if build fails |
+| **Existing Tests** | `npm run test` — all existing Playwright tests pass. No regressions |
+| **New UI Tests** | Write Playwright tests for all new pages/flows added in this phase. Tests MUST cover both **mobile (375px)** and **desktop (1280px)** viewports. Mobile is primary — test mobile first |
+| **Visual Check** | Spot-check new pages on mobile (375px) and desktop (1280px). Verify no layout breaks, text overflow, or touch target issues |
+| **Commit** | Atomic commit with clear message: `phase-N: [description]`. Never merge — merging is user's responsibility |
+
+**Mobile-First Principle**: Most users are on mobile phones. All UI tests MUST include mobile viewport (375px) alongside desktop (1280px). Mobile layout issues are blocking — desktop-only fixes are not.
+
+---
+
 ## Phase 1: Setup (Shared Infrastructure)
 
 **Purpose**: Database migrations, shared types, reusable components, and hook that all stories depend on.
@@ -32,6 +48,13 @@
 - [ ] T011 [P] Add new PostHog events in `src/lib/analytics/events.ts` — feature_page_view, feature_result_loaded, feature_error, feature_form_submit for each feature category
 
 **Checkpoint**: Shared infrastructure ready. All user story phases can begin.
+
+### Phase 1 Gate
+
+- [ ] PG-01a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-01b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-01c Write Playwright tests for shared components (BirthDataForm render, ChartSelector dropdown, SvgChartViewer loading state) — mobile (375px) + desktop (1280px)
+- [ ] PG-01d Commit: `phase-1: shared infrastructure (types, cache, components, hooks)`
 
 ---
 
@@ -51,6 +74,13 @@
 
 **Checkpoint**: Auth flow fixed. Users can navigate freely, forms auto-submit, privacy protected.
 
+### Phase 2 Gate
+
+- [ ] PG-02a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-02b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-02c Write Playwright tests: auth user quiz redirect, login redirect, moon page unauth state, sessionStorage cleared on logout, form auto-submit with complete chart data — mobile (375px) + desktop (1280px)
+- [ ] PG-02d Commit: `phase-2: auth flow fixes (redirect, auto-submit, gender, privacy)`
+
 ---
 
 ## Phase 3: Auth-Aware Homepage (US13, Priority: P1)
@@ -65,6 +95,13 @@
 
 **Checkpoint**: Homepage is auth-aware. Auth users see personalized content.
 
+### Phase 3 Gate
+
+- [ ] PG-03a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-03b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-03c Write Playwright tests: auth user sees dashboard home (greeting, charts, horoscope), unauth sees marketing landing, zero "Створити акаунт" for auth users — mobile (375px) + desktop (1280px)
+- [ ] PG-03d Commit: `phase-3: auth-aware homepage (dashboard, personalized content)`
+
 ---
 
 ## Phase 4: Navigation Overhaul (US15, Priority: P1)
@@ -78,6 +115,13 @@
 - [ ] T024 [US15] Fix broken product page navigation — remove auth-only redirect logic from `src/app/(main)/horoscopes/*/page.tsx`, `src/app/(main)/ascendant/page.tsx` so pages load for all users. Actual page removal/redirects handled later in T041 (horoscopes) and T120 (others)
 
 **Checkpoint**: Users can navigate to every feature from the menu.
+
+### Phase 4 Gate
+
+- [ ] PG-04a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-04b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-04c Write Playwright tests: desktop dropdown menus open/close, all nav links resolve to existing pages, mobile bottom tab bar navigation, hamburger menu expands with all categories — mobile (375px) + desktop (1280px)
+- [ ] PG-04d Commit: `phase-4: navigation overhaul (dropdowns, mobile tabs, all categories)`
 
 ---
 
@@ -94,6 +138,13 @@
 - [ ] T029 [US1] Display complete aspect data — in AspectsTable, show applying/separating status, orb, reception data from enhanced aspects
 
 **Checkpoint**: Natal chart shows complete, professional-grade data from API.
+
+### Phase 5 Gate
+
+- [ ] PG-05a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-05b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-05c Write Playwright tests: chart creation flow end-to-end, API SVG renders (with fallback test), planets/houses/aspects/dignities/report tabs display data, enhanced aspects show orb + applying/separating — mobile (375px) + desktop (1280px)
+- [ ] PG-05d Commit: `phase-5: complete natal chart (API SVG, report, dignities, enhanced aspects)`
 
 ---
 
@@ -118,6 +169,13 @@
 
 **Checkpoint**: All 6 horoscope types working with complete API data.
 
+### Phase 6 Gate
+
+- [ ] PG-06a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-06b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-06c Write Playwright tests: daily/weekly/monthly/yearly horoscope pages load with sign selector, Chinese horoscope form submit, personal horoscope for auth users, old horoscope URLs redirect correctly — mobile (375px) + desktop (1280px)
+- [ ] PG-06d Commit: `phase-6: horoscope forecasts (daily, weekly, monthly, yearly, chinese, personal)`
+
 ---
 
 ## Phase 7: Relationship & Compatibility Suite (US3, Priority: P1)
@@ -134,6 +192,13 @@
 - [ ] T047 [P] [US3] Create relationship insights page `src/app/(main)/relationship/page.tsx` + client component — love languages, red flags, timing sections with all API data
 
 **Checkpoint**: Full relationship suite working — synastry, composite, compatibility, insights.
+
+### Phase 7 Gate
+
+- [ ] PG-07a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-07b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-07c Write Playwright tests: compatibility page with dual birth data entry, synastry SVG renders, composite chart page, relationship insights (love languages, red flags), partner data reuse across features — mobile (375px) + desktop (1280px)
+- [ ] PG-07d Commit: `phase-7: relationship suite (synastry, composite, compatibility, insights)`
 
 ---
 
@@ -153,6 +218,14 @@
 
 **Checkpoint**: All P1 features complete. Core product fully functional.
 
+### Phase 8 Gate
+
+- [ ] PG-08a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-08b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-08c Write Playwright tests: transit page with date picker and chart selector, bi-wheel SVG renders, solar/lunar return pages, predictive analysis page — mobile (375px) + desktop (1280px)
+- [ ] PG-08d Commit: `phase-8: transit & predictive (transit chart, solar/lunar return, predictive)`
+- [ ] PG-08e **P1 MILESTONE**: Full regression test of all P1 features together. Verify auth flow + nav + natal chart + horoscopes + compatibility + transit all work end-to-end on mobile and desktop
+
 ---
 
 ## Phase 9: Progressions & Directions (US5, Priority: P2)
@@ -167,6 +240,13 @@
 - [ ] T059 [US5] Create directions page `src/app/(main)/directions/page.tsx` + client component — date picker, directed positions, direction report
 
 **Checkpoint**: Advanced chart types available.
+
+### Phase 9 Gate
+
+- [ ] PG-09a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-09b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-09c Write Playwright tests: progressions page with date picker, directions page, reports display — mobile (375px) + desktop (1280px)
+- [ ] PG-09d Commit: `phase-9: progressions & directions`
 
 ---
 
