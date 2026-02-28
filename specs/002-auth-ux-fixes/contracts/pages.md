@@ -109,8 +109,9 @@ src/app/
 | Fixed Stars, Eclipses | 2 | 0 |
 | Insights (wellness, financial, business) | 3 | 0 |
 | Glossary | 1 | 0 |
+| Settings (account deletion) | 1 | 0 |
 | Auth/UX fixes | 0 | 3 (homepage, moon, dashboard) |
-| **Total** | **42** | **6** |
+| **Total** | **46** | **6** |
 
 ## Navigation Structure
 
