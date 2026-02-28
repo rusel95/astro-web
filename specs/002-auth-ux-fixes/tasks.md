@@ -411,16 +411,16 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit numerology → enter birth data → see core numbers + comprehensive report. Visit eclipses → see upcoming eclipses + natal impact.
 
-- [ ] T110 [P] [US11] Create API route `src/app/api/numerology/route.ts` — POST, calls `getCoreNumbers()` + `getComprehensiveReport()`. Cache 30d. Wrap with api-client.ts
-- [ ] T111 [P] [US11] Create API route `src/app/api/numerology/compatibility/route.ts` — POST, calls `analyzeCompatibility()`. Cache 30d
-- [ ] T112 [P] [US11] Create API route `src/app/api/fixed-stars/route.ts` — POST for `getConjunctions()` + `generateReport()`, GET for `getAllStars()` + `getPositions()` (star catalog). Cache 30d
-- [ ] T113 [P] [US11] Create API route `src/app/api/eclipses/route.ts` — GET for `getUpcoming()` + `getHistory()` + `getSarosCycle()`, POST for `checkNatalImpact()`. Cache 7d
-- [ ] T114 [P] [US11] Create API route `src/app/api/lunar/calendar/route.ts` — GET, calls `getMansions()` + `getEvents()` + `getCalendar()` + `getVoidOfCourse()` + `getGardeningCalendar()` + `getIngresses()`. Cache ISR 15min
-- [ ] T115 [US11] Create numerology page `src/app/(main)/numerology/page.tsx` + client component — BirthDataForm (basic variant), core numbers display, comprehensive report via AnalysisSection (collapsible per FR-049)
-- [ ] T116 [P] [US11] Create numerology compatibility page `src/app/(main)/numerology/compatibility/page.tsx` + client component — PartnerSelector for second input, compatibility result
-- [ ] T117 [US11] Create fixed stars page `src/app/(main)/fixed-stars/page.tsx` + client component — BirthDataForm (basic variant), natal star conjunctions table, interpretation report. Contextual help for technical terms (FR-029i)
-- [ ] T118 [US11] Create eclipses page `src/app/(main)/eclipses/page.tsx` + client component — upcoming eclipses list (no birth data needed), natal impact section (with BirthDataForm). Shows eclipse dates, types, saros cycles
-- [ ] T119 [US11] Enhance moon page `src/app/(main)/moon/page.tsx` — integrate lunar API data (mansions, events, calendar, void-of-course, gardening calendar, ingresses per FR-015) alongside existing astronomy-engine calculations. New sections via AnalysisSection
+- [X] T110 [P] [US11] Create API route `src/app/api/numerology/route.ts` — POST, calls `getCoreNumbers()` + `getComprehensiveReport()`. Cache 30d. Wrap with api-client.ts
+- [X] T111 [P] [US11] Create API route `src/app/api/numerology/compatibility/route.ts` — POST, calls `analyzeCompatibility()`. Cache 30d
+- [X] T112 [P] [US11] Create API route `src/app/api/fixed-stars/route.ts` — POST for `getConjunctions()` + `generateReport()`, GET for `getAllStars()` + `getPositions()` (star catalog). Cache 30d
+- [X] T113 [P] [US11] Create API route `src/app/api/eclipses/route.ts` — GET for `getUpcoming()` + `getHistory()` + `getSarosCycle()`, POST for `checkNatalImpact()`. Cache 7d
+- [X] T114 [P] [US11] Create API route `src/app/api/lunar/calendar/route.ts` — GET, calls `getMansions()` + `getEvents()` + `getCalendar()` + `getVoidOfCourse()` + `getGardeningCalendar()` + `getIngresses()`. Cache ISR 15min
+- [X] T115 [US11] Create numerology page `src/app/(main)/numerology/page.tsx` + client component — BirthDataForm (basic variant), core numbers display, comprehensive report via AnalysisSection (collapsible per FR-049)
+- [X] T116 [P] [US11] Create numerology compatibility page `src/app/(main)/numerology/compatibility/page.tsx` + client component — PartnerSelector for second input, compatibility result
+- [X] T117 [US11] Create fixed stars page `src/app/(main)/fixed-stars/page.tsx` + client component — BirthDataForm (basic variant), natal star conjunctions table, interpretation report. Contextual help for technical terms (FR-029i)
+- [X] T118 [US11] Create eclipses page `src/app/(main)/eclipses/page.tsx` + client component — upcoming eclipses list (no birth data needed), natal impact section (with BirthDataForm). Shows eclipse dates, types, saros cycles
+- [X] T119 [US11] Enhance moon page `src/app/(main)/moon/page.tsx` — integrate lunar API data (mansions, events, calendar, void-of-course, gardening calendar, ingresses per FR-015) alongside existing astronomy-engine calculations. New sections via AnalysisSection
 
 **Checkpoint**: All P2 features complete.
 

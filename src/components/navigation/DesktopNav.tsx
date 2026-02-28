@@ -119,6 +119,15 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/astrocartography/location', label: 'Аналіз локації', icon: 'map-pin', description: 'Астро-аналіз конкретного міста' },
     ],
   },
+  {
+    title: 'Нумерологія та зірки',
+    items: [
+      { href: '/numerology', label: 'Нумерологія', icon: 'hash', description: 'Числа долі, душі та особистості' },
+      { href: '/numerology/compatibility', label: 'Числова сумісність', icon: 'users', description: 'Нумерологічна сумісність двох людей' },
+      { href: '/fixed-stars', label: 'Фіксовані зірки', icon: 'star', description: 'Натальні кон\'юнкції з зірками' },
+      { href: '/eclipses', label: 'Затемнення', icon: 'moon', description: 'Майбутні затемнення та натальний вплив' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

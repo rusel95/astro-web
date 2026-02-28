@@ -85,6 +85,10 @@ const MENU_SECTIONS = [
       { href: '/traditional/profections', label: 'Профекції' },
       { href: '/astrocartography', label: 'Астрокартографія' },
       { href: '/astrocartography/location', label: 'Аналіз локації' },
+      { href: '/numerology', label: 'Нумерологія' },
+      { href: '/numerology/compatibility', label: 'Числова сумісність' },
+      { href: '/fixed-stars', label: 'Фіксовані зірки' },
+      { href: '/eclipses', label: 'Затемнення' },
     ],
   },
 ];
