@@ -74,6 +74,19 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/explore', label: 'Дослідження API', icon: 'flask', description: 'Розширені астрологічні інструменти' },
     ],
   },
+  {
+    title: 'Аналізи',
+    items: [
+      { href: '/analysis/career', label: "Кар'єрний аналіз", icon: 'briefcase', description: 'Кар\'єрне призначення' },
+      { href: '/analysis/health', label: "Аналіз здоров'я", icon: 'activity', description: 'Вразливі зони' },
+      { href: '/analysis/karmic', label: 'Кармічний аналіз', icon: 'infinity', description: 'Кармічні уроки та вузли' },
+      { href: '/analysis/psychological', label: 'Психологічний', icon: 'brain', description: 'Психологічний профіль' },
+      { href: '/analysis/spiritual', label: 'Духовний аналіз', icon: 'sparkles', description: 'Духовний потенціал' },
+      { href: '/analysis/vocational', label: 'Покликання', icon: 'star', description: 'Справжнє покликання' },
+      { href: '/analysis/lunar', label: 'Місячний аналіз', icon: 'moon', description: 'Місячна природа та емоції' },
+      { href: '/analysis/relocation', label: 'Аналіз релокації', icon: 'map-pin', description: 'Найкращі місця для переїзду' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

@@ -279,25 +279,25 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit career analysis → enter birth data → see complete career report with all API sections.
 
-- [ ] T068 [US6] Create dynamic API route `src/app/api/analysis/[type]/route.ts` — maps type param to appropriate `client.analysis.get*Analysis()` method (career, health, karmic, psychological, spiritual, vocational, lunar). Validate type enum. Wrap with api-client.ts (Sentry per FR-042). Cache 30d (per FR-038). Return full API response. Note: predictive has its own standalone route (T063)
-- [ ] T069 [US6] Create shared analysis client component `src/components/feature/AnalysisPageClient.tsx` — reusable client component for all analysis pages: FeaturePageLayout + BirthDataForm (full variant per FR-054) + AnalysisSection (collapsible per FR-049). Takes analysisType prop. Shows ErrorState on failure, PartialErrorBanner on partial failure
-- [ ] T070 [P] [US6] Create career analysis page `src/app/(main)/analysis/career/page.tsx` — Ukrainian metadata + AnalysisPageClient with type="career"
-- [ ] T071 [P] [US6] Create health analysis page `src/app/(main)/analysis/health/page.tsx`
-- [ ] T072 [P] [US6] Create karmic analysis page `src/app/(main)/analysis/karmic/page.tsx`
-- [ ] T073 [P] [US6] Create psychological analysis page `src/app/(main)/analysis/psychological/page.tsx`
-- [ ] T074 [P] [US6] Create spiritual analysis page `src/app/(main)/analysis/spiritual/page.tsx`
-- [ ] T075 [P] [US6] Create vocational analysis page `src/app/(main)/analysis/vocational/page.tsx`
-- [ ] T076 [P] [US6] Create lunar analysis page `src/app/(main)/analysis/lunar/page.tsx`
-- [ ] T077 [US6] Create relocation analysis page `src/app/(main)/analysis/relocation/page.tsx` + client component — BirthDataForm (location variant per FR-054) with additional target city picker, calls `getRelocationAnalysis()` via separate API logic in `[type]` route or dedicated route
+- [x] T068 [US6] Create dynamic API route `src/app/api/analysis/[type]/route.ts` — maps type param to appropriate `client.analysis.get*Analysis()` method (career, health, karmic, psychological, spiritual, vocational, lunar). Validate type enum. Wrap with api-client.ts (Sentry per FR-042). Cache 30d (per FR-038). Return full API response. Note: predictive has its own standalone route (T063)
+- [x] T069 [US6] Create shared analysis client component `src/components/feature/AnalysisPageClient.tsx` — reusable client component for all analysis pages: FeaturePageLayout + BirthDataForm (full variant per FR-054) + AnalysisSection (collapsible per FR-049). Takes analysisType prop. Shows ErrorState on failure, PartialErrorBanner on partial failure
+- [x] T070 [P] [US6] Create career analysis page `src/app/(main)/analysis/career/page.tsx` — Ukrainian metadata + AnalysisPageClient with type="career"
+- [x] T071 [P] [US6] Create health analysis page `src/app/(main)/analysis/health/page.tsx`
+- [x] T072 [P] [US6] Create karmic analysis page `src/app/(main)/analysis/karmic/page.tsx`
+- [x] T073 [P] [US6] Create psychological analysis page `src/app/(main)/analysis/psychological/page.tsx`
+- [x] T074 [P] [US6] Create spiritual analysis page `src/app/(main)/analysis/spiritual/page.tsx`
+- [x] T075 [P] [US6] Create vocational analysis page `src/app/(main)/analysis/vocational/page.tsx`
+- [x] T076 [P] [US6] Create lunar analysis page `src/app/(main)/analysis/lunar/page.tsx`
+- [x] T077 [US6] Create relocation analysis page `src/app/(main)/analysis/relocation/page.tsx` + client component — BirthDataForm (location variant per FR-054) with additional target city picker, calls `getRelocationAnalysis()` via separate API logic in `[type]` route or dedicated route
 
 **Checkpoint**: All 8 specialized analyses working.
 
 ### Phase 10 Gate
 
-- [ ] PG-10a Run `npm run build` — zero errors, zero warnings
+- [x] PG-10a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-10b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-10c Write Playwright tests: each analysis page loads, form submit works, results display with collapsible sections (FR-049), relocation page has location picker, ErrorState shown on API failure — mobile (375px) + desktop (1280px)
-- [ ] PG-10d Commit: `phase-10: specialized analyses (career, health, karmic, psychological, spiritual, vocational, lunar, relocation)`
+- [x] PG-10d Commit: `phase-10: specialized analyses (career, health, karmic, psychological, spiritual, vocational, lunar, relocation)`
 
 ---
 
