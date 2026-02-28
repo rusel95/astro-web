@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import BirthDataForm from './BirthDataForm';
 import ChartSelector from './ChartSelector';
 import AnalysisSection from './AnalysisSection';
@@ -19,7 +20,7 @@ interface FeaturePageLayoutProps {
   apiEndpoint: string;
   formVariant?: BirthDataFormVariant;
   dualInput?: boolean;
-  children?: (data: Record<string, unknown>) => React.ReactNode;
+  children?: (data: Record<string, unknown>) => ReactNode;
 }
 
 export default function FeaturePageLayout({
@@ -37,6 +38,8 @@ export default function FeaturePageLayout({
   const [partialError, setPartialError] = useState<string | null>(null);
   const [birthTimeUnknown, setBirthTimeUnknown] = useState(false);
   const [autoSubmitted, setAutoSubmitted] = useState(false);
+  // Track last submitted body so retry sends the original request, not the API response
+  const lastBodyRef = useRef<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     posthog?.capture('feature_page_view', { feature: title, endpoint: apiEndpoint });
@@ -44,6 +47,7 @@ export default function FeaturePageLayout({
 
   const handleSubmit = useCallback(
     async (body: Record<string, unknown>) => {
+      lastBodyRef.current = body;
       setLoading(true);
       setError(null);
       setPartialError(null);
@@ -66,9 +70,9 @@ export default function FeaturePageLayout({
   useEffect(() => {
     if (!dualInput && !authLoading && user && isComplete && chart && !autoSubmitted && !result) {
       setAutoSubmitted(true);
-      const input = chart as unknown as ChartInput;
-      setBirthTimeUnknown(input.birthTime === '12:00');
-      handleSubmit({ subject: chartInputToSubject(input) });
+      // Use snake_case fields from ChartRecord (not ChartInput camelCase)
+      setBirthTimeUnknown(chart.birth_time === '12:00');
+      handleSubmit({ subject: chartRecordToSubject(chart) });
     }
   }, [dualInput, authLoading, user, isComplete, chart, autoSubmitted, result, handleSubmit]);
 
@@ -92,12 +96,54 @@ export default function FeaturePageLayout({
     void selectedChart;
   };
 
+  const handleRetry = () => {
+    if (lastBodyRef.current) handleSubmit(lastBodyRef.current);
+  };
+
   const showForm = !dualInput ? (!user || !isComplete) : true;
 
+  // Map ChartRecord (snake_case DB fields) to ChartInput (camelCase form fields)
   const initialData: Partial<ChartInput> | undefined =
     user && chart
-      ? (chart as unknown as Partial<ChartInput>)
+      ? {
+          name: chart.name,
+          birthDate: chart.birth_date,
+          birthTime: chart.birth_time,
+          city: chart.city,
+          countryCode: chart.country_code,
+          latitude: chart.latitude,
+          longitude: chart.longitude,
+          gender: chart.gender as 'male' | 'female' | undefined,
+        }
       : undefined;
+
+  // Safely render children — catch any render errors to avoid full-page crash
+  const renderChildren = (data: Record<string, unknown>): ReactNode => {
+    try {
+      if (children) return children(data);
+      const entries = Object.entries(data).filter(([, value]) => {
+        if (!value) return false;
+        if (typeof value === 'object' && Object.keys(value as object).length === 0) return false;
+        return true;
+      });
+      if (entries.length === 0) {
+        return <p className="text-white/40 text-sm text-center py-8">Дані відсутні</p>;
+      }
+      return entries.map(([key, value]) => (
+        <AnalysisSection
+          key={key}
+          title={key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+          data={value as Record<string, unknown>}
+        />
+      ));
+    } catch {
+      return (
+        <p className="text-red-400 text-sm text-center py-8">
+          Помилка відображення результатів
+        </p>
+      );
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -116,7 +162,7 @@ export default function FeaturePageLayout({
       {partialError && (
         <PartialErrorBanner
           message={partialError}
-          onRetry={() => result && handleSubmit(result)}
+          onRetry={handleRetry}
         />
       )}
 
@@ -149,29 +195,14 @@ export default function FeaturePageLayout({
         <ErrorState
           type={error.includes('з\'єднання') ? 'network' : error.includes('довго') ? 'timeout' : 'api'}
           message={error}
-          onRetry={() => {
-            if (result) handleSubmit(result);
-          }}
+          onRetry={handleRetry}
         />
       )}
 
       {/* Results */}
       {result && !error && (
         <div className="space-y-4">
-          {children ? (
-            children(result)
-          ) : (
-            Object.entries(result).map(([key, value]) => {
-              if (!value || (typeof value === 'object' && Object.keys(value as object).length === 0)) return null;
-              return (
-                <AnalysisSection
-                  key={key}
-                  title={key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                  data={value as Record<string, unknown>}
-                />
-              );
-            })
-          )}
+          {renderChildren(result)}
         </div>
       )}
     </div>
@@ -194,6 +225,27 @@ function chartInputToSubject(input: ChartInput) {
       country_code: input.countryCode,
       latitude: input.latitude,
       longitude: input.longitude,
+    },
+  };
+}
+
+// Map ChartRecord (snake_case DB fields) directly to SDK subject format
+function chartRecordToSubject(chart: { name: string; birth_date: string; birth_time: string; city: string; country_code: string; latitude: number; longitude: number }) {
+  const [year, month, day] = chart.birth_date.split('-').map(Number);
+  const [hour, minute] = (chart.birth_time || '12:00').split(':').map(Number);
+  return {
+    name: chart.name,
+    birth_data: {
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      second: 0,
+      city: chart.city,
+      country_code: chart.country_code,
+      latitude: chart.latitude,
+      longitude: chart.longitude,
     },
   };
 }

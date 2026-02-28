@@ -10,7 +10,7 @@ const analysisPages = [
   { path: '/analysis/karmic', heading: /карміч/i },
   { path: '/analysis/psychological', heading: /психологіч/i },
   { path: '/analysis/spiritual', heading: /духовн/i },
-  { path: '/analysis/vocational', heading: /вокаціон|призначен/i },
+  { path: '/analysis/vocational', heading: /покликання/i },
   { path: '/analysis/lunar', heading: /місяч/i },
   { path: '/analysis/relocation', heading: /релокац/i },
 ];

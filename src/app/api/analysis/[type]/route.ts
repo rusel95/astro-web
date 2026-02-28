@@ -28,7 +28,12 @@ export async function POST(req: NextRequest, { params }: { params: { type: strin
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
 
-    const analysisResult = await ANALYSIS_METHOD_MAP[type as AnalysisType](client, { subject, options } as any).catch((e: unknown) => {
+    // Lunar analysis requires datetime_location instead of subject
+    const requestBody = type === 'lunar'
+      ? { datetime_location: subject.birth_data }
+      : { subject, options };
+
+    const analysisResult = await ANALYSIS_METHOD_MAP[type as AnalysisType](client, requestBody as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: `analysis/${type}`, call: `get${type}Analysis` }, level: 'error' });
       return null;
     });

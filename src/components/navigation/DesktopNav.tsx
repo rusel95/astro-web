@@ -195,18 +195,20 @@ export default function DesktopNav({ user }: DesktopNavProps) {
 
         {/* Right side */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          <a
-            href="/quiz"
-            className="flex items-center gap-1.5 px-3 sm:px-5 py-2 text-white text-sm font-semibold rounded-full transition-all"
-            style={{
-              background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
-              boxShadow: '0 2px 14px rgba(108, 60, 225, 0.35)',
-            }}
-          >
-            <span>✦</span>
-            <span className="hidden sm:inline">Пройти тест</span>
-            <span className="sm:hidden text-xs">Тест</span>
-          </a>
+          {!user && (
+            <a
+              href="/quiz"
+              className="flex items-center gap-1.5 px-3 sm:px-5 py-2 text-white text-sm font-semibold rounded-full transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
+                boxShadow: '0 2px 14px rgba(108, 60, 225, 0.35)',
+              }}
+            >
+              <span>✦</span>
+              <span className="hidden sm:inline">Пройти тест</span>
+              <span className="sm:hidden text-xs">Тест</span>
+            </a>
+          )}
           <AuthNav user={user} />
         </div>
       </div>

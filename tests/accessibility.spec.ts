@@ -11,7 +11,7 @@ const PAGES_TO_TEST = [
   '/chart/new',
   '/compatibility',
   '/zodiac/aries',
-  '/horoscopes/personality',
+  '/horoscope/personality',
   '/auth/login',
 ];
 

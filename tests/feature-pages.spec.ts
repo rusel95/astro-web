@@ -33,7 +33,7 @@ const FEATURE_PAGES = [
   { path: '/tarot/transit', heading: /транзитне таро|таро/i },
 
   // Phase 12: Chinese Astrology
-  { path: '/chinese', heading: /bazi|чотири стовпи/i },
+  { path: '/chinese', heading: /китайська|bazi/i },
   { path: '/chinese/forecast', heading: /китайський прогноз|прогноз/i },
   { path: '/chinese/compatibility', heading: /китайська сумісність|сумісність/i },
 

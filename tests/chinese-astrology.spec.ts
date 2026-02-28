@@ -9,7 +9,7 @@ test.describe('Chinese Astrology Pages', () => {
     await page.goto('/chinese');
     const heading = page.locator('h1').first();
     await expect(heading).toBeVisible({ timeout: 10000 });
-    await expect(heading).toContainText(/bazi|чотири стовпи/i);
+    await expect(heading).toContainText(/китайська|bazi/i);
   });
 
   test('/chinese shows birth data form', async ({ page }) => {

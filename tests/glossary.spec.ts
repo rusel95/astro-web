@@ -15,14 +15,14 @@ test.describe('Glossary Page', () => {
   test('has search input', async ({ page }) => {
     await page.goto('/glossary');
     await page.waitForLoadState('networkidle').catch(() => {});
-    const searchInput = page.locator('input[placeholder*="пошук"]').first();
+    const searchInput = page.locator('input[placeholder*="Пошук"]').first();
     await expect(searchInput).toBeVisible({ timeout: 10000 });
   });
 
   test('search input is interactive', async ({ page }) => {
     await page.goto('/glossary');
     await page.waitForLoadState('networkidle').catch(() => {});
-    const searchInput = page.locator('input[placeholder*="пошук"]').first();
+    const searchInput = page.locator('input[placeholder*="Пошук"]').first();
     if (await searchInput.isVisible().catch(() => false)) {
       await searchInput.fill('Сонце');
       await expect(searchInput).toHaveValue('Сонце');

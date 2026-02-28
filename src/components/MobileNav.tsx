@@ -140,24 +140,26 @@ export default function MobileNav({ isLoggedIn }: Props) {
                 </button>
               </div>
 
-              {/* Quiz CTA */}
-              <div className="px-5 py-4">
-                <a
-                  href="/quiz"
-                  onClick={() => {
-                    track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'quiz', source: 'mobile_menu' });
-                    setMenuOpen(false);
-                  }}
-                  className="flex items-center justify-center gap-2 w-full min-h-[44px] text-white text-sm font-semibold rounded-xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
-                    boxShadow: '0 2px 14px rgba(108,60,225,0.35)',
-                  }}
-                >
-                  <Sparkles size={16} />
-                  Пройти тест
-                </a>
-              </div>
+              {/* Quiz CTA — only for anonymous users */}
+              {!isLoggedIn && (
+                <div className="px-5 py-4">
+                  <a
+                    href="/quiz"
+                    onClick={() => {
+                      track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'quiz', source: 'mobile_menu' });
+                      setMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full min-h-[44px] text-white text-sm font-semibold rounded-xl"
+                    style={{
+                      background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
+                      boxShadow: '0 2px 14px rgba(108,60,225,0.35)',
+                    }}
+                  >
+                    <Sparkles size={16} />
+                    Пройти тест
+                  </a>
+                </div>
+              )}
 
               {/* Search filter */}
               <div className="px-5 pb-3">

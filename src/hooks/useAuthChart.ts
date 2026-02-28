@@ -48,27 +48,31 @@ export function useAuthChart(): UseAuthChartReturn {
 
   useEffect(() => {
     async function load() {
-      const supabase = createClient();
-      const { data: { user: authUser } } = await supabase.auth.getUser();
+      try {
+        const supabase = createClient();
+        const { data: { user: authUser } } = await supabase.auth.getUser();
 
-      if (!authUser) {
+        if (!authUser) {
+          setIsLoading(false);
+          return;
+        }
+
+        setUser(authUser);
+
+        const { data: chartData } = await supabase
+          .from('charts')
+          .select('id, name, birth_date, birth_time, city, country_code, latitude, longitude, gender, created_at')
+          .eq('user_id', authUser.id)
+          .order('created_at', { ascending: false });
+
+        if (chartData) {
+          setCharts(chartData as ChartRecord[]);
+        }
+      } catch {
+        // Auth check failed — treat as non-authenticated
+      } finally {
         setIsLoading(false);
-        return;
       }
-
-      setUser(authUser);
-
-      const { data: chartData } = await supabase
-        .from('charts')
-        .select('id, name, birth_date, birth_time, city, country_code, latitude, longitude, gender, created_at')
-        .eq('user_id', authUser.id)
-        .order('created_at', { ascending: false });
-
-      if (chartData) {
-        setCharts(chartData as ChartRecord[]);
-      }
-
-      setIsLoading(false);
     }
 
     load();
