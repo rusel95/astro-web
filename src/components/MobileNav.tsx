@@ -83,6 +83,8 @@ const MENU_SECTIONS = [
       { href: '/chinese/compatibility', label: 'Китайська сумісність' },
       { href: '/traditional', label: 'Традиційний аналіз' },
       { href: '/traditional/profections', label: 'Профекції' },
+      { href: '/astrocartography', label: 'Астрокартографія' },
+      { href: '/astrocartography/location', label: 'Аналіз локації' },
     ],
   },
 ];

@@ -112,6 +112,13 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/traditional/profections', label: 'Профекції', icon: 'calendar', description: 'Річні тимелорди (0–90 років)' },
     ],
   },
+  {
+    title: 'Астрокартографія',
+    items: [
+      { href: '/astrocartography', label: 'Карта ліній', icon: 'map', description: 'Планетарні лінії на карті світу' },
+      { href: '/astrocartography/location', label: 'Аналіз локації', icon: 'map-pin', description: 'Астро-аналіз конкретного міста' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

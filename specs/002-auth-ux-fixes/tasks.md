@@ -387,21 +387,21 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Enter birth data → see planetary lines on map. Click location → see analysis.
 
-- [ ] T104 [P] [US10] Create API route `src/app/api/astrocartography/map/route.ts` — POST, calls `getLines()` + `generateMap()` + `getCrossings()` + `getParanLines()`. Map rendered as inline SVG/image from API `generateMap()` (FR-032). Cache 30d. Wrap with api-client.ts
-- [ ] T105 [P] [US10] Create API route `src/app/api/astrocartography/location/route.ts` — POST, calls `analyzeLocation()` + `getLocationReport()` + `getRelocationChart()` + `getLocalSpace()`. Cache 30d
-- [ ] T106 [P] [US10] Create API route `src/app/api/astrocartography/power-zones/route.ts` — POST, calls `findPowerZones()`. Cache 30d
+- [x] T104 [P] [US10] Create API route `src/app/api/astrocartography/map/route.ts` — POST, calls `getLines()` + `generateMap()` + `getCrossings()` + `getParanLines()`. Map rendered as inline SVG/image from API `generateMap()` (FR-032). Cache 30d. Wrap with api-client.ts
+- [x] T105 [P] [US10] Create API route `src/app/api/astrocartography/location/route.ts` — POST, calls `analyzeLocation()` + `getLocationReport()` + `getRelocationChart()` + `getLocalSpace()`. Cache 30d
+- [x] T106 [P] [US10] Create API route `src/app/api/astrocartography/power-zones/route.ts` — POST, calls `findPowerZones()`. Cache 30d
 - [ ] T107 [P] [US10] Create API route `src/app/api/astrocartography/compare/route.ts` — POST, calls `compareLocations()`. Cache 30d
-- [ ] T108 [US10] Create astrocartography map page `src/app/(main)/astrocartography/page.tsx` + client component — BirthDataForm (basic variant), map visualization via SvgChartViewer (API-generated map per FR-032), planetary lines list, power zones section. AnalysisSection for detailed data
-- [ ] T109 [US10] Create location analysis page `src/app/(main)/astrocartography/location/page.tsx` + client component — BirthDataForm (location variant per FR-054) with target city search, location analysis display, comparison tool for two locations. Breadcrumb: "Астрокартографія > Аналіз локації"
+- [x] T108 [US10] Create astrocartography map page `src/app/(main)/astrocartography/page.tsx` + client component — BirthDataForm (basic variant), map visualization via SvgChartViewer (API-generated map per FR-032), planetary lines list, power zones section. AnalysisSection for detailed data
+- [x] T109 [US10] Create location analysis page `src/app/(main)/astrocartography/location/page.tsx` + client component — BirthDataForm (location variant per FR-054) with target city search, location analysis display, comparison tool for two locations. Breadcrumb: "Астрокартографія > Аналіз локації"
 
 **Checkpoint**: Astrocartography section complete.
 
 ### Phase 14 Gate
 
-- [ ] PG-14a Run `npm run build` — zero errors, zero warnings
+- [x] PG-14a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-14b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-14c Write Playwright tests: astrocartography map renders via API (FR-032), location analysis with city search, power zones display, location comparison — mobile (375px) + desktop (1280px)
-- [ ] PG-14d Commit: `phase-14: astrocartography (map, location analysis, power zones, comparison)`
+- [x] PG-14d Commit: `phase-14: astrocartography (map, location analysis, power zones, comparison)`
 
 ---
 
