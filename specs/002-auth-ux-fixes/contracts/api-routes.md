@@ -176,9 +176,10 @@ All API routes are `POST` (require body with subject/options). All return `{ dat
 
 ### GET /api/eclipses
 **Query**: `?start_date=...&end_date=...`
-**Response**: `{ upcoming, history? }`
+**Response**: `{ upcoming, history?, saros_cycle? }`
 
-### POST /api/eclipses/natal-impact
+### POST /api/eclipses
+**Purpose**: Natal impact analysis (same route file, POST method)
 **Body**: `{ subject, options }`
 **Response**: `{ natal_impact }`
 
@@ -186,10 +187,17 @@ All API routes are `POST` (require body with subject/options). All return `{ dat
 **Query**: `?month=2&year=2026`
 **Response**: `{ calendar, mansions, events, void_of_course, gardening }`
 
-### POST /api/insights/[category]
-**Params**: `category` = wellness|financial|business
+### POST /api/insights/wellness
 **Body**: `{ subject, options }`
-**Response**: `{ insights_data }` (structure varies by category)
+**Response**: `{ body_mapping, biorhythms, energy_patterns, wellness_timing, wellness_score, moon_wellness }`
+
+### POST /api/insights/financial
+**Body**: `{ subject, options }`
+**Response**: `{ market_timing, personal_trading, gann_analysis, bradley_siderograph }`
+
+### POST /api/insights/business
+**Body**: `{ subject, options }`
+**Response**: `{ leadership_style, team_dynamics, business_timing, hiring_compatibility }`
 
 ### GET /api/glossary
 **Query**: `?search=...&category=...`
