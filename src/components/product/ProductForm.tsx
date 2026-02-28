@@ -24,8 +24,10 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
   });
   const [tracked, setTracked] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
+  const [autoSubmitting, setAutoSubmitting] = useState(false);
 
   // Pre-fill from auth session + chart data, then quiz session as fallback
+  // FR-019: Auto-submit when auth user has complete chart data
   useEffect(() => {
     async function prefillFromAuth() {
       try {
@@ -36,11 +38,37 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
           // Get the user's most recent chart for birth data
           const { data: chart } = await supabase
             .from('charts')
-            .select('name, birth_date, birth_time, city, gender')
+            .select('name, birth_date, birth_time, city, gender, latitude, longitude, country_code')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1)
             .single();
+
+          if (chart) {
+            // Check completeness: name + DOB + time + city + gender (FR-019)
+            const isComplete = !!(
+              chart.name &&
+              chart.birth_date &&
+              chart.birth_time &&
+              chart.city &&
+              chart.gender
+            );
+
+            if (isComplete) {
+              // Auto-submit: skip form, navigate to chart with data
+              setAutoSubmitting(true);
+              const params = new URLSearchParams();
+              params.set('name', chart.name);
+              params.set('birthDate', chart.birth_date);
+              params.set('birthTime', chart.birth_time);
+              params.set('city', chart.city);
+              if (chart.country_code) params.set('countryCode', chart.country_code);
+              if (chart.latitude) params.set('lat', String(chart.latitude));
+              if (chart.longitude) params.set('lng', String(chart.longitude));
+              window.location.href = `/chart/new?${params.toString()}`;
+              return;
+            }
+          }
 
           const authData: Partial<FormData> = {
             email: user.email || '',
@@ -119,6 +147,15 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     if (form.city) params.set('city', form.city);
     window.location.href = `/chart/new?${params.toString()}`;
   };
+
+  if (autoSubmitting) {
+    return (
+      <div className="glass-card p-6 md:p-8 text-center">
+        <div className="animate-spin w-8 h-8 border-2 border-zorya-violet/20 border-t-zorya-violet rounded-full mx-auto mb-4" />
+        <p className="text-text-secondary text-sm">Завантаження вашої карти...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card p-6 md:p-8">

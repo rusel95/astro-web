@@ -86,19 +86,19 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Auth user can navigate to any feature page without unwanted redirect. Unauth user sees no personal data on moon page. Logout clears sessionStorage.
 
-- [ ] T020 [US14] Fix quiz redirect — in `src/app/(quiz)/quiz/QuizClient.tsx`, redirect auth users to `/chart/new` using `useEffect` + Supabase `getUser()` check (FR-018). ONLY quiz redirects — all other pages accessible to all users
-- [ ] T021 [US14] Fix login page redirect — in `src/app/(main)/auth/login/page.tsx`, redirect auth users to `/dashboard` (FR-023)
-- [ ] T022 [US14] Fix MoonTransitCard — in `src/components/moon/MoonTransitCard.tsx`, hide "У вашому чарті" section when user is not authenticated (FR-022)
-- [ ] T023 [US14] Add sessionStorage cleanup on logout — in auth state change handler, clear all sessionStorage on `SIGNED_OUT` event (FR-021)
-- [ ] T024 [US14] Fix gender save and add "prefer not to say" — in `src/app/api/chart/route.ts`, verify gender saves from request body to charts table. Add 'prefer not to say' option mapped to null for API calls (FR-020, FR-020a). For API endpoints requiring binary gender, 'prefer not to say' omits the gender field
-- [ ] T025 [US14] Fix product form auto-submit — update `src/components/product/ProductForm.tsx` to skip form entirely when auth user has complete chart data (per FR-019 completeness definition: name + DOB + time + city + gender). Auto-call API with chart data and show results directly
-- [ ] T026 [US14] Remove all "Скоро" text — grep codebase for "Скоро", "coming soon", "незабаром", remove or replace with actual functionality or remove the block entirely. Features that aren't implemented yet: remove the UI element completely — no placeholder text, no disabled buttons, no "coming soon" blocks (FR-025). T136 will verify zero remain after all phases
+- [x] T020 [US14] Fix quiz redirect — in `src/app/(quiz)/quiz/QuizClient.tsx`, redirect auth users to `/chart/new` using `useEffect` + Supabase `getUser()` check (FR-018). ONLY quiz redirects — all other pages accessible to all users
+- [x] T021 [US14] Fix login page redirect — in `src/app/(main)/auth/login/page.tsx`, redirect auth users to `/dashboard` (FR-023)
+- [x] T022 [US14] Fix MoonTransitCard — in `src/components/moon/MoonTransitCard.tsx`, hide "У вашому чарті" section when user is not authenticated (FR-022)
+- [x] T023 [US14] Add sessionStorage cleanup on logout — in auth state change handler, clear all sessionStorage on `SIGNED_OUT` event (FR-021)
+- [x] T024 [US14] Fix gender save and add "prefer not to say" — in `src/app/api/chart/route.ts`, verify gender saves from request body to charts table. Add 'prefer not to say' option mapped to null for API calls (FR-020, FR-020a). For API endpoints requiring binary gender, 'prefer not to say' omits the gender field
+- [x] T025 [US14] Fix product form auto-submit — update `src/components/product/ProductForm.tsx` to skip form entirely when auth user has complete chart data (per FR-019 completeness definition: name + DOB + time + city + gender). Auto-call API with chart data and show results directly
+- [x] T026 [US14] Remove all "Скоро" text — grep codebase for "Скоро", "coming soon", "незабаром", remove or replace with actual functionality or remove the block entirely. Features that aren't implemented yet: remove the UI element completely — no placeholder text, no disabled buttons, no "coming soon" blocks (FR-025). T136 will verify zero remain after all phases
 
 **Checkpoint**: Auth flow fixed. Users can navigate freely, forms auto-submit, privacy protected.
 
 ### Phase 2 Gate
 
-- [ ] PG-02a Run `npm run build` — zero errors, zero warnings
+- [x] PG-02a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-02b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-02c Write Playwright tests: auth user quiz redirect, login redirect to /dashboard, moon page unauth state, sessionStorage cleared on logout, form auto-submit with complete chart data, gender "prefer not to say" option — mobile (375px) + desktop (1280px)
 - [ ] PG-02d Commit: `phase-2: auth flow fixes (redirect, auto-submit, gender, privacy)`

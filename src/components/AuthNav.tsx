@@ -36,6 +36,8 @@ export default function AuthNav({ user }: Props) {
         }
       }
       keysToRemove.forEach(key => localStorage.removeItem(key));
+      // Clear all sessionStorage on logout (FR-021)
+      sessionStorage.clear();
       router.push('/');
       router.refresh();
     } catch {

@@ -72,6 +72,23 @@ export default function QuizClient() {
   const [restored, setRestored] = useState(false);
   const startedRef = useRef(false);
 
+  // Redirect auth users to /chart/new (FR-018)
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const { createClient } = await import('@/lib/supabase/client');
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          window.location.href = '/chart/new';
+        }
+      } catch {
+        // Not authenticated, continue with quiz
+      }
+    }
+    checkAuth();
+  }, []);
+
   // Restore state from sessionStorage
   useEffect(() => {
     const saved = loadQuizState();
