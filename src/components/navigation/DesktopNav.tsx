@@ -53,8 +53,7 @@ const CHARTS_GROUPS: DropdownGroup[] = [
   {
     title: 'Карти',
     items: [
-      { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією' },
-      { href: '/ascendant', label: 'Калькулятор Асцендента', icon: 'compass', description: 'Висхідний знак та Велика Трійка' },
+      { href: '/chart/new', label: 'Натальна карта', icon: 'star', description: 'Розрахунок з AI-інтерпретацією та асцендент' },
       { href: '/compatibility', label: 'Сумісність партнерів', icon: 'users', description: 'Синастрія двох карт' },
       { href: '/composite', label: 'Композитна карта', icon: 'heart-handshake', description: 'Об\'єднана карта стосунків' },
       { href: '/relationship', label: 'Інсайти стосунків', icon: 'heart', description: 'Мови кохання та тривожні знаки' },
@@ -71,7 +70,6 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/directions', label: 'Дирекції', icon: 'navigation', description: 'Сонячні дуги та дирекції' },
       { href: '/moon', label: 'Місячний календар', icon: 'calendar', description: 'Фази та Місяць без курсу' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку', icon: 'sparkles', description: 'Характеристики 12 знаків' },
-      { href: '/explore', label: 'Дослідження API', icon: 'flask', description: 'Розширені астрологічні інструменти' },
     ],
   },
   {

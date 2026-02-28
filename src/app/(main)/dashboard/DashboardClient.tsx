@@ -412,14 +412,14 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
               </div>
             </a>
             <a
-              href="/explore"
+              href="/glossary"
               className="flex flex-col gap-3 p-4 rounded-2xl transition-all hover:opacity-90"
               style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}
             >
               <Compass size={22} strokeWidth={1.5} className="text-green-400" />
               <div>
-                <p className="font-semibold text-white text-sm">Дослідження</p>
-                <p className="text-xs text-white/40 mt-1">API та розширені функції</p>
+                <p className="font-semibold text-white text-sm">Глосарій</p>
+                <p className="text-xs text-white/40 mt-1">Астрологічні терміни</p>
               </div>
             </a>
           </div>

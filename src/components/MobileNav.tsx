@@ -47,7 +47,6 @@ const MENU_SECTIONS = [
     title: 'Карти та інструменти',
     items: [
       { href: '/chart/new', label: 'Натальна карта' },
-      { href: '/ascendant', label: 'Калькулятор Асцендента' },
       { href: '/compatibility', label: 'Сумісність партнерів' },
       { href: '/composite', label: 'Композитна карта' },
       { href: '/relationship', label: 'Інсайти стосунків' },
@@ -59,7 +58,6 @@ const MENU_SECTIONS = [
       { href: '/directions', label: 'Дирекції' },
       { href: '/moon', label: 'Місячний календар' },
       { href: '/zodiac/aries', label: 'Знаки зодіаку' },
-      { href: '/explore', label: 'Дослідження API' },
       { href: '/quiz', label: 'Астро-тест' },
       { href: '/analysis/career', label: "Кар'єрний аналіз" },
       { href: '/analysis/health', label: "Аналіз здоров'я" },

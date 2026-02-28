@@ -81,6 +81,16 @@ export default function AuthNav({ user }: Props) {
           {displayName}
         </span>
       </a>
+      <a
+        href="/settings"
+        className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-80"
+        style={{
+          border: '1px solid rgba(255,255,255,0.15)',
+          color: 'rgba(255,255,255,0.5)',
+        }}
+      >
+        Налаштування
+      </a>
       <button
         onClick={handleSignOut}
         disabled={loading}

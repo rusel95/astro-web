@@ -10,6 +10,18 @@ const nextConfig = {
         destination: '/horoscope/daily',
         permanent: true,
       },
+      // /explore → /dashboard (demo page removed, all features have dedicated pages)
+      {
+        source: '/explore',
+        destination: '/dashboard',
+        permanent: true,
+      },
+      // /ascendant → /chart/new (old ascendant calculator now in chart creation flow)
+      {
+        source: '/ascendant',
+        destination: '/chart/new',
+        permanent: true,
+      },
       // /horoscopes/* → /horoscope/* (old product pages to new API pages)
       {
         source: '/horoscopes/career',
