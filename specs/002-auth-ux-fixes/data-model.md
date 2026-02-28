@@ -117,6 +117,7 @@ Maps `feature_type` values to API methods and cache TTLs:
 | `spiritual` | `analysis.getSpiritualAnalysis` | 30d |
 | `vocational` | `analysis.getVocationalAnalysis` | 30d |
 | `predictive` | `analysis.getPredictiveAnalysis` | 7d |
+| `lunar_analysis` | `analysis.getLunarAnalysis` | 30d |
 | `relocation` | `analysis.getRelocationAnalysis` | 30d |
 | `tarot_daily` | `tarot.getDailyCard` | 24h |
 | `tarot_*` | various tarot methods | none |
