@@ -2,6 +2,8 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { MoonPhase } from '@/types/moon';
+import { ZODIAC_NAMES_UK } from '@/lib/constants';
+import { ZodiacSign } from '@/types/astrology';
 
 interface MoonPhaseCardProps {
   phase: MoonPhase;
@@ -25,7 +27,7 @@ export function MoonPhaseCard({ phase }: MoonPhaseCardProps) {
           <h3 className="font-semibold mb-1">{phaseName}</h3>
           <p className="text-sm text-muted-foreground mb-2">{date}</p>
           <p className="text-sm">
-            {phase.zodiac_sign} {Math.floor(phase.degree)}°
+            {ZODIAC_NAMES_UK[phase.zodiac_sign as ZodiacSign] || phase.zodiac_sign} {Math.floor(phase.degree)}°
           </p>
         </div>
       </CardContent>

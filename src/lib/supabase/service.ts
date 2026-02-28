@@ -12,9 +12,11 @@ export function isSupabaseConfigured(): boolean {
 
 export function createServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  // Prefer service role key (bypasses RLS); fall back to anon key
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  return createClient(url, key, {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    console.warn('[supabase] SUPABASE_SERVICE_ROLE_KEY not set — using anon key. Service-only RLS policies will block writes.');
+  }
+  return createClient(url, key || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
     auth: { persistSession: false },
   });
 }

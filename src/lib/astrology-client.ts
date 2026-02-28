@@ -6,9 +6,13 @@ let _client: AstrologyClient | null = null;
 
 export function getAstrologyClient(): AstrologyClient {
   if (!_client) {
+    // SDK appends /api/v3/charts internally — strip trailing path if env includes it
+    let baseUrl = process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io';
+    baseUrl = baseUrl.replace(/\/api\/v\d+\/?$/, '');
+
     _client = new AstrologyClient({
       apiKey: process.env.ASTROLOGY_API_KEY,
-      baseUrl: process.env.ASTROLOGY_API_BASE_URL || 'https://api.astrology-api.io',
+      baseUrl,
       retry: { attempts: 2, delayMs: 500 },
     });
   }
@@ -27,6 +31,8 @@ export function toSdkSubject(input: ChartInput): Subject {
       second: 0,
       city: input.city,
       country_code: input.countryCode,
+      latitude: input.latitude,
+      longitude: input.longitude,
     },
   };
 }

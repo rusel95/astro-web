@@ -19,7 +19,7 @@ export function MoonTransitCard({ moon }: MoonTransitCardProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <p className="text-sm text-muted-foreground">Знак</p>
-            <p className="text-2xl font-bold">{ZODIAC_NAMES_UK[moon.sign]}</p>
+            <p className="text-2xl font-bold">{ZODIAC_NAMES_UK[moon.sign] || moon.sign}</p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Фаза</p>
@@ -31,10 +31,10 @@ export function MoonTransitCard({ moon }: MoonTransitCardProps) {
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Освітлення</p>
-            <p className="text-lg">{(moon.illumination * 100).toFixed(0)}%</p>
+            <p className="text-lg">{moon.illumination.toFixed(0)}%</p>
           </div>
         </div>
-        
+
         {/* Персоналізована рекомендація */}
         <div className="mt-4 p-4 bg-muted rounded-lg">
           <p className="text-sm">
@@ -61,20 +61,20 @@ function formatPhase(phase: CurrentMoon['phase']): string {
 }
 
 function getHouseRecommendation(house: number, sign: ZodiacSign): string {
-  const ukrainianSignName = ZODIAC_NAMES_UK[sign];
+  const signUk = ZODIAC_NAMES_UK[sign] || sign;
   const recommendations: Record<number, string> = {
-    1: `Місяць у вашому 1 домі (${ukrainianSignName}) — час фокусуватись на собі, своєму іміджі та тілі.`,
-    2: `Місяць у вашому 2 домі (${ukrainianSignName}) — увага на фінанси, цінності та матеріальну безпеку.`,
-    3: `Місяць у вашому 3 домі (${ukrainianSignName}) — активна комунікація, навчання, короткі поїздки.`,
-    4: `Місяць у вашому 4 домі (${ukrainianSignName}) — час для дому, родини, емоційної бази.`,
-    5: `Місяць у вашому 5 домі (${ukrainianSignName}) — творчість, романтика, розваги та хобі.`,
-    6: `Місяць у вашому 6 домі (${ukrainianSignName}) — здоров'я, рутина, робота та служіння.`,
-    7: `Місяць у вашому 7 домі (${ukrainianSignName}) — фокус на стосунках, партнерствах та співпраці.`,
-    8: `Місяць у вашому 8 домі (${ukrainianSignName}) — глибокі трансформації, інтимність, спільні ресурси.`,
-    9: `Місяць у вашому 9 домі (${ukrainianSignName}) — подорожі, філософія, вища освіта та експансія.`,
-    10: `Місяць у вашому 10 домі (${ukrainianSignName}) — кар'єра, публічний імідж та досягнення.`,
-    11: `Місяць у вашому 11 домі (${ukrainianSignName}) — дружба, спільноти, мрії про майбутнє.`,
-    12: `Місяць у вашому 12 домі (${ukrainianSignName}) — уединення, духовність, підсвідомість.`,
+    1: `Місяць у вашому 1 домі (${signUk}) — час фокусуватись на собі, своєму іміджі та тілі.`,
+    2: `Місяць у вашому 2 домі (${signUk}) — увага на фінанси, цінності та матеріальну безпеку.`,
+    3: `Місяць у вашому 3 домі (${signUk}) — активна комунікація, навчання, короткі поїздки.`,
+    4: `Місяць у вашому 4 домі (${signUk}) — час для дому, родини, емоційної бази.`,
+    5: `Місяць у вашому 5 домі (${signUk}) — творчість, романтика, розваги та хобі.`,
+    6: `Місяць у вашому 6 домі (${signUk}) — здоров'я, рутина, робота та служіння.`,
+    7: `Місяць у вашому 7 домі (${signUk}) — фокус на стосунках, партнерствах та співпраці.`,
+    8: `Місяць у вашому 8 домі (${signUk}) — глибокі трансформації, інтимність, спільні ресурси.`,
+    9: `Місяць у вашому 9 домі (${signUk}) — подорожі, філософія, вища освіта та експансія.`,
+    10: `Місяць у вашому 10 домі (${signUk}) — кар'єра, публічний імідж та досягнення.`,
+    11: `Місяць у вашому 11 домі (${signUk}) — дружба, спільноти, мрії про майбутнє.`,
+    12: `Місяць у вашому 12 домі (${signUk}) — уединення, духовність, підсвідомість.`,
   };
-  return recommendations[house] || `Місяць у ${house} домі (${ukrainianSignName}).`;
+  return recommendations[house] || `Місяць у ${house} домі (${signUk}).`;
 }
