@@ -440,12 +440,12 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit wellness page → enter birth data → see body mapping, biorhythms, energy patterns.
 
-- [ ] T120 [P] [US12] Create API route `src/app/api/insights/wellness/route.ts` — POST, calls `insights.wellness.getBodyMapping()`, `getBiorhythms()`, `getEnergyPatterns()`, `getWellnessTiming()`, `getWellnessScore()`, `getMoonWellness()`. Cache 24h (FR-038). Wrap with api-client.ts. Uses PartialErrorBanner pattern for partial failures (FR-047)
-- [ ] T121 [P] [US12] Create API route `src/app/api/insights/financial/route.ts` — POST, calls `insights.financial.getMarketTiming()`, `analyzePersonalTrading()`, `getGannAnalysis()`, `getBradleySiderograph()`. Cache 24h
-- [ ] T122 [P] [US12] Create API route `src/app/api/insights/business/route.ts` — POST, calls `insights.business.getLeadershipStyle()`, `getTeamDynamics()`, `getBusinessTiming()`, `getHiringCompatibility()`. Cache 30d
-- [ ] T123 [US12] Create wellness page `src/app/(main)/insights/wellness/page.tsx` + client component — BirthDataForm (full variant), body mapping visualization, biorhythms chart, energy patterns, wellness score, moon wellness. AnalysisSection (collapsible per FR-049). Breadcrumb nav
-- [ ] T124 [P] [US12] Create financial page `src/app/(main)/insights/financial/page.tsx` + client component — BirthDataForm (basic variant), market timing, personal trading analysis, Gann analysis
-- [ ] T125 [P] [US12] Create business page `src/app/(main)/insights/business/page.tsx` + client component — BirthDataForm (full variant), leadership style, team dynamics, business timing
+- [X] T120 [P] [US12] Create API route `src/app/api/insights/wellness/route.ts` — POST, calls `insights.wellness.getBodyMapping()`, `getBiorhythms()`, `getEnergyPatterns()`, `getWellnessTiming()`, `getWellnessScore()`, `getMoonWellness()`. Cache 24h (FR-038). Wrap with api-client.ts. Uses PartialErrorBanner pattern for partial failures (FR-047)
+- [X] T121 [P] [US12] Create API route `src/app/api/insights/financial/route.ts` — POST, calls `insights.financial.getMarketTiming()`, `analyzePersonalTrading()`, `getGannAnalysis()`, `getBradleySiderograph()`. Cache 24h
+- [X] T122 [P] [US12] Create API route `src/app/api/insights/business/route.ts` — POST, calls `insights.business.getLeadershipStyle()`, `getTeamDynamics()`, `getBusinessTiming()`, `getHiringCompatibility()`. Cache 30d
+- [X] T123 [US12] Create wellness page `src/app/(main)/insights/wellness/page.tsx` + client component — BirthDataForm (full variant), body mapping visualization, biorhythms chart, energy patterns, wellness score, moon wellness. AnalysisSection (collapsible per FR-049). Breadcrumb nav
+- [X] T124 [P] [US12] Create financial page `src/app/(main)/insights/financial/page.tsx` + client component — BirthDataForm (basic variant), market timing, personal trading analysis, Gann analysis
+- [X] T125 [P] [US12] Create business page `src/app/(main)/insights/business/page.tsx` + client component — BirthDataForm (full variant), leadership style, team dynamics, business timing
 
 **Checkpoint**: All insight pages complete.
 

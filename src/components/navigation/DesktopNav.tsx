@@ -128,6 +128,14 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/eclipses', label: 'Затемнення', icon: 'moon', description: 'Майбутні затемнення та натальний вплив' },
     ],
   },
+  {
+    title: 'Велнес та бізнес',
+    items: [
+      { href: '/insights/wellness', label: 'Велнес-аналіз', icon: 'heart', description: 'Біоритми, карта тіла, енергетичні патерни' },
+      { href: '/insights/financial', label: 'Фінансові інсайти', icon: 'trending-up', description: 'Ринковий таймінг, аналіз Ганна' },
+      { href: '/insights/business', label: 'Бізнес-аналіз', icon: 'briefcase', description: 'Лідерство, команда, бізнес-таймінг' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

@@ -89,6 +89,9 @@ const MENU_SECTIONS = [
       { href: '/numerology/compatibility', label: 'Числова сумісність' },
       { href: '/fixed-stars', label: 'Фіксовані зірки' },
       { href: '/eclipses', label: 'Затемнення' },
+      { href: '/insights/wellness', label: 'Велнес-аналіз' },
+      { href: '/insights/financial', label: 'Фінансові інсайти' },
+      { href: '/insights/business', label: 'Бізнес-аналіз' },
     ],
   },
 ];
