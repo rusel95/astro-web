@@ -48,7 +48,8 @@ Caches API results for authenticated users to avoid repeated API calls and enabl
 **Cache TTL by feature type**:
 - Horoscopes: daily=24h, weekly=7d, monthly=30d, yearly=365d
 - Transits: 1h (changes with planetary movement)
-- Static analyses (natal report, career, karmic, etc.): 30d
+- Natal chart data (natal_report, enhanced_natal): permanent (until user edits chart)
+- Static analyses (career, karmic, health, psychological, etc.): 30d
 - Tarot draws (interactive spreads): no cache (fresh each time). Daily card: 24h cache.
 
 ### Partner Chart (partner_charts table)
@@ -92,8 +93,8 @@ Maps `feature_type` values to API methods and cache TTLs:
 
 | feature_type | SDK Methods | Cache TTL |
 |-------------|-------------|-----------|
-| `natal_report` | `analysis.getNatalReport` | 30d |
-| `enhanced_natal` | `enhanced.getEnhancedNatalChart` | 30d |
+| `natal_report` | `analysis.getNatalReport` | permanent |
+| `enhanced_natal` | `enhanced.getEnhancedNatalChart` | permanent |
 | `transit` | `charts.getTransitChart` + `svg.getTransitChartSvg` + `analysis.getTransitReport` | 1h |
 | `natal_transits` | `charts.getNatalTransits` | 1h |
 | `solar_return` | `charts.getSolarReturnChart` + `analysis.getSolarReturnReport` | 365d |
