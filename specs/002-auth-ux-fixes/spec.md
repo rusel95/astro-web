@@ -342,6 +342,31 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - **FR-026**: All user-facing text MUST be in Ukrainian.
 - **FR-026a**: When the Astrology API does not support Ukrainian (`language: 'uk'`) for a specific endpoint, the English API response is displayed as-is. UI chrome (labels, buttons, navigation, section headers) MUST always be Ukrainian regardless of API language support.
 
+**Zero Duplicate Data Entry:**
+
+- **FR-027**: Users MUST NOT be required to enter the same personal information twice. Once birth data is saved (via chart creation), all feature pages MUST auto-populate from the saved chart. Partner data entered for one relationship feature MUST be reusable across all dual-input features (compatibility, composite, relationship insights, Chinese compatibility, numerology compatibility, synastry tarot) via a partner selector dropdown.
+- **FR-027a**: When auth user navigates to a single-input feature page, their saved chart data is used automatically — no form shown. For dual-input pages, only the partner's data form is shown (user's own data auto-populated from saved chart).
+- **FR-027b**: Partner charts MUST support CRUD (create, read, update, delete) via a `/api/partner-charts` endpoint. Users can manage saved partners from their dashboard.
+
+**CI/CD & Quality Gates:**
+
+- **FR-028**: A GitHub Actions CI workflow MUST run on every pull request: build check (`npm run build`), Playwright tests (`npm run test`). PR MUST NOT be mergeable if CI fails.
+- **FR-028a**: All Playwright UI tests MUST run at both mobile (375px) and desktop (1280px) viewports. Mobile is the primary viewport — mobile failures are blocking.
+
+**UX & Accessibility (Mobile-First, Elderly-Friendly):**
+
+- **FR-029**: The primary design target is mobile (375px viewport). Desktop is secondary. All pages MUST be fully functional and readable on mobile without horizontal scrolling.
+- **FR-029a**: Body text MUST be minimum 16px. Labels and secondary text minimum 14px. No text smaller than 12px anywhere in the app.
+- **FR-029b**: All interactive elements (buttons, links, form fields, dropdowns, tabs) MUST have a minimum touch target of 44x44px on mobile.
+- **FR-029c**: Text-to-background color contrast MUST meet WCAG AA (4.5:1 minimum for normal text, 3:1 for large text). The existing cosmic dark theme already meets this for primary text (#eeeef5 on #0a0a1a = 17:1); new components MUST maintain these ratios.
+- **FR-029d**: All pages MUST support `prefers-reduced-motion` media query. Framer Motion animations and CSS animations MUST be disabled or simplified when reduced motion is preferred.
+- **FR-029e**: Navigation MUST be simple enough for non-technical users. Feature categories MUST use clear Ukrainian labels (not astrological jargon). Tooltips or brief descriptions on hover/tap for advanced features.
+- **FR-029f**: Forms MUST have: clear labels above each field, real-time validation with Ukrainian error messages, logical field grouping, date pickers (not raw text input), and city autocomplete. Error messages MUST tell the user exactly what to fix.
+- **FR-029g**: Loading states MUST show clear progress feedback: skeleton screens for page loads, spinner with "Завантаження..." text for API calls longer than 1 second, progress bars for multi-step operations. Users MUST never see a blank screen during loading.
+- **FR-029h**: Error states MUST show: a clear Ukrainian message explaining what went wrong, a retry button, and a suggestion for what to do next. No raw error codes or technical messages.
+- **FR-029i**: Dense data (astrological degrees, aspects, houses) MUST include contextual help: glossary links for technical terms, expandable explanations, and visual hierarchy that separates key findings from supporting detail.
+- **FR-029j**: All keyboard-navigable elements MUST have visible focus indicators. Tab order MUST follow visual layout. Modal dialogs MUST trap focus.
+
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
