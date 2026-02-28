@@ -199,8 +199,12 @@ Remaining API sections each get dedicated pages:
 
 - **Numerology**: Core numbers + comprehensive report + compatibility
 - **Fixed Stars**: Positions, natal conjunctions, interpretation report
-- **Eclipses**: Upcoming eclipses, natal impact analysis
+- **Eclipses**: Upcoming eclipses, natal impact analysis, historical eclipses, Saros cycles
 - **Lunar**: Enhanced calendar with mansions, events, void-of-course periods
+
+**Why this priority**: These are distinct, self-contained tools that each appeal to different user segments. Numerology broadens beyond astrology. Fixed stars and eclipses add depth for advanced users. Lunar data enriches the already-popular moon page.
+
+**Independent Test**: Visit numerology page → enter birth data → see core numbers + full report. Visit eclipses → see upcoming list + natal impact. Visit moon page → see enhanced calendar with mansions and events from API.
 
 **Acceptance Scenarios**:
 
@@ -319,7 +323,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - **FR-013**: Fixed Stars namespace — pages for: natal conjunctions, interpretation report.
 - **FR-014**: Eclipses namespace — pages for: upcoming eclipses, natal impact.
 - **FR-015**: Lunar namespace — enhance existing moon page with: mansions, events, full calendar.
-- **FR-016**: Insights namespace — pages for: wellness (body mapping, biorhythms, energy), financial (market timing, trading), business (leadership, timing), relationship (love languages, red flags), pet (personality, compatibility).
+- **FR-016**: Insights namespace — pages for: wellness (body mapping, biorhythms, energy), financial (market timing, trading), business (leadership, timing), relationship (love languages, red flags).
 
 **Auth & UX:**
 
