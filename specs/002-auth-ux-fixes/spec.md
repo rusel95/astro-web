@@ -286,7 +286,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 **Acceptance Scenarios**:
 
-1. **Given** unauth visitor, **When** StatsSection renders, **Then** shows actual Supabase database counts (total charts created, total registered users).
+1. **Given** unauth visitor, **When** StatsSection renders, **Then** shows live Supabase counts: total charts created (`charts` table count), total registered users (`auth.users` count). Values cached with 1-hour TTL server-side.
 
 ---
 
@@ -327,7 +327,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 **Auth & UX:**
 
-- **FR-017**: Homepage MUST render personalized content for auth users, marketing landing for unauth.
+- **FR-017**: Homepage (`/`) shows marketing landing for unauth users. Auth users visiting `/` are redirected to `/dashboard`. The `/dashboard` page (already exists at `src/app/(main)/dashboard/`) serves as the personalized home for auth users.
 - **FR-018**: `/quiz` MUST redirect auth users to `/chart/new`. All other pages accessible to all users.
 - **FR-019**: Pages requiring birth data MUST auto-submit from saved chart when auth user has complete data (name, date of birth, birth time (not 'unknown'), birth city (with resolved latitude/longitude), and gender all present in the charts table). Form skipped entirely.
 - **FR-020**: Gender MUST be correctly saved and pre-filled from the charts table.
@@ -367,28 +367,90 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - **FR-029i**: Dense data (astrological degrees, aspects, houses) MUST include contextual help: glossary links for technical terms, expandable explanations, and visual hierarchy that separates key findings from supporting detail.
 - **FR-029j**: All keyboard-navigable elements MUST have visible focus indicators. Tab order MUST follow visual layout. Modal dialogs MUST trap focus.
 
+**Recommended Solutions (Resolved Ambiguities):**
+
+- **FR-030**: When a user has multiple saved charts, the **most recently created** chart is the primary (used for auto-submit). Users MAY pin a different chart as primary from the dashboard. The pinned chart overrides recency.
+- **FR-031**: Tarot card images MUST be sourced from the API's `imageUrl` field. If the API does not provide an image for a card, a text-only fallback is shown (card name, suit, arcana, and meaning — no placeholder image).
+- **FR-032**: Astrocartography maps MUST use the API's `generateMap()` endpoint, rendered as an inline SVG or image. No third-party map provider required — the API generates the complete map visualization.
+- **FR-033**: Dashboard "recommended features" section displays a **curated static list of 6 feature categories** (e.g., Horoscopes, Compatibility, Tarot, Transits, Chinese Astrology, Numerology). Not algorithm-driven — the list is defined in code and updated manually per release.
+- **FR-034**: Valid birth date range: **1900-01-01 through today**. Date picker MUST NOT allow future dates. Dates before 1900 show a warning: "Для дат до 1900 року точність може бути знижена." Dates before 1800 are rejected.
+- **FR-035**: Tarot re-draws are **unlimited**. Before each re-draw, a confirmation dialog asks: "Бажаєте витягнути нові карти?" to prevent accidental re-draws. Daily card is an exception — one draw per day (cached 24h).
+- **FR-036**: DEFERRED to [future-plans.md](future-plans.md). Deep-linking and URL shareability are planned post-launch.
+
+**Performance & Infrastructure:**
+
+- **FR-037**: Page load targets: static/ISR pages < 2 seconds, single-API pages < 3 seconds, multi-API pages < 5 seconds. API calls exceeding 10 seconds (15 seconds for analysis endpoints) show a timeout message with retry button.
+- **FR-038**: Cache TTLs by feature type: natal chart data — permanent (until user edits), horoscopes — matching their period (daily: 24h, weekly: 7d, monthly: 30d, yearly: 365d), static analyses (career, health, karmic, psychological, spiritual, vocational, relocation, synastry, composite, compatibility, Chinese, numerology, traditional, astrocartography, fixed stars) — 30 days, predictive/eclipses — 7 days, wellness/financial insights — 24h, business insights — 30d, tarot daily card — 24h, tarot interactive draws — no cache, transit data — 1 hour, moon data — ISR 15 minutes. Cache invalidation occurs on chart edit. Definitive TTL values are in the Feature Type Registry in [data-model.md](data-model.md).
+- **FR-039**: Rate limiting mitigation: client-side form submission debounce (500ms), maximum 3 concurrent API calls per user session, requests beyond the limit are queued with loading state shown. If API rate limit headers indicate >80% usage, non-essential prefetching is paused.
+
+**SEO, Analytics & Monitoring:**
+
+- **FR-040**: DEFERRED to [future-plans.md](future-plans.md). SEO metadata and AEO optimization are planned post-launch. Basic page titles in Ukrainian are sufficient for initial release.
+- **FR-041**: PostHog MUST track: page views per feature, chart creation funnel (start → complete), feature engagement rates (which features are used most), and API error rates per namespace. Events are used to validate SC-002 and inform future prioritization.
+- **FR-042**: All API errors MUST be reported to Sentry with: error type, API endpoint, HTTP status, and anonymized user ID. Severity levels: API timeout → warning, API 4xx/5xx → error, auth failure → critical.
+
+**UX Patterns & Navigation:**
+
+- **FR-043**: First-time authenticated users see a brief feature overview on the dashboard (3-4 key feature cards with short Ukrainian descriptions). Navigation category dropdowns include one-line descriptions on hover (desktop) or as subtitle text (mobile).
+- **FR-044**: Pages nested 2+ levels deep MUST show breadcrumb navigation (e.g., "Таро > Кельтський Хрест"). Breadcrumb labels MUST match navigation menu names in Ukrainian.
+- **FR-045**: Feature pages follow the FeaturePageLayout pattern: page header (feature name + one-line Ukrainian description), birth data input section (if needed), result sections using collapsible AnalysisSection components. Chart pages additionally show SVG visualization above data sections.
+- **FR-046**: Error messages follow a standard pattern: Ukrainian headline (e.g., "Щось пішло не так"), description of what happened, retry button, and suggestion for next steps. Error types — network: "Перевірте з'єднання", timeout: "Запит зайняв занадто довго", validation: field-specific message, API error: "Сервіс тимчасово недоступний".
+- **FR-047**: Multi-API partial failure: if some API calls succeed and others fail, render successful sections normally and show an inline error with retry button in failed sections. Full-page error only when ALL API calls for that page fail.
+- **FR-048**: Form → results transitions use client-side navigation. Browser back button MUST return to the form with previous inputs preserved (not cleared). Form state persists in component state until successful submission.
+- **FR-049**: Report sections with more than 5 content blocks are initially collapsed. An "Показати більше" button expands the full content. Individual report sections within a page are independently collapsible.
+- **FR-050**: When birth time is "unknown" (12:00 default is used), a persistent banner on the result page states: "Час народження невідомий — позиції Місяця та будинків можуть бути неточними." Banner uses warning style (amber accent).
+
+**Data, Privacy & Security:**
+
+- **FR-051**: Cached feature results auto-expire per TTL (FR-038). Users can delete their account and ALL associated data (charts, partner charts, cached results) from account settings. Partner charts are individually deletable from dashboard.
+- **FR-052**: All birth data form inputs MUST be sanitized (strip HTML/script tags before submission). API-provided SVGs MUST be sanitized before inline rendering (remove `<script>` elements and event handler attributes). API keys are server-side only — never exposed to client bundles.
+
+**Auto-Submit & Form Variants:**
+
+- **FR-053**: Auto-submit behavior by page type: (a) Single-input pages — auto-submit from primary chart (FR-030), no form shown; (b) Dual-input pages — user's data auto-populated from primary chart, partner selector/form shown for second input; (c) Pages with additional inputs (target date, location) — birth data auto-populated, only extra fields shown.
+- **FR-054**: BirthDataForm field sets by feature type: (a) Basic — name, birth date, birth time, birth city; (b) Full — basic + gender; (c) Date-range — basic + target date; (d) Location — basic + target city/location. Each page type's required fields are defined in the pages contract.
+- **FR-055**: Geocoding disambiguation: when Nominatim returns multiple results, show a dropdown with "city, region, country" for each. If zero results: "Не вдалось знайти місто. Спробуйте інше написання або додайте країну."
+
+**Technical Architecture:**
+
+- **FR-056**: Pages MUST handle unknown/new API fields gracefully — they are ignored (no render, no error). TypeScript types are updated when the SDK is upgraded. Removed fields result in hidden sections (per FR-002).
+- **FR-057**: Maximum 6 concurrent API calls per page load. Pages requiring more MUST use sequential batching with progressive rendering — show results as each batch completes, with skeleton loaders for pending sections.
+- **FR-058**: Each feature page MUST be a separate Next.js route (automatic code splitting). Shared components (FeaturePageLayout, BirthDataForm, AnalysisSection) are in a common bundle. No single page's JS bundle should exceed 200KB gzipped.
+- **FR-059**: When all feature pages are implemented, the `/explore` route is removed with a 301 redirect to `/dashboard`. Existing bookmarks continue to work via redirect.
+- **FR-060**: Existing users with saved charts missing the gender field see a **one-time prompt** to add gender on their next visit to a gender-required feature page. The prompt is dismissible — "prefer not to say" (FR-020a) is an option. Once set or dismissed, never prompted again (flag stored in `charts` table).
+- **FR-061**: Navigation uses progressive disclosure: maximum 7 top-level categories with dropdown sub-items. Mobile uses a hamburger menu with expandable category sections and a search/filter input for power users to find features quickly.
+
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: Every Astrology API namespace (16) has at least one working page displaying real API data.
-- **SC-002**: Users can access 50+ distinct features/tools from navigation menus.
+- **SC-002**: Users can access 50+ distinct features/tools from navigation menus. A "distinct feature" = each nav-accessible page that provides unique user value.
 - **SC-003**: Zero "Скоро" messages anywhere on the site.
 - **SC-004**: Auth users can reach any feature page directly (zero unwanted redirects except `/quiz`).
 - **SC-005**: Auth users with complete chart data interact with feature pages in 1 click (no form).
 - **SC-006**: Zero instances of "Створити акаунт" CTA shown to authenticated users.
-- **SC-007**: All API response data is visible to users — no hidden or truncated fields.
+- **SC-007**: All API response data is visible to users — no hidden or truncated fields. "All data" means every user-meaningful field; internal/technical fields (request IDs, debug data) are excluded. Verification: compare rendered page fields against API response JSON for a sample of 5 endpoints per namespace.
 - **SC-008**: After logout, zero personal data remnants in sessionStorage.
 
 ## Assumptions
 
-- The Astrology API subscription/plan covers all 160+ endpoints (no endpoints are paywalled on the API side).
-- API rate limits are sufficient for the expected traffic. Aggressive caching (ISR, in-memory) is used where appropriate.
-- The API returns Ukrainian language content when `language: 'uk'` is specified. For endpoints without Ukrainian support, English data is displayed as-is (no AI translation needed).
+- The Astrology API subscription/plan covers all 160+ endpoints (no endpoints are paywalled on the API side). **Mitigation**: during Phase 1 implementation, if an endpoint returns 403/402 (not authorized), the corresponding nav link is hidden and a note is logged to Sentry. No fallback plan needed — the nav simply omits unavailable features.
+- API rate limits are sufficient for the expected traffic. Aggressive caching (ISR, in-memory, `feature_results` table) is used where appropriate. **Mitigation**: rate limit monitoring via response headers per FR-039. If limits are hit, queue with exponential backoff.
+- The API returns Ukrainian language content when `language: 'uk'` is specified. For endpoints without Ukrainian support, English data is displayed as-is (no AI translation needed). **Verification**: Ukrainian support is tested per namespace during implementation and documented in a language support matrix. Handling per FR-026a.
 - Existing Supabase auth infrastructure is sufficient.
-- Feature pages can share common components (birth data form, chart selector, result display).
-- Not every API method needs a completely separate route — related methods can be combined on one page (e.g., solar return chart + report + transits on one page).
-- The Explore page (`/explore`) can be removed/replaced once dedicated pages exist for each feature.
+- Feature pages can share common components (birth data form, chart selector, result display). Component contracts defined in [contracts/pages.md](contracts/pages.md).
+- Not every API method needs a completely separate route — related methods can be combined on one page (e.g., solar return chart + report + transits on one page). Groupings: Solar Return (chart + report + transits), Lunar Return (chart + report + transits), Natal Chart (positions + enhanced positions + enhanced aspects + dignities). Full groupings listed in [contracts/pages.md](contracts/pages.md).
+- The Explore page (`/explore`) can be removed/replaced once dedicated pages exist for each feature (FR-059). External links/bookmarks handled via 301 redirect.
+- No formal API SLA dependency. The app is designed to degrade gracefully when the API is unavailable (error states per FR-047, cached results where available).
+- Nominatim is the sole geocoding provider — sufficient for current scale. Disambiguation handled per FR-055.
+- Supabase `feature_results` table implements TTL-based auto-cleanup. Expired rows deleted by scheduled function or on-read cleanup. Table size monitored via Supabase dashboard.
+- Ukrainian-only for this feature. UI strings are kept in constants files (not inline strings) to support future i18n, but no i18n framework is required now.
+- Cross-story dependencies are tracked in tasks.md phase ordering. Natal chart (US1) is prerequisite for US4 (transits), US5 (progressions), US9 (traditional).
+- Priority justification: P1 features (charts, horoscopes, relationships, transits, auth, nav) serve >80% of users and drive core engagement. P2 features (advanced techniques, specialized tools) serve engaged users. P3 features (wellness, financial, business) are niche segments.
+- "Professional-grade data" (US1) means: positions accurate to arc-minute, aspect orbs displayed, house cusps for all 12 houses, retrograde status clearly marked. Must match reference ephemeris data.
+- Chinese calendar edge cases (leap months, solar terms near midnight) and extreme-latitude house system calculations are delegated to the API's internal logic. Standard error handling (FR-047) applies if the API returns errors for edge-case inputs.
+- Pattern-based acceptance criteria for US6 and US12 are intentional — similar endpoint structures use identical patterns. Each endpoint's unique fields are verified during implementation by comparing rendered output against the API's TypeScript response type.
 
 ## Scope Boundaries
 
@@ -419,3 +481,5 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - Admin panel
 - Mobile native app
 - Pet insights (lowest priority, can be deferred)
+- Print/export (PDF charts, report exports) — future enhancement
+- Multi-language support beyond Ukrainian — future enhancement
