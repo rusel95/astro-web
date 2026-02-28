@@ -87,6 +87,16 @@ const CHARTS_GROUPS: DropdownGroup[] = [
       { href: '/analysis/relocation', label: 'Аналіз релокації', icon: 'map-pin', description: 'Найкращі місця для переїзду' },
     ],
   },
+  {
+    title: 'Таро',
+    items: [
+      { href: '/tarot', label: 'Таро: головна', icon: 'sparkles', description: 'Щоденна карта та всі розклади' },
+      { href: '/tarot/single', label: 'Одна карта', icon: 'star', description: 'Відповідь на одне запитання' },
+      { href: '/tarot/three-card', label: 'Три карти', description: 'Минуле · Теперішнє · Майбутнє', icon: 'layers' },
+      { href: '/tarot/celtic-cross', label: 'Кельтський хрест', icon: 'cross', description: '10 карт · Глибокий аналіз' },
+      { href: '/tarot/birth-cards', label: 'Карти народження', icon: 'star', description: 'Карта особистості та душі' },
+    ],
+  },
 ];
 
 export default function DesktopNav({ user }: DesktopNavProps) {

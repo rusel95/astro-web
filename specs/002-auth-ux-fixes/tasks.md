@@ -307,27 +307,27 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Independent Test**: Visit daily tarot → see today's card with image + interpretation. Visit Celtic Cross → draw 10 cards → see full spread interpretation.
 
-- [ ] T078 [P] [US7] Create API route `src/app/api/tarot/daily/route.ts` — calls `getDailyCard()`, returns card data. Cache 24h (one draw per day per FR-035)
-- [ ] T079 [P] [US7] Create API route `src/app/api/tarot/draw/route.ts` — POST with count + spread_type, calls `drawCards()` + appropriate `generate*Report()` method (single, threeCard, celticCross, houses, treeOfLife, synastry, transit). No cache for interactive draws (FR-038). Wrap with api-client.ts
-- [ ] T080 [P] [US7] Create API route `src/app/api/tarot/birth-cards/route.ts` — POST with subject, calls `calculateBirthCards()`. Cache 30d
-- [ ] T081 [US7] Create tarot hub page `src/app/(main)/tarot/page.tsx` + client component — daily card display with card image from API `imageUrl` field (FR-031, text-only fallback if no image: card name, suit, arcana, meaning), links to all spread types, card browser using `getAllCards()`, tarot introduction text in Ukrainian. Breadcrumb on sub-pages (FR-044)
-- [ ] T082 [P] [US7] Create single card page `src/app/(main)/tarot/single/page.tsx` + client component — draw button, card display with API image (FR-031), single card report. Re-draw shows confirmation dialog: "Бажаєте витягнути нові карти?" (FR-035). Unlimited re-draws
-- [ ] T083 [P] [US7] Create three-card page `src/app/(main)/tarot/three-card/page.tsx` + client component — draw button, 3 cards in row (past/present/future), three-card report. Re-draw confirmation (FR-035)
-- [ ] T084 [P] [US7] Create Celtic Cross page `src/app/(main)/tarot/celtic-cross/page.tsx` + client component — draw button, 10-card layout, Celtic Cross report. Re-draw confirmation (FR-035). Breadcrumb: "Таро > Кельтський Хрест"
-- [ ] T085 [P] [US7] Create houses spread page `src/app/(main)/tarot/houses/page.tsx` + client component — 12-card layout, houses report. Re-draw confirmation (FR-035)
-- [ ] T086 [P] [US7] Create Tree of Life page `src/app/(main)/tarot/tree-of-life/page.tsx` + client component — draw + Tree of Life layout, report. Re-draw confirmation (FR-035)
-- [ ] T087 [US7] Create birth cards page `src/app/(main)/tarot/birth-cards/page.tsx` + client component — BirthDataForm (basic variant), personality + soul card display with images (FR-031)
-- [ ] T088 [P] [US7] Create synastry tarot page `src/app/(main)/tarot/synastry/page.tsx` + client component — PartnerSelector for second input, calls `/api/tarot/draw` with `generateSynastryReport()`, shows paired card reading
-- [ ] T089 [P] [US7] Create transit tarot page `src/app/(main)/tarot/transit/page.tsx` + client component — BirthDataForm (date-range variant) + date picker, calls `/api/tarot/draw` with `generateTransitReport()`, shows transit-themed card reading
+- [x] T078 [P] [US7] Create API route `src/app/api/tarot/daily/route.ts` — calls `getDailyCard()`, returns card data. Cache 24h (one draw per day per FR-035)
+- [x] T079 [P] [US7] Create API route `src/app/api/tarot/draw/route.ts` — POST with count + spread_type, calls `drawCards()` + appropriate `generate*Report()` method (single, threeCard, celticCross, houses, treeOfLife, synastry, transit). No cache for interactive draws (FR-038). Wrap with api-client.ts
+- [x] T080 [P] [US7] Create API route `src/app/api/tarot/birth-cards/route.ts` — POST with subject, calls `calculateBirthCards()`. Cache 30d
+- [x] T081 [US7] Create tarot hub page `src/app/(main)/tarot/page.tsx` + client component — daily card display with card image from API `imageUrl` field (FR-031, text-only fallback if no image: card name, suit, arcana, meaning), links to all spread types, card browser using `getAllCards()`, tarot introduction text in Ukrainian. Breadcrumb on sub-pages (FR-044)
+- [x] T082 [P] [US7] Create single card page `src/app/(main)/tarot/single/page.tsx` + client component — draw button, card display with API image (FR-031), single card report. Re-draw shows confirmation dialog: "Бажаєте витягнути нові карти?" (FR-035). Unlimited re-draws
+- [x] T083 [P] [US7] Create three-card page `src/app/(main)/tarot/three-card/page.tsx` + client component — draw button, 3 cards in row (past/present/future), three-card report. Re-draw confirmation (FR-035)
+- [x] T084 [P] [US7] Create Celtic Cross page `src/app/(main)/tarot/celtic-cross/page.tsx` + client component — draw button, 10-card layout, Celtic Cross report. Re-draw confirmation (FR-035). Breadcrumb: "Таро > Кельтський Хрест"
+- [x] T085 [P] [US7] Create houses spread page `src/app/(main)/tarot/houses/page.tsx` + client component — 12-card layout, houses report. Re-draw confirmation (FR-035)
+- [x] T086 [P] [US7] Create Tree of Life page `src/app/(main)/tarot/tree-of-life/page.tsx` + client component — draw + Tree of Life layout, report. Re-draw confirmation (FR-035)
+- [x] T087 [US7] Create birth cards page `src/app/(main)/tarot/birth-cards/page.tsx` + client component — BirthDataForm (basic variant), personality + soul card display with images (FR-031)
+- [x] T088 [P] [US7] Create synastry tarot page `src/app/(main)/tarot/synastry/page.tsx` + client component — PartnerSelector for second input, calls `/api/tarot/draw` with `generateSynastryReport()`, shows paired card reading
+- [x] T089 [P] [US7] Create transit tarot page `src/app/(main)/tarot/transit/page.tsx` + client component — BirthDataForm (date-range variant) + date picker, calls `/api/tarot/draw` with `generateTransitReport()`, shows transit-themed card reading
 
 **Checkpoint**: Complete tarot section with 10 spread types.
 
 ### Phase 11 Gate
 
-- [ ] PG-11a Run `npm run build` — zero errors, zero warnings
+- [x] PG-11a Run `npm run build` — zero errors, zero warnings
 - [ ] PG-11b Run `npm run test` — all existing Playwright tests pass
 - [ ] PG-11c Write Playwright tests: tarot hub with daily card, single/three-card/Celtic Cross draw interactions with re-draw confirmation dialog (FR-035), birth cards form, tarot card display with images (FR-031), synastry + transit tarot pages — mobile (375px) + desktop (1280px)
-- [ ] PG-11d Commit: `phase-11: tarot section (10 spread types, re-draw confirmation, card images)`
+- [x] PG-11d Commit: `phase-11: tarot section (10 spread types, re-draw confirmation, card images)`
 
 ---
 
