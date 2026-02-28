@@ -299,6 +299,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Checkpoint**: Complete tarot section with 9 spread types (including synastry and transit tarot).
 
+### Phase 11 Gate
+
+- [ ] PG-11a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-11b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-11c Write Playwright tests: tarot hub with daily card, single/three-card/Celtic Cross draw interactions, birth cards form, tarot card display with images — mobile (375px) + desktop (1280px)
+- [ ] PG-11d Commit: `phase-11: tarot section (9 spread types)`
+
 ---
 
 ## Phase 12: Chinese Astrology Section (US8, Priority: P2)
@@ -315,6 +322,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [ ] T085 [P] [US8] Create Chinese forecast page `src/app/(main)/chinese/forecast/page.tsx` + client component — year selector, yearly forecast, element analysis
 
 **Checkpoint**: Chinese astrology section complete.
+
+### Phase 12 Gate
+
+- [ ] PG-12a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-12b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-12c Write Playwright tests: BaZi four pillars display, luck pillars timeline, Ming Gua directions, Chinese compatibility, yearly forecast — mobile (375px) + desktop (1280px)
+- [ ] PG-12d Commit: `phase-12: chinese astrology (BaZi, luck pillars, Ming Gua, compatibility, forecast)`
 
 ---
 
@@ -335,6 +349,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Checkpoint**: Traditional astrology section complete.
 
+### Phase 13 Gate
+
+- [ ] PG-13a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-13b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-13c Write Playwright tests: traditional analysis hub, dignities table, profections timeline, firdaria periods, zodiacal releasing — mobile (375px) + desktop (1280px)
+- [ ] PG-13d Commit: `phase-13: traditional astrology (dignities, lots, profections, firdaria, ZR)`
+
 ---
 
 ## Phase 14: Astrocartography (US10, Priority: P2)
@@ -351,6 +372,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [ ] T099 [US10] Create location analysis page `src/app/(main)/astrocartography/location/page.tsx` + client component — city search input, location analysis display, comparison tool
 
 **Checkpoint**: Astrocartography section complete.
+
+### Phase 14 Gate
+
+- [ ] PG-14a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-14b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-14c Write Playwright tests: astrocartography map renders, location analysis with city search, power zones display, location comparison — mobile (375px) + desktop (1280px)
+- [ ] PG-14d Commit: `phase-14: astrocartography (map, location analysis, power zones, comparison)`
 
 ---
 
@@ -373,6 +401,14 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Checkpoint**: All P2 features complete.
 
+### Phase 15 Gate
+
+- [ ] PG-15a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-15b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-15c Write Playwright tests: numerology page with core numbers, fixed stars conjunctions, eclipses list + natal impact, enhanced moon page with lunar API data — mobile (375px) + desktop (1280px)
+- [ ] PG-15d Commit: `phase-15: numerology, fixed stars, eclipses, lunar enhancements`
+- [ ] PG-15e **P2 MILESTONE**: Full regression test of all P2 features. Verify all new pages load and display data correctly on mobile and desktop
+
 ---
 
 ## Phase 16: Wellness, Financial & Business Insights (US12, Priority: P3)
@@ -390,6 +426,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 
 **Checkpoint**: All insight pages complete.
 
+### Phase 16 Gate
+
+- [ ] PG-16a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-16b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-16c Write Playwright tests: wellness page (body mapping, biorhythms), financial page, business page — mobile (375px) + desktop (1280px)
+- [ ] PG-16d Commit: `phase-16: wellness, financial & business insights`
+
 ---
 
 ## Phase 17: Stats Section Fix & Glossary (US16, Priority: P3)
@@ -403,6 +446,13 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [ ] T118 [P] Create glossary page `src/app/(main)/glossary/page.tsx` + client component — search input, category filter, term cards with definitions, reference data sections (zodiac signs, planets, aspects, houses, elements, modalities)
 
 **Checkpoint**: All P3 features complete.
+
+### Phase 17 Gate
+
+- [ ] PG-17a Run `npm run build` — zero errors, zero warnings
+- [ ] PG-17b Run `npm run test` — all existing Playwright tests pass
+- [ ] PG-17c Write Playwright tests: stats section shows real numbers, glossary search and category filter, glossary term display — mobile (375px) + desktop (1280px)
+- [ ] PG-17d Commit: `phase-17: stats fix & glossary`
 
 ---
 
