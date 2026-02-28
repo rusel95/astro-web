@@ -14,7 +14,7 @@
 - `id` (UUID, PK)
 - `user_id` (UUID, FK → auth.users, nullable for anon)
 - `name`, `birth_date`, `birth_time`, `city`, `country_code`
-- `latitude`, `longitude`, `gender` ('male'|'female'|null)
+- `latitude`, `longitude`, `gender` (enum: 'male', 'female', or null)
 - `chart_data` (JSONB — full API response)
 - `svg_content` (text — API SVG)
 - `created_at`
