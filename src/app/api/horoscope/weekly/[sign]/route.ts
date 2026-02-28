@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { sign } = await params;
     const client = getAstrologyClient();
-    const horoscope = await client.horoscope.getSignWeeklyHoroscope(sign as any);
+    const horoscope = await client.horoscope.getSignWeeklyHoroscope({ sign: sign as any });
 
     return NextResponse.json(
       { horoscope },

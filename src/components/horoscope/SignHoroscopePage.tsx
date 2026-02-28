@@ -6,11 +6,34 @@ import type { ZodiacSign } from '@/types/astrology';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
 import AnalysisSection from '@/components/feature/AnalysisSection';
 import ErrorState from '@/components/feature/ErrorState';
+import { useAuthChart } from '@/hooks/useAuthChart';
 
 const SIGNS: ZodiacSign[] = [
   'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
   'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
 ];
+
+/** Derive zodiac sun sign from YYYY-MM-DD birth date */
+function signFromBirthDate(birthDate: string): ZodiacSign | null {
+  const parts = birthDate.split('-');
+  if (parts.length < 3) return null;
+  const month = parseInt(parts[1], 10);
+  const day = parseInt(parts[2], 10);
+  if (isNaN(month) || isNaN(day)) return null;
+
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return 'Aries';
+  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return 'Taurus';
+  if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return 'Gemini';
+  if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return 'Cancer';
+  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return 'Leo';
+  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return 'Virgo';
+  if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return 'Libra';
+  if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return 'Scorpio';
+  if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return 'Sagittarius';
+  if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return 'Capricorn';
+  if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return 'Aquarius';
+  return 'Pisces';
+}
 
 interface SignHoroscopePageProps {
   title: string;
@@ -19,10 +42,19 @@ interface SignHoroscopePageProps {
 }
 
 export default function SignHoroscopePage({ title, description, apiPath }: SignHoroscopePageProps) {
+  const { chart, isLoading: authLoading } = useAuthChart();
   const [selectedSign, setSelectedSign] = useState<ZodiacSign | null>(null);
   const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Auto-select sign from user's chart birth date
+  useEffect(() => {
+    if (!authLoading && chart?.birth_date && !selectedSign) {
+      const sign = signFromBirthDate(chart.birth_date);
+      if (sign) setSelectedSign(sign);
+    }
+  }, [authLoading, chart, selectedSign]);
 
   useEffect(() => {
     if (!selectedSign) return;
@@ -59,7 +91,7 @@ export default function SignHoroscopePage({ title, description, apiPath }: SignH
         {SIGNS.map((sign) => (
           <button
             key={sign}
-            onClick={() => setSelectedSign(sign)}
+            onClick={() => { setData(null); setError(null); setSelectedSign(sign); }}
             className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all min-h-[44px] ${
               selectedSign === sign
                 ? 'bg-zorya-violet/20 border border-zorya-violet/40'
@@ -75,7 +107,7 @@ export default function SignHoroscopePage({ title, description, apiPath }: SignH
       </div>
 
       {/* Loading state */}
-      {loading && (
+      {(loading || authLoading) && (
         <div className="space-y-4">
           <div className="animate-pulse h-40 bg-white/[0.05] rounded-2xl" />
           <div className="animate-pulse h-24 bg-white/[0.05] rounded-2xl" />
@@ -108,7 +140,7 @@ export default function SignHoroscopePage({ title, description, apiPath }: SignH
       )}
 
       {/* Prompt to select sign */}
-      {!selectedSign && !loading && (
+      {!selectedSign && !loading && !authLoading && (
         <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-8 text-center">
           <p className="text-white/40 text-sm">Оберіть знак зодіаку для перегляду гороскопу</p>
         </div>
