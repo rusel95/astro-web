@@ -15,8 +15,9 @@ Expose every Astrology API SDK endpoint (`@astro-api/astroapi-typescript`, 160+ 
 **Testing**: Playwright (11 existing test suites, screenshot comparison)
 **Target Platform**: Vercel (serverless, Edge runtime for ISR)
 **Project Type**: Web application (Next.js full-stack)
-**Performance Goals**: Feature pages load under 3s. ISR for sign-based content. API result caching in Supabase
-**Constraints**: API rate limits (cache aggressively). Ukrainian UI. Dark cosmic theme
+**Error Monitoring**: Sentry (`@sentry/nextjs` v10.40.0 already installed, sentry.client/server/edge.config.ts configured, DSN in Vercel). All API calls wrapped with Sentry error capture
+**Performance Goals**: Static pages < 2s, single-API pages < 3s, multi-API pages < 5s (FR-037). ISR for sign-based content. API result caching in Supabase
+**Constraints**: API rate limits (cache aggressively, max 3 concurrent per user per FR-039). Ukrainian UI. Dark cosmic theme. Mobile-first (375px primary)
 **Scale/Scope**: 42 new pages + 6 enhanced existing pages. ~25 new API routes
 
 ## Constitution Check
@@ -30,8 +31,8 @@ Expose every Astrology API SDK endpoint (`@astro-api/astroapi-typescript`, 160+ 
 | III. Design System Consistency | PASS | All pages use GlassCard, CosmicBackground, ZodiacIcon, cosmic palette. No new design primitives |
 | IV. Date Handling Safety | PASS | Server dates as "YYYY-MM-DD" strings. Client parsing via `new Date(y, m-1, d)` |
 | V. Deploy Often, Verify Always | PASS | Phase-by-phase implementation (P1→P2→P3). Each phase deployable independently |
-| VI. Analytics-Driven | PASS | Each feature page emits PostHog events (view, interact, error). New events in `events.ts` |
-| VII. Existing Infrastructure First | PASS | Uses existing SDK, Supabase, OpenAI patterns. No new services. Extends existing `astrology-client.ts` |
+| VI. Analytics & Error Monitoring | PASS | PostHog: each feature page emits events (view, interact, error). Sentry: all API calls wrapped with error capture, severity levels defined (timeout→warning, 4xx/5xx→error, auth→critical) |
+| VII. Existing Infrastructure First | PASS | Uses existing SDK, Supabase, OpenAI, Sentry patterns. No new services. Extends existing `astrology-client.ts` |
 
 **Post-Phase 1 Re-check**: All principles still satisfied. `feature_results` table extends Supabase (not new infra). Shared components reuse existing UI primitives.
 
@@ -109,24 +110,38 @@ src/
 │       ├── eclipses/route.ts            # NEW
 │       ├── lunar/calendar/route.ts      # NEW: enhanced lunar data
 │       ├── insights/[category]/route.ts # NEW: wellness, financial, business
+│       ├── partner-charts/route.ts      # NEW: CRUD for partner charts (FR-027b)
+│       ├── stats/route.ts               # NEW: real DB counts for landing stats
 │       └── glossary/route.ts            # NEW
 │
 ├── components/
 │   ├── feature/                         # NEW: shared feature page components
-│   │   ├── BirthDataForm.tsx            # Compact inline birth data form
+│   │   ├── BirthDataForm.tsx            # Compact inline birth data form (4 field set variants per FR-054)
 │   │   ├── ChartSelector.tsx            # Saved chart dropdown
-│   │   ├── SvgChartViewer.tsx           # API SVG renderer
-│   │   ├── AnalysisSection.tsx          # Structured data display
-│   │   └── FeaturePageLayout.tsx        # Standard layout for feature pages
+│   │   ├── PartnerSelector.tsx          # Partner chart selector for dual-input pages
+│   │   ├── SvgChartViewer.tsx           # API SVG renderer (with sanitization per FR-052)
+│   │   ├── AnalysisSection.tsx          # Structured data display (collapsible per FR-049)
+│   │   ├── FeaturePageLayout.tsx        # Standard layout for feature pages
+│   │   ├── ErrorState.tsx               # Standardized error component (FR-046)
+│   │   ├── PartialErrorBanner.tsx       # Inline error for partial API failures (FR-047)
+│   │   ├── Breadcrumb.tsx               # Breadcrumb navigation for nested pages (FR-044)
+│   │   └── BirthTimeWarning.tsx         # Unknown birth time banner (FR-050)
 │   ├── nav/                             # Enhanced: dropdown navigation
+│   │   ├── DesktopNav.tsx               # Dropdown menus (max 7 categories per FR-061)
+│   │   └── MobileNav.tsx                # Hamburger + expandable sections
+│   ├── settings/                        # NEW: account settings
+│   │   └── DeleteAccountSection.tsx     # Account deletion flow (FR-051)
 │   └── ...existing components
 │
 ├── hooks/
-│   └── useAuthChart.ts                  # NEW: auth check + auto-submit logic
+│   └── useAuthChart.ts                  # NEW: auth check + auto-submit logic (primary chart per FR-030)
 │
 ├── lib/
 │   ├── astrology-client.ts              # Existing: SDK singleton (no changes needed)
 │   ├── feature-cache.ts                 # NEW: Supabase feature_results helpers
+│   ├── api-client.ts                    # NEW: API call wrapper (debounce, queue, Sentry, timeout per FR-039/FR-037)
+│   ├── svg-sanitizer.ts                 # NEW: sanitize API SVGs before rendering (FR-052)
+│   ├── input-sanitizer.ts               # NEW: strip HTML/script from form inputs (FR-052)
 │   └── analytics/events.ts             # Enhanced: new feature events
 │
 └── types/
@@ -143,3 +158,7 @@ src/
 | ~25 new API routes | Server-side SDK calls (API key security) + multi-method aggregation | Client-side SDK calls would expose API key |
 | `feature_results` table | Caching prevents API rate limit issues at scale | Without cache, each page view = API call = rate limit risk |
 | Dynamic route `analysis/[type]` | 8 analysis types share identical request pattern | 8 separate route files with identical logic is worse |
+| `api-client.ts` wrapper | Centralizes debounce, queue, timeout, Sentry capture (FR-037/039/042) | Without it, every API route duplicates error handling and rate limiting |
+| `svg-sanitizer.ts` | Security requirement (FR-052) — API SVGs could contain scripts | Inline sanitization in each component would be error-prone |
+| ErrorState + PartialErrorBanner | Standardized error patterns (FR-046/047) across 42+ pages | Per-page error handling would be inconsistent |
+| Breadcrumb component | Deep page hierarchy needs wayfinding (FR-044) | Without breadcrumbs, users get lost in `/traditional/profections` etc. |
