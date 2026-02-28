@@ -1,21 +1,20 @@
 <!--
   Sync Impact Report
-  Version change: 0.0.0 (template) → 1.0.0
-  Modified principles: All new (template had placeholders only)
-  Added sections:
-    - 7 Core Principles (I–VII)
-    - Design System & Conventions
-    - Development Workflow & Quality Gates
-    - Governance
-  Removed sections: None (template placeholders replaced)
+  Version change: 1.0.0 → 1.1.0
+  Modified principles:
+    - VI. Renamed "Analytics-Driven Development" → "Analytics & Error Monitoring"
+      Added Sentry as NON-NEGOTIABLE for error/warning/exception handling
+      alongside PostHog for user behavior analytics
+    - VII. Added Sentry to infrastructure list
+  Added sections: None
+  Removed sections: None
   Templates requiring updates:
-    - .specify/templates/plan-template.md — no changes needed
-      (generic "Constitution Check" references constitution dynamically)
-    - .specify/templates/spec-template.md — no changes needed
-      (spec structure is principle-agnostic)
-    - .specify/templates/tasks-template.md — no changes needed
-      (task structure is principle-agnostic)
-  Follow-up TODOs: None
+    - .specify/templates/plan-template.md — Constitution Check table
+      should verify Sentry integration (VI)
+    - Spec FR-042 already aligns with new principle
+  Follow-up TODOs:
+    - Update plan.md Constitution Check table to add Sentry row
+    - Ensure tasks.md has Sentry integration tasks
 -->
 
 # Zorya (astro-web) Constitution
@@ -67,13 +66,25 @@ Each meaningful change MUST be deployed independently — do not batch.
 After deploy, verify on production (https://astro-web-five.vercel.app).
 Moon page uses ISR (revalidate=900). Static pages rebuild on deploy.
 
-### VI. Analytics-Driven Development
+### VI. Analytics & Error Monitoring (NON-NEGOTIABLE)
 
+**PostHog** — for user behavior analytics:
 Every user-facing feature MUST emit PostHog analytics events.
 Quiz funnels MUST track per-step completion and abandonment.
 Product interactions MUST track views, clicks, and paywall engagement.
 Use the existing `track()` function from `src/lib/analytics/index.ts`
 and define event constants in `src/lib/analytics/events.ts`.
+
+**Sentry** — for error, warning, and exception handling:
+Every action that can produce an exception MUST be wrapped with Sentry
+error reporting. This includes: API calls (Astrology API, OpenAI,
+Supabase), form submissions, data parsing, and any async operation.
+Sentry severity levels: API timeout → warning, API 4xx/5xx → error,
+auth failure → critical, client-side unhandled → error.
+Sentry MUST NOT track analytics or user behavior — only problems.
+Use `NEXT_PUBLIC_SENTRY_DSN` environment variable (already configured
+in Vercel). Capture context: error type, endpoint, HTTP status,
+anonymized user ID.
 
 ### VII. Existing Infrastructure First
 
@@ -83,6 +94,7 @@ Use `astronomy-engine` for moon data — free, no API limits.
 Use Supabase for auth and database — extend with new tables, not services.
 Use OpenAI (GPT-4o) for AI interpretations via `/api/report` patterns.
 Use Nominatim for geocoding — free, no API key needed.
+Use Sentry for error monitoring — DSN configured in Vercel.
 Cache aggressively to respect Astrology API rate limits.
 
 ## Design System & Conventions
@@ -133,4 +145,4 @@ alternative was rejected.
 
 Runtime development guidance lives in `CLAUDE.md` at repo root.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-26 | **Last Amended**: 2026-02-26
+**Version**: 1.1.0 | **Ratified**: 2026-02-26 | **Last Amended**: 2026-02-28
