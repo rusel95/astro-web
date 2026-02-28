@@ -42,13 +42,14 @@ Caches API results for authenticated users to avoid repeated API calls and enabl
 | `expires_at` | timestamptz | When cache should be refreshed (varies by feature type) |
 | `created_at` | timestamptz | When result was first fetched |
 
-**Indexes**: `(user_id, feature_type, chart_id)` for quick lookups.
+**Indexes**: `(user_id, feature_type, chart_id, feature_params_hash)` for quick lookups. `feature_params_hash` is a deterministic MD5 hash of the JSON-normalized `feature_params` (keys sorted, nulls removed). For features with no extra params, hash defaults to empty string hash.
 **RLS**: Users can only read/write their own results.
+**Migration Safety**: All migrations MUST include a corresponding rollback script. Test on staging environment before applying to production.
 **Cache TTL by feature type**:
 - Horoscopes: daily=24h, weekly=7d, monthly=30d, yearly=365d
 - Transits: 1h (changes with planetary movement)
 - Static analyses (natal report, career, karmic, etc.): 30d
-- Tarot draws: no cache (fresh each time)
+- Tarot draws (interactive spreads): no cache (fresh each time). Daily card: 24h cache.
 
 ### Partner Chart (partner_charts table)
 
@@ -65,7 +66,7 @@ Stores second person's birth data for relationship features. Not a full chart â€
 | `country_code` | text | Country code |
 | `latitude` | float | Geocoded latitude |
 | `longitude` | float | Geocoded longitude |
-| `gender` | text | 'male'|'female'|null |
+| `gender` | text | text (enum: male, female, null) |
 | `created_at` | timestamptz | When added |
 
 **RLS**: Users can only manage their own partner charts.
