@@ -329,7 +329,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 - **FR-017**: Homepage (`/`) shows marketing landing for unauth users. Auth users visiting `/` are redirected to `/dashboard`. The `/dashboard` page (already exists at `src/app/(main)/dashboard/`) serves as the personalized home for auth users.
 - **FR-018**: `/quiz` MUST redirect auth users to `/chart/new`. All other pages accessible to all users.
-- **FR-019**: Pages requiring birth data MUST auto-submit from saved chart when auth user has complete data (name, date of birth, birth time (not 'unknown'), birth city (with resolved latitude/longitude), and gender all present in the charts table). Form skipped entirely.
+- **FR-019**: Pages requiring birth data MUST auto-submit from saved chart when auth user has complete data (name, date of birth, birth time (not 'unknown'), birth city (with resolved latitude/longitude), and gender all present in the charts table). Form skipped entirely. SVG output MUST be sanitized before rendering (see FR-053).
 - **FR-020**: Gender MUST be correctly saved and pre-filled from the charts table.
 - **FR-020a**: Gender field MUST support: 'male', 'female', and 'prefer not to say' (mapped to null for API calls). For API endpoints that require a binary gender parameter, 'prefer not to say' defaults to omitting the gender field or using the API's default behavior.
 - **FR-021**: SessionStorage MUST be cleared on logout.
@@ -360,10 +360,10 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - **FR-029b**: All interactive elements (buttons, links, form fields, dropdowns, tabs) MUST have a minimum touch target of 44x44px on mobile.
 - **FR-029c**: Text-to-background color contrast MUST meet WCAG AA (4.5:1 minimum for normal text, 3:1 for large text). The existing cosmic dark theme already meets this for primary text (#eeeef5 on #0a0a1a = 17:1); new components MUST maintain these ratios.
 - **FR-029d**: All pages MUST support `prefers-reduced-motion` media query. Framer Motion animations and CSS animations MUST be disabled or simplified when reduced motion is preferred.
-- **FR-029e**: Navigation MUST be simple enough for non-technical users. Feature categories MUST use clear Ukrainian labels (not astrological jargon). Tooltips or brief descriptions on hover/tap for advanced features.
+- **FR-029e**: Navigation MUST be simple enough for non-technical users. Feature categories MUST use clear Ukrainian labels (not astrological jargon). Tooltips or brief descriptions on hover/tap for advanced features (i.e., features in the "Ще" dropdown: Нумерологія, Нерухомі зірки, Затемнення, Китайська астрологія, Велнес, Фінанси, Бізнес, Глосарій).
 - **FR-029f**: Forms MUST have: clear labels above each field, real-time validation with Ukrainian error messages, logical field grouping, date pickers (not raw text input), and city autocomplete. Error messages MUST tell the user exactly what to fix.
 - **FR-029g**: Loading states MUST show clear progress feedback: skeleton screens for page loads, spinner with "Завантаження..." text for API calls longer than 1 second, progress bars for multi-step operations. Users MUST never see a blank screen during loading.
-- **FR-029h**: Error states MUST show: a clear Ukrainian message explaining what went wrong, a retry button, and a suggestion for what to do next. No raw error codes or technical messages.
+- **FR-029h**: Error states MUST show: a clear Ukrainian message explaining what went wrong, a retry button, and a suggestion for what to do next. No raw error codes or technical messages. Standard error patterns defined in FR-046.
 - **FR-029i**: Dense data (astrological degrees, aspects, houses) MUST include contextual help: glossary links for technical terms, expandable explanations, and visual hierarchy that separates key findings from supporting detail.
 - **FR-029j**: All keyboard-navigable elements MUST have visible focus indicators. Tab order MUST follow visual layout. Modal dialogs MUST trap focus.
 
@@ -372,14 +372,14 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 - **FR-030**: When a user has multiple saved charts, the **most recently created** chart is the primary (used for auto-submit). Users MAY pin a different chart as primary from the dashboard. The pinned chart overrides recency.
 - **FR-031**: Tarot card images MUST be sourced from the API's `imageUrl` field. If the API does not provide an image for a card, a text-only fallback is shown (card name, suit, arcana, and meaning — no placeholder image).
 - **FR-032**: Astrocartography maps MUST use the API's `generateMap()` endpoint, rendered as an inline SVG or image. No third-party map provider required — the API generates the complete map visualization.
-- **FR-033**: Dashboard "recommended features" section displays a **curated static list of 6 feature categories** (e.g., Horoscopes, Compatibility, Tarot, Transits, Chinese Astrology, Numerology). Not algorithm-driven — the list is defined in code and updated manually per release.
+- **FR-033**: Dashboard "recommended features" section displays a **curated static list of 6 feature categories** (e.g., Horoscopes, Compatibility, Tarot, Transits, Chinese Astrology, Numerology). Not algorithm-driven — the list is defined in code and updated manually per release. This is a persistent section below the dashboard header. Separate from FR-043's first-time onboarding overlay.
 - **FR-034**: Valid birth date range: **1900-01-01 through today**. Date picker MUST NOT allow future dates. Dates before 1900 show a warning: "Для дат до 1900 року точність може бути знижена." Dates before 1800 are rejected.
 - **FR-035**: Tarot re-draws are **unlimited**. Before each re-draw, a confirmation dialog asks: "Бажаєте витягнути нові карти?" to prevent accidental re-draws. Daily card is an exception — one draw per day (cached 24h).
 - **FR-036**: DEFERRED to [future-plans.md](future-plans.md). Deep-linking and URL shareability are planned post-launch.
 
 **Performance & Infrastructure:**
 
-- **FR-037**: Page load targets: static/ISR pages < 2 seconds, single-API pages < 3 seconds, multi-API pages < 5 seconds. API calls exceeding 10 seconds (15 seconds for analysis endpoints) show a timeout message with retry button.
+- **FR-037**: Page load targets (measured as Largest Contentful Paint / LCP): static/ISR pages < 2 seconds, single-API pages < 3 seconds, multi-API pages < 5 seconds. API calls exceeding 10 seconds (15 seconds for analysis endpoints) show a timeout message with retry button.
 - **FR-038**: Cache TTLs by feature type: natal chart data — permanent (until user edits), horoscopes — matching their period (daily: 24h, weekly: 7d, monthly: 30d, yearly: 365d), static analyses (career, health, karmic, psychological, spiritual, vocational, relocation, synastry, composite, compatibility, Chinese, numerology, traditional, astrocartography, fixed stars) — 30 days, predictive/eclipses — 7 days, wellness/financial insights — 24h, business insights — 30d, tarot daily card — 24h, tarot interactive draws — no cache, transit data — 1 hour, moon data — ISR 15 minutes. Cache invalidation occurs on chart edit. Definitive TTL values are in the Feature Type Registry in [data-model.md](data-model.md).
 - **FR-039**: Rate limiting mitigation: client-side form submission debounce (500ms), maximum 3 concurrent API calls per user session, requests beyond the limit are queued with loading state shown. If API rate limit headers indicate >80% usage, non-essential prefetching is paused.
 
@@ -391,7 +391,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 **UX Patterns & Navigation:**
 
-- **FR-043**: First-time authenticated users see a brief feature overview on the dashboard (3-4 key feature cards with short Ukrainian descriptions). Navigation category dropdowns include one-line descriptions on hover (desktop) or as subtitle text (mobile).
+- **FR-043**: First-time authenticated users see a **one-time onboarding overlay** on the dashboard (3-4 key feature cards with short Ukrainian descriptions), dismissed after first interaction. This is separate from FR-033's persistent recommended features section. Navigation category dropdowns include one-line descriptions on hover (desktop) or as subtitle text (mobile).
 - **FR-044**: Pages nested 2+ levels deep MUST show breadcrumb navigation (e.g., "Таро > Кельтський Хрест"). Breadcrumb labels MUST match navigation menu names in Ukrainian.
 - **FR-045**: Feature pages follow the FeaturePageLayout pattern: page header (feature name + one-line Ukrainian description), birth data input section (if needed), result sections using collapsible AnalysisSection components. Chart pages additionally show SVG visualization above data sections.
 - **FR-046**: Error messages follow a standard pattern: Ukrainian headline (e.g., "Щось пішло не так"), description of what happened, retry button, and suggestion for next steps. Error types — network: "Перевірте з'єднання", timeout: "Запит зайняв занадто довго", validation: field-specific message, API error: "Сервіс тимчасово недоступний".
