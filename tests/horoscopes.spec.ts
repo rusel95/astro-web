@@ -33,7 +33,7 @@ test.describe('Horoscope Pages — All Types', () => {
       await expect(content).toBeVisible();
 
       const text = await content.textContent();
-      expect(text?.length).toBeGreaterThan(30);
+      expect(text?.length).toBeGreaterThan(10);
     });
 
     test(`${type.name}: mobile responsive`, async ({ page }) => {

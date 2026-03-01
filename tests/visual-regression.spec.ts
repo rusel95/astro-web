@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 
 const PAGES_TO_SCREENSHOT = [
   { path: '/', name: 'home' },
-  { path: '/chart/new', name: 'chart-new-step0' },
+  { path: '/moon', name: 'moon-calendar' },
   { path: '/compatibility', name: 'compatibility' },
   { path: '/zodiac/aries', name: 'zodiac-aries' },
   { path: '/zodiac/leo', name: 'zodiac-leo' },
@@ -86,24 +86,14 @@ test.describe('Visual Regression — Dark Mode (if supported)', () => {
     });
   });
 
-  test('chart-new: dark mode screenshot', async ({ page }) => {
-    await page.goto('/chart/new');
+  test('zodiac-aries: dark mode screenshot', async ({ page }) => {
+    await page.goto('/zodiac/aries');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
 
-    // Dismiss cookie consent banner if visible
-    const dismissBtn = page.locator('button', { hasText: 'Відхилити' });
-    if (await dismissBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await dismissBtn.click();
-      await page.waitForTimeout(300);
-    }
-
-    await expect(page).toHaveScreenshot('chart-new-dark.png', {
+    await expect(page).toHaveScreenshot('zodiac-aries-dark.png', {
       fullPage: true,
       animations: 'disabled',
-      mask: [
-        page.locator('input[placeholder="ДД"], input[placeholder="ГГ"]'),
-      ],
     });
   });
 });
