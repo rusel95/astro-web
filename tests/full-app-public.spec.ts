@@ -214,19 +214,21 @@ test.describe('Compatibility — Anonymous Flow', () => {
 
 test.describe('Daily Horoscope — Anonymous', () => {
   test('page loads with form', async ({ page }) => {
-    await page.goto('/daily');
+    // /daily redirects to /horoscope/daily (SignHoroscopePage)
+    await page.goto('/horoscope/daily');
     await page.waitForLoadState('networkidle');
 
     const heading = page.locator('h1');
-    await expect(heading).toContainText('Гороскоп на сьогодні', { timeout: 10000 });
+    await expect(heading).toContainText(/щоденний гороскоп/i, { timeout: 10000 });
   });
 
-  test('SEO info section is always visible', async ({ page }) => {
-    await page.goto('/daily');
+  test('shows zodiac sign selector', async ({ page }) => {
+    await page.goto('/horoscope/daily');
     await page.waitForLoadState('networkidle');
 
-    const seoSection = page.locator('text=/Про щоденний гороскоп/');
-    await expect(seoSection).toBeVisible({ timeout: 10000 });
+    const buttons = page.locator('button');
+    const count = await buttons.count();
+    expect(count).toBeGreaterThanOrEqual(12);
   });
 });
 

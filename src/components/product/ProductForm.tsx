@@ -24,8 +24,10 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
   });
   const [tracked, setTracked] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
+  const [existingChartId, setExistingChartId] = useState<string | null>(null);
 
   // Pre-fill from auth session + chart data, then quiz session as fallback
+  // FR-019: Auto-submit when auth user has complete chart data
   useEffect(() => {
     async function prefillFromAuth() {
       try {
@@ -36,11 +38,40 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
           // Get the user's most recent chart for birth data
           const { data: chart } = await supabase
             .from('charts')
-            .select('name, birth_date, birth_time, city, gender')
+            .select('id, name, birth_date, birth_time, city, gender, latitude, longitude, country_code')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(1)
             .single();
+
+          if (chart) {
+            // Check completeness: name + DOB + time + city + gender (FR-019)
+            const isComplete = !!(
+              chart.name &&
+              chart.birth_date &&
+              chart.birth_time &&
+              chart.city &&
+              chart.gender
+            );
+
+            if (isComplete && chart.id) {
+              // Auth user already has a chart — pre-fill form and store chart ID.
+              // "Продовжити" will navigate to the existing chart, NOT create a new one.
+              // This prevents the infinite loop: product page → /chart/new → chart page → product CTA → loop.
+              const prefillData: Partial<FormData> = {
+                email: user.email || '',
+                name: chart.name || '',
+                gender: (chart.gender === 'male' || chart.gender === 'female') ? chart.gender : '',
+                birthDate: chart.birth_date || '',
+                birthTime: chart.birth_time || '',
+                city: chart.city || '',
+              };
+              setForm((prev) => ({ ...prev, ...prefillData }));
+              setExistingChartId(chart.id);
+              setPrefilled(true);
+              return;
+            }
+          }
 
           const authData: Partial<FormData> = {
             email: user.email || '',
@@ -111,12 +142,18 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
       product_slug: productSlug,
       action: 'product_form_submit',
     });
-    // Navigate to chart creation with pre-filled data
+    // If auth user already has a chart, go there directly. Never create a duplicate.
+    if (existingChartId) {
+      window.location.href = `/chart/${existingChartId}?from=${productSlug}`;
+      return;
+    }
+    // New user or no existing chart — create a new chart
     const params = new URLSearchParams();
     if (form.name) params.set('name', form.name);
     if (form.birthDate) params.set('birthDate', form.birthDate);
     if (form.birthTime) params.set('birthTime', form.birthTime);
     if (form.city) params.set('city', form.city);
+    params.set('from', productSlug);
     window.location.href = `/chart/new?${params.toString()}`;
   };
 
@@ -143,8 +180,9 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
             />
           </div>
           <div>
-            <label className="block text-text-secondary text-sm mb-1.5">Стать</label>
+            <label htmlFor="gender-select" className="block text-text-secondary text-sm mb-1.5">Стать</label>
             <select
+              id="gender-select"
               value={form.gender}
               onChange={(e) => handleChange('gender', e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/[0.12] text-text-primary focus:outline-none focus:border-zorya-violet/50 transition-colors appearance-none"

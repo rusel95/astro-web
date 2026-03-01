@@ -8,12 +8,12 @@ import { test, expect } from '@playwright/test';
 
 const PAGES_TO_SCREENSHOT = [
   { path: '/', name: 'home' },
-  { path: '/chart/new', name: 'chart-new-step0' },
+  { path: '/moon', name: 'moon-calendar' },
   { path: '/compatibility', name: 'compatibility' },
   { path: '/zodiac/aries', name: 'zodiac-aries' },
   { path: '/zodiac/leo', name: 'zodiac-leo' },
-  { path: '/horoscopes/personality', name: 'horoscope-personality' },
-  { path: '/horoscopes/love', name: 'horoscope-love' },
+  { path: '/horoscope/personality', name: 'horoscope-personality' },
+  { path: '/horoscope/love', name: 'horoscope-love' },
   { path: '/auth/login', name: 'auth-login' },
 ];
 
@@ -23,11 +23,18 @@ test.describe('Visual Regression — Desktop', () => {
   for (const page of PAGES_TO_SCREENSHOT) {
     test(`${page.name}: desktop screenshot`, async ({ page: pw }) => {
       await pw.goto(page.path);
-      
+
       // Wait for page to fully load
       await pw.waitForLoadState('networkidle');
       await pw.waitForTimeout(1000); // Wait for animations
-      
+
+      // Dismiss cookie consent banner if visible
+      const dismissBtn = pw.locator('button', { hasText: 'Відхилити' });
+      if (await dismissBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await dismissBtn.click();
+        await pw.waitForTimeout(300);
+      }
+
       // Take screenshot
       await expect(pw).toHaveScreenshot(`${page.name}-desktop.png`, {
         fullPage: true,
@@ -36,6 +43,8 @@ test.describe('Visual Regression — Desktop', () => {
           // Mask dynamic content (dates, times, user-specific data)
           pw.locator('[data-testid="current-date"]'),
           pw.locator('[data-testid="user-avatar"]'),
+          // Mask date inputs (values change daily)
+          pw.locator('input[placeholder="ДД"], input[placeholder="ГГ"]'),
         ],
       });
     });
@@ -77,12 +86,12 @@ test.describe('Visual Regression — Dark Mode (if supported)', () => {
     });
   });
 
-  test('chart-new: dark mode screenshot', async ({ page }) => {
-    await page.goto('/chart/new');
+  test('zodiac-aries: dark mode screenshot', async ({ page }) => {
+    await page.goto('/zodiac/aries');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
-    
-    await expect(page).toHaveScreenshot('chart-new-dark.png', {
+
+    await expect(page).toHaveScreenshot('zodiac-aries-dark.png', {
       fullPage: true,
       animations: 'disabled',
     });

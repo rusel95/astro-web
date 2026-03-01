@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Cake, Moon, Heart, Plus, ChevronRight } from 'lucide-react';
+import { Cake, Moon, Heart, Plus, ChevronRight, Star, Compass, Sun } from 'lucide-react';
 import DailySummary from '@/components/dashboard/DailySummary';
 import ProfileManager from '@/components/dashboard/ProfileManager';
 import RecommendedProducts from '@/components/dashboard/RecommendedProducts';
@@ -329,9 +329,54 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
           )}
         </div>
 
-        {/* ── Quick Tools ── */}
+        {/* ── First-Time User Overview ── */}
+        {charts.length === 0 && (
+          <div>
+            <h2 className="font-semibold text-white mb-3">Ласкаво просимо до Зоря</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <a
+                href="/chart/new"
+                className="p-4 rounded-2xl transition-all hover:opacity-90"
+                style={{ background: 'rgba(108,60,225,0.12)', border: '1px solid rgba(108,60,225,0.25)' }}
+              >
+                <Star size={22} strokeWidth={1.5} className="text-zorya-violet mb-2" />
+                <p className="font-semibold text-white text-sm">Натальна карта</p>
+                <p className="text-xs text-white/40 mt-1">Розрахунок вашої карти народження з AI-інтерпретацією</p>
+              </a>
+              <a
+                href="/moon"
+                className="p-4 rounded-2xl transition-all hover:opacity-90"
+                style={{ background: 'rgba(108,60,225,0.12)', border: '1px solid rgba(108,60,225,0.25)' }}
+              >
+                <Moon size={22} strokeWidth={1.5} className="text-zorya-violet mb-2" />
+                <p className="font-semibold text-white text-sm">Місячний календар</p>
+                <p className="text-xs text-white/40 mt-1">Фази Місяця, знак та періоди Void-of-Course</p>
+              </a>
+              <a
+                href="/compatibility"
+                className="p-4 rounded-2xl transition-all hover:opacity-90"
+                style={{ background: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)' }}
+              >
+                <Heart size={22} strokeWidth={1.5} className="text-pink-400 mb-2" />
+                <p className="font-semibold text-white text-sm">Сумісність</p>
+                <p className="text-xs text-white/40 mt-1">Аналіз синастрії та порівняння двох натальних карт</p>
+              </a>
+              <a
+                href="/horoscope/daily"
+                className="p-4 rounded-2xl transition-all hover:opacity-90"
+                style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}
+              >
+                <Sun size={22} strokeWidth={1.5} className="text-zorya-gold mb-2" />
+                <p className="font-semibold text-white text-sm">Щоденний гороскоп</p>
+                <p className="text-xs text-white/40 mt-1">Персональний прогноз на кожен день за знаком Зодіаку</p>
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* ── Feature Recommendations ── */}
         <div>
-          <h2 className="font-semibold text-white mb-3">Інструменти</h2>
+          <h2 className="font-semibold text-white mb-3">Можливості</h2>
           <div className="grid grid-cols-2 gap-3">
             <a
               href="/moon"
@@ -340,8 +385,7 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
             >
               <Moon size={22} strokeWidth={1.5} className="text-zorya-violet" />
               <div>
-                <p className="font-semibold text-white text-sm">Місячний</p>
-                <p className="font-semibold text-white text-sm">Календар</p>
+                <p className="font-semibold text-white text-sm">Місячний календар</p>
                 <p className="text-xs text-white/40 mt-1">Фази та Місяць без курсу</p>
               </div>
             </a>
@@ -353,8 +397,29 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
               <Heart size={22} strokeWidth={1.5} className="text-pink-400" />
               <div>
                 <p className="font-semibold text-white text-sm">Сумісність</p>
-                <p className="font-semibold text-white text-sm">Партнерів</p>
                 <p className="text-xs text-white/40 mt-1">Синастрія двох карт</p>
+              </div>
+            </a>
+            <a
+              href="/horoscope/daily"
+              className="flex flex-col gap-3 p-4 rounded-2xl transition-all hover:opacity-90"
+              style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.2)' }}
+            >
+              <Sun size={22} strokeWidth={1.5} className="text-zorya-gold" />
+              <div>
+                <p className="font-semibold text-white text-sm">Гороскопи</p>
+                <p className="text-xs text-white/40 mt-1">Щоденні прогнози за знаком</p>
+              </div>
+            </a>
+            <a
+              href="/glossary"
+              className="flex flex-col gap-3 p-4 rounded-2xl transition-all hover:opacity-90"
+              style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}
+            >
+              <Compass size={22} strokeWidth={1.5} className="text-green-400" />
+              <div>
+                <p className="font-semibold text-white text-sm">Глосарій</p>
+                <p className="text-xs text-white/40 mt-1">Астрологічні терміни</p>
               </div>
             </a>
           </div>

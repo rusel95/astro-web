@@ -81,6 +81,16 @@ export const ANALYTICS_EVENTS = {
 
   // Email Subscription
   EMAIL_SUBSCRIPTION_SUBMITTED: 'email_subscription_submitted',
+
+  // Feature Pages (FR-041)
+  FEATURE_PAGE_VIEW: 'feature_page_view',
+  FEATURE_RESULT_LOADED: 'feature_result_loaded',
+  FEATURE_ERROR: 'feature_error',
+  FEATURE_FORM_SUBMIT: 'feature_form_submit',
+  PARTNER_ADDED: 'partner_added',
+  PARTNER_DELETED: 'partner_deleted',
+  TAROT_DRAW: 'tarot_draw',
+  TAROT_REDRAW: 'tarot_redraw',
 } as const
 
 export type AnalyticsEvent = typeof ANALYTICS_EVENTS[keyof typeof ANALYTICS_EVENTS]

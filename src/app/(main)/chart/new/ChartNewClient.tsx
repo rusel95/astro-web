@@ -167,16 +167,18 @@ export default function ChartNewClient() {
           gender,
         }),
       });
-      const data: { id?: string; chart?: unknown; error?: string } = await res.json();
+      const data: { id?: string; chart?: unknown; enhanced?: unknown; error?: string } = await res.json();
       if (data.error) throw new Error(data.error);
       if (!data.id) throw new Error('Помилка відповіді сервера');
       const chartJson = JSON.stringify(data.chart);
       const inputJson = JSON.stringify({ name, gender });
       sessionStorage.setItem(`chart-${data.id}`, chartJson);
       sessionStorage.setItem(`chart-input-${data.id}`, inputJson);
+      if (data.enhanced) sessionStorage.setItem(`chart-enhanced-${data.id}`, JSON.stringify(data.enhanced));
       // Also persist to localStorage so shared links work on the same device
       localStorage.setItem(`chart-${data.id}`, chartJson);
       localStorage.setItem(`chart-input-${data.id}`, inputJson);
+      if (data.enhanced) localStorage.setItem(`chart-enhanced-${data.id}`, JSON.stringify(data.enhanced));
 
       // Save to Supabase if user is logged in
       if (isSupabaseConfigured()) {
@@ -210,7 +212,9 @@ export default function ChartNewClient() {
         has_birth_time: !unknownTime,
         gender,
       });
-      router.push(`/chart/${data.id}`);
+      const fromProduct = searchParams.get('from');
+      const chartPath = fromProduct ? `/chart/${data.id}?from=${fromProduct}` : `/chart/${data.id}`;
+      router.push(chartPath);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Помилка розрахунку';
       setError(message);
@@ -265,7 +269,7 @@ export default function ChartNewClient() {
             gender: '',
           }),
         });
-        const data: { id?: string; chart?: unknown; error?: string } = await chartRes.json();
+        const data: { id?: string; chart?: unknown; enhanced?: unknown; error?: string } = await chartRes.json();
         if (data.error) throw new Error(data.error);
         if (!data.id) throw new Error('Помилка відповіді сервера');
 
@@ -274,8 +278,10 @@ export default function ChartNewClient() {
         const inputJson = JSON.stringify({ name: qName, gender: '' });
         sessionStorage.setItem(`chart-${data.id}`, chartJson);
         sessionStorage.setItem(`chart-input-${data.id}`, inputJson);
+        if (data.enhanced) sessionStorage.setItem(`chart-enhanced-${data.id}`, JSON.stringify(data.enhanced));
         localStorage.setItem(`chart-${data.id}`, chartJson);
         localStorage.setItem(`chart-input-${data.id}`, inputJson);
+        if (data.enhanced) localStorage.setItem(`chart-enhanced-${data.id}`, JSON.stringify(data.enhanced));
 
         // 4. Save to Supabase if logged in
         if (isSupabaseConfigured()) {
@@ -306,7 +312,9 @@ export default function ChartNewClient() {
           chart_id: data.id,
           source: 'auto_submit_query_params',
         });
-        router.push(`/chart/${data.id}`);
+        const fromParam = searchParams.get('from');
+        const destPath = fromParam ? `/chart/${data.id}?from=${fromParam}` : `/chart/${data.id}`;
+        router.push(destPath);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Помилка розрахунку');
         setLoading(false);
