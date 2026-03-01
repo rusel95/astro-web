@@ -25,13 +25,12 @@ export default function ChartSelector({
 
   useEffect(() => {
     async function load() {
-      const { data } = await apiGet<SavedChart[]>('/api/charts/my');
-      if (data) {
-        setCharts(data);
-        if (data.length > 0) {
-          setSelected(data[0].id);
-          onSelect(data[0]);
-        }
+      const { data } = await apiGet<{ charts: SavedChart[] }>('/api/charts/my');
+      const list = data?.charts ?? [];
+      if (list.length > 0) {
+        setCharts(list);
+        setSelected(list[0].id);
+        onSelect(list[0]);
       }
       setLoading(false);
     }
