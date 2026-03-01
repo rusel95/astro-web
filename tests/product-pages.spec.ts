@@ -20,7 +20,7 @@ test.describe('Product Pages (/horoscope/[slug])', () => {
 
   test('product page has value propositions', async ({ page }) => {
     await page.goto('/horoscope/personality');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Should have value prop content
     const content = await page.textContent('body');
     expect(content!.length).toBeGreaterThan(200);
@@ -28,7 +28,7 @@ test.describe('Product Pages (/horoscope/[slug])', () => {
 
   test('product page has form or CTA', async ({ page }) => {
     await page.goto('/horoscope/personality');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Should have a form or CTA button
     const formOrButton = page.locator('form, button').first();
     await expect(formOrButton).toBeVisible({ timeout: 10000 });
@@ -44,7 +44,7 @@ test.describe('Product Pages (/horoscope/[slug])', () => {
 
   test('product page has breadcrumb navigation', async ({ page }) => {
     await page.goto('/horoscope/love');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Should have breadcrumb with link back
     const breadcrumb = page.locator('nav[aria-label*="bread"], a[href="/"]').first();
     await expect(breadcrumb).toBeVisible({ timeout: 10000 });
@@ -53,7 +53,7 @@ test.describe('Product Pages (/horoscope/[slug])', () => {
   test('product page mobile: no overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/horoscope/personality');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(410);
   });

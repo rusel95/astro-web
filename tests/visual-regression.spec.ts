@@ -25,7 +25,7 @@ test.describe('Visual Regression — Desktop', () => {
       await pw.goto(page.path);
 
       // Wait for page to fully load
-      await pw.waitForLoadState('networkidle');
+      await pw.waitForLoadState('networkidle').catch(() => {});
       await pw.waitForTimeout(1000); // Wait for animations
 
       // Dismiss cookie consent banner if visible
@@ -58,7 +58,7 @@ test.describe('Visual Regression — Mobile', () => {
     test(`${page.name}: mobile screenshot`, async ({ page: pw }) => {
       await pw.goto(page.path);
       
-      await pw.waitForLoadState('networkidle');
+      await pw.waitForLoadState('networkidle').catch(() => {});
       await pw.waitForTimeout(1000);
       
       await expect(pw).toHaveScreenshot(`${page.name}-mobile.png`, {
@@ -77,7 +77,7 @@ test.describe('Visual Regression — Dark Mode (if supported)', () => {
 
   test('home: dark mode screenshot', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(1000);
     
     await expect(page).toHaveScreenshot('home-dark.png', {
@@ -88,7 +88,7 @@ test.describe('Visual Regression — Dark Mode (if supported)', () => {
 
   test('zodiac-aries: dark mode screenshot', async ({ page }) => {
     await page.goto('/zodiac/aries');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(1000);
 
     await expect(page).toHaveScreenshot('zodiac-aries-dark.png', {

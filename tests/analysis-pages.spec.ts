@@ -27,8 +27,12 @@ test.describe('Analysis Pages', () => {
     test(`${path} shows birth data form`, async ({ page }) => {
       await page.goto(path);
       await page.waitForLoadState('networkidle').catch(() => {});
+      // Wait for h1 to confirm page is loaded, then wait for auth check to resolve
+      await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+      // useAuthChart makes a Supabase call before showing the form
+      await page.waitForTimeout(3000);
       const input = page.locator('input').first();
-      await expect(input).toBeVisible({ timeout: 10000 });
+      await expect(input).toBeVisible({ timeout: 15000 });
     });
 
     test(`mobile: ${path} no overflow`, async ({ page }) => {

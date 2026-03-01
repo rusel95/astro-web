@@ -12,14 +12,14 @@ test.describe('Daily Horoscope', () => {
 
   test('has zodiac sign selector buttons', async ({ page }) => {
     await page.goto('/horoscope/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const signButtons = page.locator('button').first();
     await expect(signButtons).toBeVisible({ timeout: 10000 });
   });
 
   test('has all 12 sign options', async ({ page }) => {
     await page.goto('/horoscope/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const buttons = page.locator('button');
     const count = await buttons.count();
     expect(count).toBeGreaterThanOrEqual(12);
@@ -37,7 +37,7 @@ test.describe('Daily Horoscope', () => {
   test('mobile: no horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/horoscope/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(410);
   });

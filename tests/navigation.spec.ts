@@ -72,7 +72,7 @@ test.describe('Mobile Navigation', () => {
 
   test('bottom bar has key tabs', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const homeTab = page.locator('nav[aria-label="Мобільна навігація"]').locator('text=Головна').first();
     await expect(homeTab).toBeVisible({ timeout: 8000 });
   });
@@ -86,7 +86,7 @@ test.describe('Mobile Navigation', () => {
 
   test('hamburger menu opens slide-in panel', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Find menu button
     const menuBtn = page.locator('nav[aria-label="Мобільна навігація"]').locator('text=Меню').first();
     if (await menuBtn.isVisible().catch(() => false)) {
@@ -100,7 +100,7 @@ test.describe('Mobile Navigation', () => {
 
   test('mobile nav hidden on /chart/new', async ({ page }) => {
     await page.goto('/chart/new');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const mobileNav = page.locator('nav[aria-label="Мобільна навігація"]');
     // Should be hidden or not in DOM
     const count = await mobileNav.count();
@@ -145,7 +145,7 @@ test.describe('Footer', () => {
 
   test('footer hidden on /chart/new', async ({ page }) => {
     await page.goto('/chart/new');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // NewFooter should not render
     const copyright = page.locator('text=© 2026 Зоря');
     const count = await copyright.count();

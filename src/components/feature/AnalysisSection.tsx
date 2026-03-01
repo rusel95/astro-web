@@ -108,8 +108,10 @@ function RenderValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
   }
 
   if (typeof value === 'object') {
+    // Skip internal SDK fields that contain raw chart data / unknown structures
+    const SKIP_KEYS = new Set(['subject_data', 'directed_data', 'progressed_data', 'chart_data', 'target_data']);
     const entries = Object.entries(value as Record<string, unknown>).filter(
-      ([, v]) => v !== null && v !== undefined
+      ([k, v]) => v !== null && v !== undefined && !SKIP_KEYS.has(k)
     );
     if (entries.length === 0) return null;
     return (

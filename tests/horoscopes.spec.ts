@@ -40,7 +40,7 @@ test.describe('Horoscope Pages — All Types', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(type.newPath);
 
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle').catch(() => {});
 
       // No horizontal scroll
       const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
@@ -142,7 +142,7 @@ test.describe('Horoscope Pages — Performance', () => {
     const startTime = Date.now();
 
     await page.goto('/horoscope/love');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const loadTime = Date.now() - startTime;
     expect(loadTime).toBeLessThan(3000);

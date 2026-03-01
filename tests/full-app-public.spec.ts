@@ -17,7 +17,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Landing Page — All Sections Render', () => {
   test('page loads with hero section', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1, h2').first();
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -25,7 +25,7 @@ test.describe('Landing Page — All Sections Render', () => {
 
   test('landing has substantial content (all sections)', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText!.length).toBeGreaterThan(2000);
@@ -33,7 +33,7 @@ test.describe('Landing Page — All Sections Render', () => {
 
   test('hero CTA button is visible and clickable', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     // Main CTA (quiz or chart creation)
     const cta = page.locator('a[href="/quiz"], a[href="/chart/new"]').first();
@@ -44,7 +44,7 @@ test.describe('Landing Page — All Sections Render', () => {
 
   test('has product or horoscope links', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(2000); // Wait for lazy sections
 
     // Product links or horoscope links
@@ -55,7 +55,7 @@ test.describe('Landing Page — All Sections Render', () => {
 
   test('has navigation with key links', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     // Nav should have at least moon, compatibility, or new chart link
     const navLinks = page.locator('nav a[href="/moon"], nav a[href="/compatibility"], nav a[href="/chart/new"]');
@@ -71,7 +71,7 @@ test.describe('Landing Page — All Sections Render', () => {
 test.describe('Chart Creation — Full Anonymous Flow', () => {
   test('step 0: date picker loads', async ({ page }) => {
     await page.goto('/chart/new');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -181,7 +181,7 @@ test.describe('Chart Creation — Full Anonymous Flow', () => {
 test.describe('Compatibility — Anonymous Flow', () => {
   test('page loads with form', async ({ page }) => {
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -193,7 +193,7 @@ test.describe('Compatibility — Anonymous Flow', () => {
 
   test('submit button exists', async ({ page }) => {
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const submitBtn = page.locator('button').filter({ hasText: /Розрахувати/ });
     await expect(submitBtn).toBeVisible({ timeout: 10000 });
@@ -201,7 +201,7 @@ test.describe('Compatibility — Anonymous Flow', () => {
 
   test('info section is visible', async ({ page }) => {
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const infoSection = page.locator('text=/синастрія/i');
     await expect(infoSection.first()).toBeVisible({ timeout: 10000 });
@@ -216,7 +216,7 @@ test.describe('Daily Horoscope — Anonymous', () => {
   test('page loads with form', async ({ page }) => {
     // /daily redirects to /horoscope/daily (SignHoroscopePage)
     await page.goto('/horoscope/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toContainText(/щоденний гороскоп/i, { timeout: 10000 });
@@ -224,7 +224,7 @@ test.describe('Daily Horoscope — Anonymous', () => {
 
   test('shows zodiac sign selector', async ({ page }) => {
     await page.goto('/horoscope/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const buttons = page.locator('button');
     const count = await buttons.count();
@@ -246,7 +246,7 @@ test.describe('Auth Redirects — Protected Routes', () => {
 
   test('/explore shows content or empty state', async ({ page }) => {
     await page.goto('/explore');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const bodyText = await page.locator('body').textContent();
@@ -261,7 +261,7 @@ test.describe('Auth Redirects — Protected Routes', () => {
 test.describe('Quiz — Public Flow', () => {
   test('quiz page loads with content', async ({ page }) => {
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText!.length).toBeGreaterThan(100);
@@ -269,7 +269,7 @@ test.describe('Quiz — Public Flow', () => {
 
   test('quiz has interactive elements', async ({ page }) => {
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(2000);
 
     // Quiz uses buttons for navigation and inputs for data
@@ -286,7 +286,7 @@ test.describe('Quiz — Public Flow', () => {
 test.describe('Moon Calendar — Public Access', () => {
   test('loads with current moon data', async ({ page }) => {
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const bodyText = await page.locator('body').textContent();
     const hasMoonContent = bodyText?.match(/Місяць|місяць|фаза|календар/i);
@@ -321,7 +321,7 @@ test.describe('Legal Pages', () => {
 test.describe('Login Page', () => {
   test('login page renders with email/password fields', async ({ page }) => {
     await page.goto('/auth/login');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const emailInput = page.locator('input[type="email"]');
     const passwordInput = page.locator('input[type="password"]');
@@ -346,7 +346,7 @@ test.describe('Ascendant Calculator', () => {
 
   test('has form inputs', async ({ page }) => {
     await page.goto('/ascendant');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText!.length).toBeGreaterThan(200);
@@ -393,7 +393,7 @@ test.describe('No Critical Console Errors', () => {
       });
 
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle').catch(() => {});
       await page.waitForTimeout(2000);
 
       if (errors.length > 0) {

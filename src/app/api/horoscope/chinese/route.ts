@@ -7,9 +7,19 @@ export async function POST(req: NextRequest) {
     const { subject: rawSubject } = await req.json();
     const client = getAstrologyClient();
 
+    // ChineseHoroscopeSubject.birth_data only accepts year/month/day/hour/minute/gender.
+    // The standard Subject includes city/lat/lng which the Chinese endpoint rejects with 500.
+    const bd = rawSubject?.birth_data ?? {};
     const subject = {
-      name: rawSubject.name,
-      birth_data: rawSubject.birth_data,
+      name: rawSubject?.name ?? null,
+      birth_data: {
+        year: bd.year,
+        month: bd.month ?? null,
+        day: bd.day ?? null,
+        hour: bd.hour ?? null,
+        minute: bd.minute ?? null,
+        gender: bd.gender ?? null,
+      },
     };
 
     const horoscope = await client.horoscope.getChineseHoroscope({ subject } as any);
