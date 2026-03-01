@@ -12,9 +12,9 @@
     - .specify/templates/plan-template.md — Constitution Check table
       should verify Sentry integration (VI)
     - Spec FR-042 already aligns with new principle
-  Follow-up TODOs:
-    - Update plan.md Constitution Check table to add Sentry row
-    - Ensure tasks.md has Sentry integration tasks
+  Follow-up items (completed):
+    - plan.md Constitution Check table updated with Sentry row
+    - tasks.md includes Sentry integration via T004 (api-client.ts wrapper)
 -->
 
 # Zorya (astro-web) Constitution
@@ -63,7 +63,7 @@ never `toISOString()`.
 Every push to `main` triggers Vercel production deploy.
 Each meaningful change MUST be deployed independently — do not batch.
 `npm run build` MUST pass cleanly before every push.
-After deploy, verify on production (https://astro-web-five.vercel.app).
+After deploy, verify on production (<https://astro-web-five.vercel.app>).
 Moon page uses ISR (revalidate=900). Static pages rebuild on deploy.
 
 ### VI. Analytics & Error Monitoring (NON-NEGOTIABLE)
@@ -76,11 +76,15 @@ Use the existing `track()` function from `src/lib/analytics/index.ts`
 and define event constants in `src/lib/analytics/events.ts`.
 
 **Sentry** — for error, warning, and exception handling:
-Every action that can produce an exception MUST be wrapped with Sentry
-error reporting. This includes: API calls (Astrology API, OpenAI,
-Supabase), form submissions, data parsing, and any async operation.
+External API calls (Astrology API, OpenAI, Supabase) and critical
+async operations SHOULD be instrumented with Sentry error reporting.
+The centralized `api-client.ts` wrapper handles this automatically
+for all feature API calls — individual pages do not need manual
+Sentry wrapping. Pure UI rendering and synchronous logic do not
+require Sentry instrumentation.
 Sentry severity levels: API timeout → warning, API 4xx/5xx → error,
-auth failure → critical, client-side unhandled → error.
+repeated auth failures (3+ in a session) → error,
+client-side unhandled exceptions → error.
 Sentry MUST NOT track analytics or user behavior — only problems.
 Use `NEXT_PUBLIC_SENTRY_DSN` environment variable (already configured
 in Vercel). Capture context: error type, endpoint, HTTP status,
@@ -131,6 +135,7 @@ Cache aggressively to respect Astrology API rate limits.
 
 This constitution supersedes conflicting guidance in other documents.
 Amendments require:
+
 1. Documentation of what changed and why
 2. Version bump following semantic versioning (MAJOR for principle
    removals/redefinitions, MINOR for additions, PATCH for clarifications)

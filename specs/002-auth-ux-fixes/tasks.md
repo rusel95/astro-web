@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/002-auth-ux-fixes/`
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
 
-**Tests**: Not explicitly requested — test tasks omitted. Existing Playwright tests should continue passing.
+**Tests**: Each phase gate includes explicit test tasks (PG-xxb for existing test regression, PG-xxc for new Playwright tests). All new pages and flows require Playwright tests at both mobile (375px) and desktop (1280px) viewports. Mobile is primary -- mobile test failures are blocking. See Phase Gate Standard below for details.
 
 **Organization**: Tasks grouped by user story. P1 stories first (auth/UX fixes, then core features), then P2 (API pages), then P3 (insights/polish).
 
@@ -43,6 +43,15 @@ Every phase MUST pass the following gate before it is considered complete. Gate 
 - [x] T001 Create Supabase migration for `feature_results` table in `supabase/migrations/` — schema per data-model.md (id, user_id, chart_id, feature_type, feature_params, result_data, expires_at, created_at + RLS policies + composite index on user_id/feature_type/chart_id/feature_params_hash). Include rollback script
 - [x] T002 Create Supabase migration for `partner_charts` table in `supabase/migrations/` — schema per data-model.md (id, user_id, name, birth_date, birth_time, city, country_code, latitude, longitude, gender + RLS policy). Include rollback script
 - [x] T003 [P] Create feature types file `src/types/features.ts` — FeatureType union type (all values from data-model.md Feature Type Registry), FeatureResult interface, PartnerChart interface, cache TTL map per FR-038, BirthDataFormVariant type ('basic' | 'full' | 'date-range' | 'location') per FR-054
+
+### Migration Verification
+
+- [x] T001a Verify `feature_results` migration applies cleanly on a fresh Supabase instance and rolls back without data loss. Confirm the `UNIQUE (user_id, feature_type, chart_id, feature_params_hash)` index exists and `feature_params_hash` is a stored generated column
+- [x] T002a Verify `partner_charts` migration applies cleanly and rolls back. Confirm RLS policies allow only owner access
+
+### Gender Prompt Persistence
+
+The one-time gender prompt (FR-060) sets a `gender_prompted` boolean flag in the `charts` table. Once the user sets gender or dismisses the prompt ("prefer not to say"), this flag is set to `true` and the prompt never appears again. The flag persists across sessions via the database -- no client-side storage needed.
 
 ### Utility Libraries
 
@@ -692,6 +701,18 @@ Every functional requirement maps to specific tasks:
 | Enhanced existing pages | 6 |
 | FRs with task coverage | 59/59 active FRs (100%) |
 | FRs deferred | 2 (FR-036, FR-040) |
+
+## Issue-Gating Workflow
+
+All tasks in this document are tracked via GitHub Issues on the `rusel95/astro-web` repository. The workflow is:
+
+1. Each phase corresponds to one or more GitHub Issues
+2. Issues start with the `needs-spec` label -- the agent adds a spec/plan comment
+3. User reviews and moves to `ready` label -- only then can the agent start implementation
+4. Agent works through `ready` issues, completing tasks and passing phase gates
+5. After all tasks in an issue are done and the phase gate passes, the agent closes the issue with a summary comment
+6. **Never start work on `needs-spec` issues** -- wait for user approval
+7. **Never merge PRs** -- merging is exclusively the user's responsibility
 
 ## Notes
 

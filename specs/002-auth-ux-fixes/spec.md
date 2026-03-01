@@ -293,7 +293,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 ### Edge Cases
 
 - What happens when an API endpoint returns an error? Show a friendly Ukrainian error message with retry button. Never show raw API errors.
-- What happens when an API endpoint returns partial data (some fields null)? Render available fields, hide empty sections gracefully.
+- What happens when an API endpoint returns partial data (some fields null)? Non-null fields MUST be rendered in full. Optional fields that are null or empty MAY be hidden gracefully (per FR-002). Required fields MUST always be shown, with an empty-state indicator if null.
 - What happens when a feature requires birth time but user has "unknown" time? Show a notice that results may be less accurate, use 12:00 default.
 - What happens when the user has no chart yet and visits a feature page? Show a compact birth data form inline on that page.
 - What happens when API rate limits are hit? Queue requests, show loading state, never show "Скоро".
@@ -387,7 +387,7 @@ Landing page stats show real data or honest values. No misleading "100,000+".
 
 - **FR-040**: DEFERRED to [future-plans.md](future-plans.md). SEO metadata and AEO optimization are planned post-launch. Basic page titles in Ukrainian are sufficient for initial release.
 - **FR-041**: PostHog MUST track: page views per feature, chart creation funnel (start → complete), feature engagement rates (which features are used most), and API error rates per namespace. Events are used to validate SC-002 and inform future prioritization.
-- **FR-042**: All API errors MUST be reported to Sentry with: error type, API endpoint, HTTP status, and anonymized user ID. Severity levels: API timeout → warning, API 4xx/5xx → error, auth failure → critical.
+- **FR-042**: All API errors MUST be reported to Sentry with: error type, API endpoint, HTTP status, and anonymized user ID. Severity levels: API timeout → warning, API 4xx/5xx → error, repeated auth failures (3+ in a session) → error, client-side unhandled exceptions → error. Sentry instrumentation is centralized in `api-client.ts` -- individual pages do not need manual wrapping.
 
 **UX Patterns & Navigation:**
 

@@ -14,7 +14,7 @@
 - `id` (UUID, PK)
 - `user_id` (UUID, FK → auth.users, nullable for anon)
 - `name`, `birth_date`, `birth_time`, `city`, `country_code`
-- `latitude`, `longitude`, `gender` (enum: 'male', 'female', or null)
+- `latitude`, `longitude`, `gender` (text, enum: `'male'` | `'female'` | `null`)
 - `chart_data` (JSONB — full API response)
 - `svg_content` (text — API SVG)
 - `created_at`
@@ -42,7 +42,7 @@ Caches API results for authenticated users to avoid repeated API calls and enabl
 | `expires_at` | timestamptz | When cache should be refreshed (varies by feature type) |
 | `created_at` | timestamptz | When result was first fetched |
 
-**Indexes**: `(user_id, feature_type, chart_id, feature_params_hash)` for quick lookups. `feature_params_hash` is a deterministic MD5 hash of the JSON-normalized `feature_params` (keys sorted, nulls removed). For features with no extra params, hash defaults to empty string hash.
+**Indexes**: `UNIQUE (user_id, feature_type, chart_id, feature_params_hash)` for quick lookups and cache deduplication. `feature_params_hash` is a stored generated column computed as `encode(sha256(feature_params_canonical::bytea), 'hex')` where `feature_params_canonical` is the JSON-normalized `feature_params` (keys sorted alphabetically, nulls and empty strings removed, then serialized with `jsonb_strip_nulls()`). For features with no extra params, `feature_params` defaults to `'{}'::jsonb` and the hash is the SHA-256 of `{}`.
 **RLS**: Users can only read/write their own results.
 **Migration Safety**: All migrations MUST include a corresponding rollback script. Test on staging environment before applying to production.
 **Cache TTL by feature type**:
@@ -50,7 +50,8 @@ Caches API results for authenticated users to avoid repeated API calls and enabl
 - Transits: 1h (changes with planetary movement)
 - Natal chart data (natal_report, enhanced_natal): permanent (until user edits chart)
 - Static analyses (career, karmic, health, psychological, etc.): 30d
-- Tarot draws (interactive spreads): no cache (fresh each time). Daily card: 24h cache.
+- Tarot interactive draws (single, three-card, Celtic Cross, etc.): no cache (fresh draw each time)
+- Tarot daily card (`tarot_daily`): 24h cache (one draw per day)
 
 ### Partner Chart (partner_charts table)
 
@@ -67,14 +68,14 @@ Stores second person's birth data for relationship features. Not a full chart �
 | `country_code` | text | Country code |
 | `latitude` | float | Geocoded latitude |
 | `longitude` | float | Geocoded longitude |
-| `gender` | text | text (enum: male, female, null) |
+| `gender` | text | Enum: `'male'`, `'female'`, or `null` (prefer not to say) |
 | `created_at` | timestamptz | When added |
 
 **RLS**: Users can only manage their own partner charts.
 
 ## Entity Relationships
 
-```
+```text
 auth.users
   ├── profiles (1:1)
   ├── charts (1:many) — user's natal charts
@@ -143,7 +144,8 @@ Maps `feature_type` values to API methods and cache TTLs:
 - No client-side caching library needed — server handles caching via `feature_results`
 
 ### Auth State Flow
-```
+
+```text
 Page Load → Check auth (getUser())
   ├── Auth + complete chart → auto-fetch feature data → show results
   ├── Auth + incomplete chart → show pre-filled form → submit → show results
