@@ -180,8 +180,9 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
             />
           </div>
           <div>
-            <label className="block text-text-secondary text-sm mb-1.5">Стать</label>
+            <label htmlFor="gender-select" className="block text-text-secondary text-sm mb-1.5">Стать</label>
             <select
+              id="gender-select"
               value={form.gender}
               onChange={(e) => handleChange('gender', e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/[0.12] text-text-primary focus:outline-none focus:border-zorya-violet/50 transition-colors appearance-none"
