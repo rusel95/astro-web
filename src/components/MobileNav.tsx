@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Home, Star, Moon, Heart, Plus, Menu, X, ChevronRight, Sparkles } from 'lucide-react';
+import { Home, Star, Moon, Heart, Plus, Menu, X, ChevronRight, Sparkles, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { track } from '@/lib/analytics';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
@@ -20,23 +20,77 @@ const ITEMS = [
 
 const MENU_SECTIONS = [
   {
-    title: 'Гороскопи',
+    title: 'Прогнози',
     items: [
-      { href: '/horoscope/personality', label: 'Гороскоп особистості' },
-      { href: '/horoscope/love', label: 'Любовний гороскоп' },
-      { href: '/horoscope/2026', label: 'Гороскоп на 2026' },
-      { href: '/horoscope/career', label: "Кар'єрний гороскоп" },
-      { href: '/horoscope/health', label: "Звіт здоров'я" },
-      { href: '/horoscope/love-compatibility', label: 'Сумісність кохання' },
+      { href: '/horoscope/daily', label: 'Щоденний гороскоп' },
+      { href: '/horoscope/weekly', label: 'Тижневий гороскоп' },
+      { href: '/horoscope/monthly', label: 'Місячний гороскоп' },
+      { href: '/horoscope/yearly', label: 'Річний гороскоп' },
+      { href: '/horoscope/chinese', label: 'Китайський гороскоп' },
     ],
   },
   {
-    title: 'Безкоштовно',
+    title: 'Особистість та кохання',
+    items: [
+      { href: '/horoscope/personality', label: 'Гороскоп особистості' },
+      { href: '/horoscope/talent', label: 'Звіт талантів' },
+      { href: '/horoscope/career', label: "Кар'єрний гороскоп" },
+      { href: '/horoscope/health', label: "Звіт здоров'я" },
+      { href: '/horoscope/finance', label: 'Фінансовий успіх' },
+      { href: '/horoscope/love', label: 'Любовний гороскоп' },
+      { href: '/horoscope/love-compatibility', label: 'Сумісність кохання' },
+      { href: '/horoscope/marriage', label: 'Коли я одружуся?' },
+      { href: '/horoscope/children', label: 'Дитячий гороскоп' },
+    ],
+  },
+  {
+    title: 'Карти та інструменти',
     items: [
       { href: '/chart/new', label: 'Натальна карта' },
       { href: '/compatibility', label: 'Сумісність партнерів' },
+      { href: '/composite', label: 'Композитна карта' },
+      { href: '/relationship', label: 'Інсайти стосунків' },
+      { href: '/transit', label: 'Транзитна карта' },
+      { href: '/solar-return', label: 'Соляр' },
+      { href: '/lunar-return', label: 'Лунар' },
+      { href: '/analysis/predictive', label: 'Прогностика' },
+      { href: '/progressions', label: 'Прогресії' },
+      { href: '/directions', label: 'Дирекції' },
       { href: '/moon', label: 'Місячний календар' },
+      { href: '/zodiac/aries', label: 'Знаки зодіаку' },
       { href: '/quiz', label: 'Астро-тест' },
+      { href: '/analysis/career', label: "Кар'єрний аналіз" },
+      { href: '/analysis/health', label: "Аналіз здоров'я" },
+      { href: '/analysis/karmic', label: 'Кармічний аналіз' },
+      { href: '/analysis/psychological', label: 'Психологічний аналіз' },
+      { href: '/analysis/spiritual', label: 'Духовний аналіз' },
+      { href: '/analysis/vocational', label: 'Покликання' },
+      { href: '/analysis/lunar', label: 'Місячний аналіз' },
+      { href: '/analysis/relocation', label: 'Аналіз релокації' },
+      { href: '/tarot', label: 'Таро' },
+      { href: '/tarot/single', label: 'Одна карта таро' },
+      { href: '/tarot/three-card', label: 'Три карти таро' },
+      { href: '/tarot/celtic-cross', label: 'Кельтський хрест' },
+      { href: '/tarot/houses', label: 'Гороскопний розклад' },
+      { href: '/tarot/tree-of-life', label: 'Дерево Сефіротів' },
+      { href: '/tarot/birth-cards', label: 'Карти народження' },
+      { href: '/tarot/synastry', label: 'Синастрійне таро' },
+      { href: '/tarot/transit', label: 'Транзитне таро' },
+      { href: '/chinese', label: 'BaZi (Чотири стовпи)' },
+      { href: '/chinese/forecast', label: 'Китайський прогноз' },
+      { href: '/chinese/compatibility', label: 'Китайська сумісність' },
+      { href: '/traditional', label: 'Традиційний аналіз' },
+      { href: '/traditional/profections', label: 'Профекції' },
+      { href: '/astrocartography', label: 'Астрокартографія' },
+      { href: '/astrocartography/location', label: 'Аналіз локації' },
+      { href: '/numerology', label: 'Нумерологія' },
+      { href: '/numerology/compatibility', label: 'Числова сумісність' },
+      { href: '/fixed-stars', label: 'Фіксовані зірки' },
+      { href: '/eclipses', label: 'Затемнення' },
+      { href: '/insights/wellness', label: 'Велнес-аналіз' },
+      { href: '/insights/financial', label: 'Фінансові інсайти' },
+      { href: '/insights/business', label: 'Бізнес-аналіз' },
+      { href: '/glossary', label: 'Глосарій' },
     ],
   },
 ];
@@ -44,6 +98,7 @@ const MENU_SECTIONS = [
 export default function MobileNav({ isLoggedIn }: Props) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (pathname?.startsWith('/chart/new')) return null;
 
@@ -85,49 +140,73 @@ export default function MobileNav({ isLoggedIn }: Props) {
                 </button>
               </div>
 
-              {/* Quiz CTA */}
-              <div className="px-5 py-4">
-                <a
-                  href="/quiz"
-                  onClick={() => {
-                    track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'quiz', source: 'mobile_menu' });
-                    setMenuOpen(false);
-                  }}
-                  className="flex items-center justify-center gap-2 w-full py-3 text-white text-sm font-semibold rounded-xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
-                    boxShadow: '0 2px 14px rgba(108,60,225,0.35)',
-                  }}
-                >
-                  <Sparkles size={16} />
-                  Пройти тест
-                </a>
+              {/* Quiz CTA — only for anonymous users */}
+              {!isLoggedIn && (
+                <div className="px-5 py-4">
+                  <a
+                    href="/quiz"
+                    onClick={() => {
+                      track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'quiz', source: 'mobile_menu' });
+                      setMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full min-h-[44px] text-white text-sm font-semibold rounded-xl"
+                    style={{
+                      background: 'linear-gradient(135deg, #6C3CE1 0%, #9966E6 100%)',
+                      boxShadow: '0 2px 14px rgba(108,60,225,0.35)',
+                    }}
+                  >
+                    <Sparkles size={16} />
+                    Пройти тест
+                  </a>
+                </div>
+              )}
+
+              {/* Search filter */}
+              <div className="px-5 pb-3">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Пошук функцій..."
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm text-white placeholder-white/30 focus:outline-none focus:border-zorya-violet/50"
+                  />
+                </div>
               </div>
 
               {/* Sections */}
-              {MENU_SECTIONS.map(section => (
-                <div key={section.title} className="px-5 py-3">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-medium mb-2">
-                    {section.title}
-                  </p>
-                  <div className="space-y-0.5">
-                    {section.items.map(item => (
-                      <a
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => {
-                          track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: item.label, source: 'mobile_menu' });
-                          setMenuOpen(false);
-                        }}
-                        className="flex items-center justify-between py-2.5 text-sm text-white/60 hover:text-white transition-colors"
-                      >
-                        {item.label}
-                        <ChevronRight size={14} className="text-white/20" />
-                      </a>
-                    ))}
+              {MENU_SECTIONS.map(section => {
+                const filteredItems = searchQuery
+                  ? section.items.filter(item =>
+                      item.label.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                  : section.items;
+                if (filteredItems.length === 0) return null;
+                return (
+                  <div key={section.title} className="px-5 py-3">
+                    <p className="text-[10px] uppercase tracking-widest text-white/30 font-medium mb-2">
+                      {section.title}
+                    </p>
+                    <div className="space-y-0.5">
+                      {filteredItems.map(item => (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => {
+                            track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: item.label, source: 'mobile_menu' });
+                            setMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between min-h-[44px] py-2 text-sm text-white/60 hover:text-white transition-colors"
+                        >
+                          {item.label}
+                          <ChevronRight size={14} className="text-white/20" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Legal */}
               <div className="px-5 py-3 border-t border-white/[0.06]">
@@ -159,7 +238,7 @@ export default function MobileNav({ isLoggedIn }: Props) {
               <a
                 key={href}
                 href={href}
-                className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+                className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
                 style={{ color: active ? '#9966E6' : 'rgba(255,255,255,0.45)' }}
               >
                 <Icon
@@ -175,7 +254,7 @@ export default function MobileNav({ isLoggedIn }: Props) {
           {/* New Chart CTA */}
           <a
             href="/chart/new"
-            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
             style={{ color: '#9966E6' }}
             aria-label="Нова карта"
           >
@@ -193,8 +272,8 @@ export default function MobileNav({ isLoggedIn }: Props) {
 
           {/* Hamburger menu button */}
           <button
-            onClick={() => setMenuOpen(true)}
-            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px]"
+            onClick={() => { setMenuOpen(true); setSearchQuery(''); }}
+            className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all min-w-[56px] min-h-[44px]"
             style={{ color: menuOpen ? '#9966E6' : 'rgba(255,255,255,0.45)' }}
           >
             <Menu size={22} strokeWidth={1.5} />

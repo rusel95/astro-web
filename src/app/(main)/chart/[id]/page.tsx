@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Share2, Check, Download, Gift, Cake, ChevronDown, Sparkles } from 'lucide-react';
-import Link from 'next/link';
+
 import { NatalChart, AIReport, ReportArea } from '@/types/astrology';
 import { ZODIAC_SYMBOLS, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
@@ -14,6 +14,9 @@ import HousesTable from '@/components/chart/HousesTable';
 import AspectsTable from '@/components/chart/AspectsTable';
 import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
+import SvgChartViewer from '@/components/feature/SvgChartViewer';
+import BirthTimeWarning from '@/components/feature/BirthTimeWarning';
+import AnalysisSection from '@/components/feature/AnalysisSection';
 
 function isBirthdayToday(birthDate: string): boolean {
   const [, m, d] = birthDate.split('-').map(Number);
@@ -44,8 +47,28 @@ function zodiacFromDegree(deg: number) {
   return signs[Math.floor((deg % 360) / 30)];
 }
 
+// Map product slugs to AI report areas
+const PRODUCT_SLUG_TO_AREA: Record<string, ReportArea> = {
+  personality: 'general',
+  talent: 'general',
+  career: 'career',
+  business: 'career',
+  love: 'relationships',
+  'love-compatibility': 'relationships',
+  marriage: 'relationships',
+  health: 'health',
+  finance: 'finances',
+  children: 'general',
+  pregnancy: 'general',
+  conception: 'general',
+  calendar: 'general',
+  '3-years': 'general',
+  '2026': 'general',
+};
+
 export default function ChartPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const [chart, setChart] = useState<NatalChart | null>(null);
   const [inputData, setInputData] = useState<{ name?: string; gender?: string }>({});
   const [report, setReport] = useState<AIReport | null>(null);
@@ -53,6 +76,7 @@ export default function ChartPage() {
   const [selectedArea, setSelectedArea] = useState<ReportArea | null>(null);
   const [generatedAreas, setGeneratedAreas] = useState<Set<ReportArea>>(new Set());
   const [reports, setReports] = useState<Record<string, AIReport>>({});
+  const [enhanced, setEnhanced] = useState<Record<string, unknown> | null>(null);
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -67,6 +91,8 @@ export default function ChartPage() {
         if (cancelled) return;
         setChart(JSON.parse(stored));
         if (storedInput) setInputData(JSON.parse(storedInput));
+        const storedEnhanced = sessionStorage.getItem(`chart-enhanced-${id}`) || localStorage.getItem(`chart-enhanced-${id}`);
+        if (storedEnhanced) setEnhanced(JSON.parse(storedEnhanced));
         return;
       }
 
@@ -94,6 +120,18 @@ export default function ChartPage() {
     loadChart();
     return () => { cancelled = true; };
   }, [id]);
+
+  // Auto-trigger report area when arriving from a product page (e.g. /horoscope/career)
+  const fromProduct = searchParams.get('from');
+  useEffect(() => {
+    if (!chart || !fromProduct) return;
+    const area = PRODUCT_SLUG_TO_AREA[fromProduct];
+    if (area && !generatedAreas.has(area)) {
+      generateReport(area);
+    }
+    // Only run once when chart first loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chart, fromProduct]);
 
   const sunPlanet = chart?.planets.find(p => p.name === 'Sun');
   const moonPlanet = chart?.planets.find(p => p.name === 'Moon');
@@ -291,6 +329,20 @@ export default function ChartPage() {
         </motion.div>
       )}
 
+      {/* ── Birth Time Warning (FR-050) ── */}
+      {chart.birthTime === '12:00' && (
+        <div className="mb-5">
+          <BirthTimeWarning />
+        </div>
+      )}
+
+      {/* ── API SVG Chart (T035) ── */}
+      {chart.svgContent && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <SvgChartViewer svgContent={chart.svgContent} title="Натальна карта (API)" />
+        </motion.div>
+      )}
+
       {/* ── Quick Identity ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -415,15 +467,19 @@ export default function ChartPage() {
               className="overflow-hidden"
             >
               <div className="space-y-4 pt-4">
-                <div className="glass-card p-6">
-                  <NatalChartWheel
-                    planets={chart.planets}
-                    houses={chart.houses}
-                    aspects={chart.aspects}
-                    ascendant={chart.ascendant}
-                    midheaven={chart.midheaven}
-                  />
-                </div>
+                {/* Local chart visualization (fallback when API SVG unavailable) */}
+                {!chart.svgContent && (
+                  <div className="glass-card p-6">
+                    <p className="text-xs text-amber-400/70 mb-2">Локальна візуалізація (API SVG недоступне)</p>
+                    <NatalChartWheel
+                      planets={chart.planets}
+                      houses={chart.houses}
+                      aspects={chart.aspects}
+                      ascendant={chart.ascendant}
+                      midheaven={chart.midheaven}
+                    />
+                  </div>
+                )}
 
                 <div className="glass-card p-4">
                   <h3 className="text-sm font-semibold text-text-muted mb-3">Планети</h3>
@@ -439,37 +495,64 @@ export default function ChartPage() {
                   <h3 className="text-sm font-semibold text-text-muted mb-3">{chart.aspects.length} аспектів</h3>
                   <AspectsTable chart={chart} />
                 </div>
+
+                {/* Enhanced data sections (T034) */}
+                {!!enhanced?.natalReport && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Натальний звіт (API)</h3>
+                    <AnalysisSection title="Звіт" data={enhanced.natalReport as Record<string, unknown>} />
+                  </div>
+                )}
+
+                {!!enhanced?.enhancedPositions && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Гідності планет</h3>
+                    <AnalysisSection title="Гідності" data={enhanced.enhancedPositions as Record<string, unknown>} />
+                  </div>
+                )}
+
+                {!!enhanced?.enhancedAspects && (
+                  <div className="glass-card p-4">
+                    <h3 className="text-sm font-semibold text-text-muted mb-3">Розширені аспекти</h3>
+                    <AnalysisSection title="Аспекти" data={enhanced.enhancedAspects as Record<string, unknown>} />
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      {/* Cross-sell CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <Link href="/horoscope/personality" className="block">
-          <div className="glass-card p-5 border border-zorya-purple/30 bg-zorya-purple/5 hover:border-zorya-purple/50 hover:shadow-lg hover:shadow-zorya-purple/20 transition-all cursor-pointer group">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center flex-shrink-0">
-                <Sparkles size={18} className="text-zorya-violet" />
+      {/* AI Personality CTA — triggers inline report, no navigation */}
+      {!generatedAreas.has('general') && !selectedArea && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <button
+            onClick={() => generateReport('general')}
+            className="w-full block"
+          >
+            <div className="glass-card p-5 border border-zorya-purple/30 bg-zorya-purple/5 hover:border-zorya-purple/50 hover:shadow-lg hover:shadow-zorya-purple/20 transition-all cursor-pointer group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-zorya-purple/20 flex items-center justify-center flex-shrink-0">
+                  <Sparkles size={18} className="text-zorya-violet" />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-semibold text-text-primary group-hover:text-zorya-violet transition-colors">
+                    Отримати Гороскоп Особистості
+                  </p>
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    AI-аналіз вашої натальної карти — безкоштовно
+                  </p>
+                </div>
+                <span className="text-text-muted group-hover:text-zorya-violet transition-colors text-lg">→</span>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-text-primary group-hover:text-zorya-violet transition-colors">
-                  Отримати повний Гороскоп Особистості
-                </p>
-                <p className="text-xs text-text-secondary mt-0.5">
-                  Детальний AI-аналіз вашої натальної карти з персональними рекомендаціями
-                </p>
-              </div>
-              <span className="text-text-muted group-hover:text-zorya-violet transition-colors text-lg">→</span>
             </div>
-          </div>
-        </Link>
-      </motion.div>
+          </button>
+        </motion.div>
+      )}
 
     </div>
   );

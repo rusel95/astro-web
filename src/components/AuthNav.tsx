@@ -36,6 +36,8 @@ export default function AuthNav({ user }: Props) {
         }
       }
       keysToRemove.forEach(key => localStorage.removeItem(key));
+      // Clear all sessionStorage on logout (FR-021)
+      sessionStorage.clear();
       router.push('/');
       router.refresh();
     } catch {
@@ -78,6 +80,16 @@ export default function AuthNav({ user }: Props) {
         <span className="text-sm font-medium text-white/80 hidden sm:block max-w-[100px] truncate">
           {displayName}
         </span>
+      </a>
+      <a
+        href="/settings"
+        className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-80"
+        style={{
+          border: '1px solid rgba(255,255,255,0.15)',
+          color: 'rgba(255,255,255,0.5)',
+        }}
+      >
+        Налаштування
       </a>
       <button
         onClick={handleSignOut}

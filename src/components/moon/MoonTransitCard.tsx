@@ -7,16 +7,17 @@ import { ZODIAC_NAMES_UK } from '@/lib/constants';
 
 interface MoonTransitCardProps {
   moon: CurrentMoon;
+  isAuthenticated?: boolean;
 }
 
-export function MoonTransitCard({ moon }: MoonTransitCardProps) {
+export function MoonTransitCard({ moon, isAuthenticated = false }: MoonTransitCardProps) {
   return (
     <Card className="mb-6">
       <CardHeader>
         <CardTitle>🌙 Місяць зараз</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className={`grid grid-cols-2 ${isAuthenticated ? 'md:grid-cols-4' : 'md:grid-cols-3'} gap-4`}>
           <div>
             <p className="text-sm text-muted-foreground">Знак</p>
             <p className="text-2xl font-bold">{ZODIAC_NAMES_UK[moon.sign] || moon.sign}</p>
@@ -25,22 +26,26 @@ export function MoonTransitCard({ moon }: MoonTransitCardProps) {
             <p className="text-sm text-muted-foreground">Фаза</p>
             <p className="text-lg">{formatPhase(moon.phase)}</p>
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">У вашому чарті</p>
-            <p className="text-lg">{moon.house} дім</p>
-          </div>
+          {isAuthenticated && (
+            <div>
+              <p className="text-sm text-muted-foreground">У вашому чарті</p>
+              <p className="text-lg">{moon.house} дім</p>
+            </div>
+          )}
           <div>
             <p className="text-sm text-muted-foreground">Освітлення</p>
             <p className="text-lg">{moon.illumination.toFixed(0)}%</p>
           </div>
         </div>
 
-        {/* Персоналізована рекомендація */}
-        <div className="mt-4 p-4 bg-muted rounded-lg">
-          <p className="text-sm">
-            {getHouseRecommendation(moon.house, moon.sign)}
-          </p>
-        </div>
+        {/* Персоналізована рекомендація — only for authenticated users (FR-022) */}
+        {isAuthenticated && (
+          <div className="mt-4 p-4 bg-muted rounded-lg">
+            <p className="text-sm">
+              {getHouseRecommendation(moon.house, moon.sign)}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

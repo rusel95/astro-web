@@ -16,10 +16,23 @@ export async function POST(req: NextRequest) {
     const subject = toSdkSubject(input);
     const options = toSdkChartOptions();
 
-    // Fetch natal chart data and SVG in parallel
-    const [apiResponse, svgContent] = await Promise.all([
+    // Fetch natal chart data, SVG, and enhanced data in parallel
+    // Enhanced calls are optional — failures don't block the basic chart
+    const [apiResponse, svgContent, natalReport, enhancedPositions, enhancedAspects] = await Promise.all([
       client.charts.getNatalChart({ subject, options }),
       client.svg.getNatalChartSvg({ subject, options } as any, { responseType: 'text' }).catch(() => null),
+      client.analysis.getNatalReport({ subject, options } as any).catch((e: unknown) => {
+        Sentry.captureException(e, { tags: { route: 'chart', call: 'getNatalReport' }, level: 'warning' });
+        return null;
+      }),
+      client.data.getEnhancedPositions({ subject, options } as any).catch((e: unknown) => {
+        Sentry.captureException(e, { tags: { route: 'chart', call: 'getEnhancedPositions' }, level: 'warning' });
+        return null;
+      }),
+      client.data.getEnhancedAspects({ subject, options } as any).catch((e: unknown) => {
+        Sentry.captureException(e, { tags: { route: 'chart', call: 'getEnhancedAspects' }, level: 'warning' });
+        return null;
+      }),
     ]);
 
     const chart = mapAPIResponse(apiResponse as any, input);
@@ -29,6 +42,12 @@ export async function POST(req: NextRequest) {
       chart.svgContent = svgContent;
     }
 
+    // Attach enhanced data if available
+    const enhanced: Record<string, unknown> = {};
+    if (natalReport) enhanced.natalReport = natalReport;
+    if (enhancedPositions) enhanced.enhancedPositions = enhancedPositions;
+    if (enhancedAspects) enhanced.enhancedAspects = enhancedAspects;
+
     const stored = { id, input, chart, createdAt: new Date().toISOString() };
     saveChart(stored);
 
@@ -37,7 +56,7 @@ export async function POST(req: NextRequest) {
       void createServiceClient().rpc('increment_chart_counter');
     }
 
-    return NextResponse.json({ id, chart });
+    return NextResponse.json({ id, chart, enhanced });
   } catch (error: any) {
     Sentry.captureException(error, { tags: { route: 'chart' } });
     if (error instanceof AstrologyError) {

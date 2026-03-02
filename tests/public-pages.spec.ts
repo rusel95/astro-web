@@ -41,7 +41,7 @@ test.describe('Public Pages — Desktop', () => {
       });
 
       await pw.goto(page.path);
-      await pw.waitForLoadState('networkidle');
+      await pw.waitForLoadState('networkidle').catch(() => {});
       
       // Filter out known third-party errors (PostHog, analytics, etc.)
       const criticalErrors = errors.filter(

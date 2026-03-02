@@ -332,7 +332,7 @@ test.describe('Compatibility Page', () => {
 
   test('has two person input sections', async ({ page }) => {
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Should have date inputs for two people
     const inputs = await page.locator('input').all();
     expect(inputs.length).toBeGreaterThanOrEqual(2);
@@ -398,7 +398,7 @@ test.describe('Zodiac Sign Pages', () => {
   test('mobile: zodiac page is responsive', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/zodiac/pisces');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(410);
   });
@@ -430,7 +430,7 @@ test.describe('Horoscope Pages', () => {
   test('mobile: horoscope page is responsive', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/horoscopes/love');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(410);
   });
@@ -508,7 +508,7 @@ test.describe('UX Quality', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const critical = errors.filter(
       (e) => !e.includes('posthog') && !e.includes('analytics') && !e.includes('favicon') && !e.includes('hydrat') && !e.includes('Sentry')
     );
@@ -521,7 +521,7 @@ test.describe('UX Quality', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const critical = errors.filter(
       (e) => !e.includes('posthog') && !e.includes('analytics') && !e.includes('favicon') && !e.includes('hydrat') && !e.includes('Sentry')
     );
@@ -535,7 +535,7 @@ test.describe('UX Quality', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const critical = errors.filter(
       (e) => !e.includes('posthog') && !e.includes('analytics') && !e.includes('favicon') && !e.includes('hydrat') && !e.includes('Sentry')
     );

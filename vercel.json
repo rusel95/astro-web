@@ -1,8 +1,5 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/birthday-emails",
-      "schedule": "0 8 * * *"
-    }
-  ]
+  "git": {
+    "deploymentEnabled": false
+  }
 }

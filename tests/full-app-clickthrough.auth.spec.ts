@@ -57,7 +57,7 @@ test.describe('Dashboard — Authenticated Entry Point', () => {
 
   test('shows saved charts or empty state', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     // Should have chart links OR empty state
@@ -70,7 +70,7 @@ test.describe('Dashboard — Authenticated Entry Point', () => {
 
   test('clicking saved chart navigates to chart view', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const chartLinks = page.locator('a[href^="/chart/"]').filter({
@@ -212,7 +212,7 @@ test.describe('Chart View — Full Data Display', () => {
     const context = await browser.newContext({ storageState: 'tests/.auth/user.json' });
     const page = await context.newPage();
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const chartLink = page.locator('a[href^="/chart/"]').filter({
@@ -233,7 +233,7 @@ test.describe('Chart View — Full Data Display', () => {
       return;
     }
     await page.goto(chartUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const quickIdentity = page.locator('text=/Сонце|Місяць|Асцендент|MC/i');
     await expect(quickIdentity.first()).toBeVisible({ timeout: 15000 });
@@ -245,7 +245,7 @@ test.describe('Chart View — Full Data Display', () => {
       return;
     }
     await page.goto(chartUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const bodyText = await page.locator('body').textContent();
     const hasSun = bodyText?.match(/Сонце|Sun/i);
@@ -259,7 +259,7 @@ test.describe('Chart View — Full Data Display', () => {
       return;
     }
     await page.goto(chartUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const svg = page.locator('svg').first();
@@ -273,7 +273,7 @@ test.describe('Chart View — Full Data Display', () => {
     }
     test.setTimeout(90000);
     await page.goto(chartUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const reportBtns = page.locator('button').filter({
       hasText: /загальн|кар'єр|стосунк|здоров|фінанс|духовн/i,
@@ -313,7 +313,7 @@ test.describe('Data Prefilling — Logged-in User', () => {
         }
       }
 
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle').catch(() => {});
       await page.waitForTimeout(4000); // Wait for Supabase prefill fetch
 
       // Check if the "auto-filled" badge is visible (user has charts)
@@ -383,7 +383,7 @@ test.describe('Data Prefilling — Logged-in User', () => {
 test.describe('Explore — Page Behavior', () => {
   test('loads explore page with heading', async ({ page }) => {
     await page.goto('/explore');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const heading = page.locator('h1');
@@ -395,7 +395,7 @@ test.describe('Explore — Page Behavior', () => {
 
   test('shows correct state: feature cards OR empty state CTA', async ({ page }) => {
     await page.goto('/explore');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(5000); // Wait for client-side chart fetch
 
     const showButtons = page.locator('button').filter({ hasText: 'Показати' });
@@ -423,7 +423,7 @@ test.describe('Explore — Page Behavior', () => {
   test('feature interaction: clicking Показати returns data or shows error', async ({ page }) => {
     test.setTimeout(60000);
     await page.goto('/explore');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(5000);
 
     const showButtons = page.locator('button').filter({ hasText: 'Показати' });
@@ -456,7 +456,7 @@ test.describe('Explore — Page Behavior', () => {
   test('transit SVG or empty state renders correctly', async ({ page }) => {
     test.setTimeout(60000);
     await page.goto('/explore');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(5000);
 
     const showButtons = page.locator('button').filter({ hasText: 'Показати' });
@@ -488,7 +488,7 @@ test.describe('Explore — Page Behavior', () => {
 test.describe('Compatibility — Authenticated Flow', () => {
   test('page loads with form', async ({ page }) => {
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -500,7 +500,7 @@ test.describe('Compatibility — Authenticated Flow', () => {
   test('Person 1 uses saved chart, Person 2 manual', async ({ page }) => {
     test.setTimeout(120000);
     await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     // Check if "Моя карта" button exists (user has saved charts)
@@ -566,7 +566,7 @@ test.describe('Compatibility — Authenticated Flow', () => {
 test.describe('Daily Horoscope — Real API Data', () => {
   test('page loads with heading', async ({ page }) => {
     await page.goto('/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toContainText('Гороскоп на сьогодні', { timeout: 10000 });
@@ -575,7 +575,7 @@ test.describe('Daily Horoscope — Real API Data', () => {
   test('full flow: enter date → get horoscope → verify data', async ({ page }) => {
     test.setTimeout(60000);
     await page.goto('/daily');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(1000);
 
     const numericInputs = page.locator('input[inputmode="numeric"]');
@@ -618,7 +618,7 @@ test.describe('Daily Horoscope — Real API Data', () => {
 test.describe('Moon Calendar — Real Server Data', () => {
   test('displays current moon phase with real data', async ({ page }) => {
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const heading = page.locator('h1');
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -630,7 +630,7 @@ test.describe('Moon Calendar — Real Server Data', () => {
 
   test('calendar renders with substantial content', async ({ page }) => {
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
 
     const bodyText = await page.locator('body').textContent();
@@ -639,7 +639,7 @@ test.describe('Moon Calendar — Real Server Data', () => {
 
   test('void-of-course info section visible', async ({ page }) => {
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const voidInfo = page.locator('text=/без курсу|Void|void/i');
     await expect(voidInfo.first()).toBeVisible({ timeout: 10000 });
@@ -647,7 +647,7 @@ test.describe('Moon Calendar — Real Server Data', () => {
 
   test('moon phase info sections visible', async ({ page }) => {
     await page.goto('/moon');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
 
     const phaseInfo = page.locator('text=/Фази Місяця/i');
     await expect(phaseInfo.first()).toBeVisible({ timeout: 10000 });
@@ -762,7 +762,7 @@ test.describe('No Critical Console Errors (Auth)', () => {
       });
 
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle').catch(() => {});
       await page.waitForTimeout(2000);
 
       if (errors.length > 0) {

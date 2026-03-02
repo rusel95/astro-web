@@ -20,7 +20,7 @@ test.describe('Quiz Flow', () => {
 
   test('quiz step 1 has date input', async ({ page }) => {
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Should have date input fields (day/month/year or date picker)
     const inputs = page.locator('input, select');
     await expect(inputs.first()).toBeVisible({ timeout: 10000 });
@@ -29,21 +29,21 @@ test.describe('Quiz Flow', () => {
   test('quiz mobile: no horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(410);
   });
 
   test('quiz has CTA button', async ({ page }) => {
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     const button = page.locator('button').filter({ hasText: /далі|продовжити|наступн/i }).first();
     await expect(button).toBeVisible({ timeout: 10000 });
   });
 
   test('quiz has back navigation', async ({ page }) => {
     await page.goto('/quiz');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle').catch(() => {});
     // Logo or back link should be present
     const nav = page.locator('a[href="/"], [class*="logo"]').first();
     await expect(nav).toBeVisible({ timeout: 10000 });

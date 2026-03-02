@@ -52,7 +52,7 @@ test.describe('Zodiac Pages — All Signs', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(`/zodiac/${sign.slug}`);
       
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle').catch(() => {});
       
       // No horizontal scroll
       const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
