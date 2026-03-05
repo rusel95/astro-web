@@ -52,7 +52,8 @@ export default function CompatibilityScoreGauge({
 
         {/* Circular gauge */}
         <div className="relative w-36 h-36">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+          <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120" role="img" aria-labelledby="gauge-title">
+            <title id="gauge-title">Сумісність: {normalizedScore} зі 100</title>
             {/* Background circle */}
             <circle
               cx="60"

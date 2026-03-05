@@ -25,6 +25,12 @@ export async function POST(req: NextRequest, { params }: { params: { type: strin
 
   try {
     const { subject } = await req.json();
+    if (!subject) {
+      return NextResponse.json({ error: 'Дані субʼєкта обовʼязкові' }, { status: 400 });
+    }
+    if (type === 'lunar' && !subject.birth_data) {
+      return NextResponse.json({ error: 'Дані народження обовʼязкові для місячного аналізу' }, { status: 400 });
+    }
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
 

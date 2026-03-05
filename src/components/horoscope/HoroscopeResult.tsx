@@ -42,6 +42,10 @@ const LUCKY_LABELS: Record<string, string> = {
   numbers: 'Числа',
   stones: 'Камені',
   directions: 'Напрямки',
+  day_ruler: 'Планета дня',
+  day_ruler_activities: 'Активності дня',
+  times: 'Сприятливий час',
+  power_hours: 'Години сили',
 };
 
 const TIMEFRAME_LABELS: Record<string, string> = {
@@ -169,6 +173,7 @@ function LifeAreaCard({ area }: { area: LifeArea }) {
   return (
     <button
       type="button"
+      aria-expanded={expanded}
       onClick={() => setExpanded(!expanded)}
       className={`w-full text-left p-4 rounded-xl border transition-all ${ratingBg}`}
     >
@@ -216,6 +221,24 @@ function LuckyBadges({ lucky }: { lucky: LuckyElements }) {
   }
   if (lucky.stones?.length) {
     items.push({ label: LUCKY_LABELS.stones, values: lucky.stones });
+  }
+  if (lucky.directions?.length) {
+    items.push({ label: LUCKY_LABELS.directions, values: lucky.directions });
+  }
+  if (lucky.day_ruler) {
+    items.push({ label: LUCKY_LABELS.day_ruler, values: [lucky.day_ruler] });
+  }
+  if (lucky.day_ruler_activities?.length) {
+    items.push({ label: LUCKY_LABELS.day_ruler_activities, values: lucky.day_ruler_activities });
+  }
+  if (lucky.times?.length) {
+    items.push({ label: LUCKY_LABELS.times, values: lucky.times });
+  }
+  if (lucky.power_hours?.length) {
+    items.push({
+      label: LUCKY_LABELS.power_hours,
+      values: lucky.power_hours.map((h) => `${h.hour} (${h.planet})`),
+    });
   }
 
   if (items.length === 0) return null;
@@ -382,6 +405,7 @@ function PlanetaryInfluences({
     <div className="rounded-xl bg-white/[0.04] border border-white/10 overflow-hidden">
       <button
         type="button"
+        aria-expanded={expanded}
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 hover:bg-white/[0.02] transition-colors"
       >

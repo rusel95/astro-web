@@ -13,7 +13,10 @@ export async function GET(
 
     const [horoscope, horoscopeText] = await Promise.all([
       client.horoscope.getSignDailyHoroscope({ sign: sign as any, date, language: 'uk' }),
-      client.horoscope.getSignDailyHoroscopeText({ sign: sign as any, date, language: 'uk' } as any).catch(() => null),
+      client.horoscope.getSignDailyHoroscopeText({ sign: sign as any, date, language: 'uk' } as any).catch((e: unknown) => {
+        Sentry.captureException(e, { tags: { route: 'horoscope/daily', call: 'getSignDailyHoroscopeText' }, level: 'warning' });
+        return null;
+      }),
     ]);
 
     return NextResponse.json(
