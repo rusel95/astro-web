@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         const result = await client.horoscope.getPersonalDailyHoroscope({
           subject,
           options: toSdkChartOptions(),
+          language: 'uk',
         } as any);
         return NextResponse.json({ action, data: result });
       }
@@ -31,7 +32,8 @@ export async function POST(req: NextRequest) {
             country_code: params.chartInput.countryCode,
           },
           options: toSdkChartOptions(),
-        });
+          language: 'uk',
+        } as any);
         return NextResponse.json({ action, data: result });
       }
 
@@ -40,6 +42,7 @@ export async function POST(req: NextRequest) {
           subject1: toSdkSubject(params.person1),
           subject2: toSdkSubject(params.person2),
           options: toSdkChartOptions(),
+          language: 'uk',
           report_options: { language: 'uk' as any },
         } as any);
         return NextResponse.json({ action, data: result });
@@ -48,6 +51,7 @@ export async function POST(req: NextRequest) {
       case 'numerology': {
         const result = await client.numerology.getCoreNumbers({
           subject: toSdkSubject(params.chartInput),
+          language: 'uk',
         } as any);
         return NextResponse.json({ action, data: result });
       }
@@ -66,6 +70,7 @@ export async function POST(req: NextRequest) {
             country_code: params.chartInput.countryCode,
           },
           options: toSdkChartOptions(),
+          language: 'uk',
         } as any, { responseType: 'text' });
         return NextResponse.json({ action, data: { svg: result } });
       }

@@ -8,19 +8,19 @@ export async function POST(req: NextRequest) {
     const client = getAstrologyClient();
 
     const [marketTiming, personalTrading, gannAnalysis, bradleySiderograph] = await Promise.all([
-      client.insights.financial.getMarketTiming({ subject } as any).catch((e: unknown) => {
+      client.insights.financial.getMarketTiming({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/financial', call: 'getMarketTiming' }, level: 'warning' });
         return null;
       }),
-      client.insights.financial.analyzePersonalTrading({ subject } as any).catch((e: unknown) => {
+      client.insights.financial.analyzePersonalTrading({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/financial', call: 'analyzePersonalTrading' }, level: 'warning' });
         return null;
       }),
-      client.insights.financial.getGannAnalysis({ subject } as any).catch((e: unknown) => {
+      client.insights.financial.getGannAnalysis({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/financial', call: 'getGannAnalysis' }, level: 'warning' });
         return null;
       }),
-      client.insights.financial.getBradleySiderograph({ subject } as any).catch((e: unknown) => {
+      client.insights.financial.getBradleySiderograph({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/financial', call: 'getBradleySiderograph' }, level: 'warning' });
         return null;
       }),

@@ -17,15 +17,15 @@ export async function GET(req: Request) {
     const endDate = `${endYear}-${String(endMonth).padStart(2, '0')}-01`;
 
     const [mansions, voidOfCourse, events] = await Promise.all([
-      client.lunar.getMansions({ date: startDate } as any).catch((e: unknown) => {
+      client.lunar.getMansions({ date: startDate, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar/calendar', call: 'getMansions' }, level: 'warning' });
         return null;
       }),
-      client.lunar.getVoidOfCourse({ start_date: startDate, end_date: endDate } as any).catch((e: unknown) => {
+      client.lunar.getVoidOfCourse({ start_date: startDate, end_date: endDate, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar/calendar', call: 'getVoidOfCourse' }, level: 'warning' });
         return null;
       }),
-      client.lunar.getEvents({ start_date: startDate, end_date: endDate } as any).catch((e: unknown) => {
+      client.lunar.getEvents({ start_date: startDate, end_date: endDate, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar/calendar', call: 'getEvents' }, level: 'warning' });
         return null;
       }),

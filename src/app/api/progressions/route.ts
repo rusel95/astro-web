@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
     const targetDate = target_date || new Date().toISOString().split('T')[0];
 
     const [progressions, progressionReport] = await Promise.all([
-      client.charts.getProgressions({ subject, target_date: targetDate, progression_type, options } as any).catch((e: unknown) => {
+      client.charts.getProgressions({ subject, target_date: targetDate, progression_type, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'progressions', call: 'getProgressions' }, level: 'warning' });
         return null;
       }),
-      client.analysis.getProgressionReport({ subject, target_date: targetDate, progression_type, options } as any).catch((e: unknown) => {
+      client.analysis.getProgressionReport({ subject, target_date: targetDate, progression_type, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'progressions', call: 'getProgressionReport' }, level: 'warning' });
         return null;
       }),

@@ -12,27 +12,27 @@ export async function POST(req: NextRequest) {
     const subject2 = toSdkSubject(person2);
 
     const [compatibility, loveLanguages1, loveLanguages2, redFlags1, redFlags2, timing] = await Promise.all([
-      client.insights.relationship.getCompatibility({ subjects: [subject1, subject2] } as any).catch((e: unknown) => {
+      client.insights.relationship.getCompatibility({ subjects: [subject1, subject2], language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getCompatibility' }, level: 'warning' });
         return null;
       }),
-      client.insights.relationship.getLoveLanguages({ subject: subject1 } as any).catch((e: unknown) => {
+      client.insights.relationship.getLoveLanguages({ subject: subject1, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getLoveLanguages1' }, level: 'warning' });
         return null;
       }),
-      client.insights.relationship.getLoveLanguages({ subject: subject2 } as any).catch((e: unknown) => {
+      client.insights.relationship.getLoveLanguages({ subject: subject2, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getLoveLanguages2' }, level: 'warning' });
         return null;
       }),
-      client.insights.relationship.getRedFlags({ subject: subject1 } as any).catch((e: unknown) => {
+      client.insights.relationship.getRedFlags({ subject: subject1, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getRedFlags1' }, level: 'warning' });
         return null;
       }),
-      client.insights.relationship.getRedFlags({ subject: subject2 } as any).catch((e: unknown) => {
+      client.insights.relationship.getRedFlags({ subject: subject2, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getRedFlags2' }, level: 'warning' });
         return null;
       }),
-      client.insights.relationship.getTiming({ subjects: [subject1, subject2] } as any).catch((e: unknown) => {
+      client.insights.relationship.getTiming({ subjects: [subject1, subject2], language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'relationship-insights', call: 'getTiming' }, level: 'warning' });
         return null;
       }),

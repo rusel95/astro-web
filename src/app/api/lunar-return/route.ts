@@ -10,16 +10,16 @@ export async function POST(req: NextRequest) {
     const targetDate = date || new Date().toISOString().split('T')[0];
 
     const [lunarReturnChart, lunarReturnChartSvg, lunarReturnReport, lunarReturnTransits] = await Promise.all([
-      client.charts.getLunarReturnChart({ subject, date: targetDate, options } as any).catch((e: unknown) => {
+      client.charts.getLunarReturnChart({ subject, date: targetDate, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar-return', call: 'getLunarReturnChart' }, level: 'warning' });
         return null;
       }),
       Promise.resolve(null), // No SVG method for lunar return
-      client.analysis.getLunarReturnReport({ subject, date: targetDate, options } as any).catch((e: unknown) => {
+      client.analysis.getLunarReturnReport({ subject, date: targetDate, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar-return', call: 'getLunarReturnReport' }, level: 'warning' });
         return null;
       }),
-      client.charts.getLunarReturnTransits({ subject, date: targetDate, options } as any).catch((e: unknown) => {
+      client.charts.getLunarReturnTransits({ subject, date: targetDate, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'lunar-return', call: 'getLunarReturnTransits' }, level: 'warning' });
         return null;
       }),

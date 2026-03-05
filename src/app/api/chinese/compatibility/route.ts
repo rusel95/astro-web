@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
 
     const compatibility = await client.chinese.calculateCompatibility({
       subjects: [subject1, subject2],
+      language: 'uk',
     } as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: 'chinese/compatibility', call: 'calculateCompatibility' }, level: 'error' });
       return null;

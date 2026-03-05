@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         Sentry.captureException(e, { tags: { route: 'chinese/forecast', call: 'analyzeYearElements' }, level: 'warning' });
         return null;
       }),
-      client.chinese.getSolarTerms(year).catch((e: unknown) => {
+      client.chinese.getSolarTerms(year, { language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'chinese/forecast', call: 'getSolarTerms' }, level: 'warning' });
         return null;
       }),

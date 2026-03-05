@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
 
     // Core: natal charts for both persons (required)
     const [apiResponse1, apiResponse2] = await Promise.all([
-      client.charts.getNatalChart({ subject: subject1, options }),
-      client.charts.getNatalChart({ subject: subject2, options }),
+      client.charts.getNatalChart({ subject: subject1, options, language: 'uk' } as any),
+      client.charts.getNatalChart({ subject: subject2, options, language: 'uk' } as any),
     ]);
 
     const chart1 = mapAPIResponse(apiResponse1 as any, person1);
@@ -30,19 +30,19 @@ export async function POST(req: NextRequest) {
 
     // Enhanced: synastry chart, SVG, reports (graceful fallback)
     const [synastryChart, synastryChartSvg, synastryReport, compatibilityScore] = await Promise.all([
-      client.charts.getSynastryChart({ subject1, subject2, options } as any).catch((e: unknown) => {
+      client.charts.getSynastryChart({ subject1, subject2, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'compatibility', call: 'getSynastryChart' }, level: 'warning' });
         return null;
       }),
-      client.svg.getSynastryChartSvg({ subject1, subject2, options } as any, { responseType: 'text' } as any).catch((e: unknown) => {
+      client.svg.getSynastryChartSvg({ subject1, subject2, options, language: 'uk' } as any, { responseType: 'text' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'compatibility', call: 'getSynastryChartSvg' }, level: 'warning' });
         return null;
       }),
-      client.analysis.getSynastryReport({ subject1, subject2, options } as any).catch((e: unknown) => {
+      client.analysis.getSynastryReport({ subject1, subject2, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'compatibility', call: 'getSynastryReport' }, level: 'warning' });
         return null;
       }),
-      client.analysis.getCompatibilityScore({ subjects: [subject1, subject2] } as any).catch((e: unknown) => {
+      client.analysis.getCompatibilityScore({ subjects: [subject1, subject2], language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'compatibility', call: 'getCompatibilityScore' }, level: 'warning' });
         return null;
       }),

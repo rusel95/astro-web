@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const [drawn, report] = await Promise.all([
-      client.tarot.drawCards({ count: 3 } as any).catch((e: unknown) => {
+      client.tarot.drawCards({ count: 3, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'tarot/transit-natal', call: 'drawCards' }, level: 'warning' });
         return null;
       }),

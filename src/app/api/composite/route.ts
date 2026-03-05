@@ -13,15 +13,15 @@ export async function POST(req: NextRequest) {
     const subject2 = toSdkSubject(person2);
 
     const [compositeChart, compositeChartSvg, compositeReport] = await Promise.all([
-      client.charts.getCompositeChart({ subject1, subject2, options } as any).catch((e: unknown) => {
+      client.charts.getCompositeChart({ subject1, subject2, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'composite', call: 'getCompositeChart' }, level: 'warning' });
         return null;
       }),
-      client.svg.getCompositeChartSvg({ subject1, subject2, options } as any, { responseType: 'text' } as any).catch((e: unknown) => {
+      client.svg.getCompositeChartSvg({ subject1, subject2, options, language: 'uk' } as any, { responseType: 'text' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'composite', call: 'getCompositeChartSvg' }, level: 'warning' });
         return null;
       }),
-      client.analysis.getCompositeReport({ subject1, subject2, options } as any).catch((e: unknown) => {
+      client.analysis.getCompositeReport({ subject1, subject2, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'composite', call: 'getCompositeReport' }, level: 'warning' });
         return null;
       }),

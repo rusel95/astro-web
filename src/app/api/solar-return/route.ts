@@ -10,16 +10,16 @@ export async function POST(req: NextRequest) {
     const targetYear = year || new Date().getFullYear();
 
     const [solarReturnChart, solarReturnChartSvg, solarReturnReport, solarReturnTransits] = await Promise.all([
-      client.charts.getSolarReturnChart({ subject, year: targetYear, options } as any).catch((e: unknown) => {
+      client.charts.getSolarReturnChart({ subject, year: targetYear, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'solar-return', call: 'getSolarReturnChart' }, level: 'warning' });
         return null;
       }),
       Promise.resolve(null), // No SVG method for solar return
-      client.analysis.getSolarReturnReport({ subject, year: targetYear, options } as any).catch((e: unknown) => {
+      client.analysis.getSolarReturnReport({ subject, year: targetYear, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'solar-return', call: 'getSolarReturnReport' }, level: 'warning' });
         return null;
       }),
-      client.charts.getSolarReturnTransits({ subject, year: targetYear, options } as any).catch((e: unknown) => {
+      client.charts.getSolarReturnTransits({ subject, year: targetYear, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'solar-return', call: 'getSolarReturnTransits' }, level: 'warning' });
         return null;
       }),

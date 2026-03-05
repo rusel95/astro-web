@@ -19,17 +19,17 @@ export async function POST(req: NextRequest) {
     // Fetch natal chart data, SVG, and enhanced data in parallel
     // Enhanced calls are optional — failures don't block the basic chart
     const [apiResponse, svgContent, natalReport, enhancedPositions, enhancedAspects] = await Promise.all([
-      client.charts.getNatalChart({ subject, options }),
-      client.svg.getNatalChartSvg({ subject, options } as any, { responseType: 'text' }).catch(() => null),
-      client.analysis.getNatalReport({ subject, options } as any).catch((e: unknown) => {
+      client.charts.getNatalChart({ subject, options, language: 'uk' } as any),
+      client.svg.getNatalChartSvg({ subject, options, language: 'uk' } as any, { responseType: 'text' }).catch(() => null),
+      client.analysis.getNatalReport({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'chart', call: 'getNatalReport' }, level: 'warning' });
         return null;
       }),
-      client.data.getEnhancedPositions({ subject, options } as any).catch((e: unknown) => {
+      client.data.getEnhancedPositions({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'chart', call: 'getEnhancedPositions' }, level: 'warning' });
         return null;
       }),
-      client.data.getEnhancedAspects({ subject, options } as any).catch((e: unknown) => {
+      client.data.getEnhancedAspects({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'chart', call: 'getEnhancedAspects' }, level: 'warning' });
         return null;
       }),

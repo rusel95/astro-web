@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const client = getAstrologyClient();
 
-    const upcoming = await client.eclipses.getUpcoming({ count: 10 } as any).catch((e: unknown) => {
+    const upcoming = await client.eclipses.getUpcoming({ count: 10, language: 'uk' } as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: 'eclipses', call: 'getUpcoming' }, level: 'warning' });
       return null;
     });
@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
     const client = getAstrologyClient();
 
     const [upcoming, natalImpact] = await Promise.all([
-      client.eclipses.getUpcoming({ count: 10 } as any).catch(() => null),
-      client.eclipses.checkNatalImpact({ subject, max_orb: 5 } as any).catch((e: unknown) => {
+      client.eclipses.getUpcoming({ count: 10, language: 'uk' } as any).catch(() => null),
+      client.eclipses.checkNatalImpact({ subject, max_orb: 5, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'eclipses', call: 'checkNatalImpact' }, level: 'warning' });
         return null;
       }),

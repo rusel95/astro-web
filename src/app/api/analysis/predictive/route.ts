@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
 
-    const predictive = await client.analysis.getPredictiveAnalysis({ subject, orb: 6 } as any);
+    const predictive = await client.analysis.getPredictiveAnalysis({ subject, orb: 6, language: 'uk' } as any);
 
     return NextResponse.json(
       { predictive },

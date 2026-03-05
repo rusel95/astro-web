@@ -9,15 +9,15 @@ export async function POST(req: NextRequest) {
     const options = toSdkChartOptions();
 
     const [lines, mapData, powerZones] = await Promise.all([
-      client.astrocartography.getLines({ subject, coordinate_density: 10, options } as any).catch((e: unknown) => {
+      client.astrocartography.getLines({ subject, coordinate_density: 10, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'astrocartography/map', call: 'getLines' }, level: 'warning' });
         return null;
       }),
-      client.astrocartography.generateMap({ subject } as any).catch((e: unknown) => {
+      client.astrocartography.generateMap({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'astrocartography/map', call: 'generateMap' }, level: 'warning' });
         return null;
       }),
-      client.astrocartography.findPowerZones({ subject } as any).catch((e: unknown) => {
+      client.astrocartography.findPowerZones({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'astrocartography/map', call: 'findPowerZones' }, level: 'warning' });
         return null;
       }),

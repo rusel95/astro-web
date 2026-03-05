@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
     const targetDate = target_date || new Date().toISOString().split('T')[0];
 
     const [directions, directionReport] = await Promise.all([
-      client.charts.getDirections({ subject, target_date: targetDate, direction_type, options } as any).catch((e: unknown) => {
+      client.charts.getDirections({ subject, target_date: targetDate, direction_type, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'directions', call: 'getDirections' }, level: 'warning' });
         return null;
       }),
-      client.analysis.getDirectionReport({ subject, target_date: targetDate, direction_type, options } as any).catch((e: unknown) => {
+      client.analysis.getDirectionReport({ subject, target_date: targetDate, direction_type, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'directions', call: 'getDirectionReport' }, level: 'warning' });
         return null;
       }),

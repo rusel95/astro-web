@@ -9,11 +9,11 @@ export async function POST(req: NextRequest) {
     const options = toSdkChartOptions();
 
     const [conjunctions, report] = await Promise.all([
-      client.fixedStars.getConjunctions({ subject, options } as any).catch((e: unknown) => {
+      client.fixedStars.getConjunctions({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'fixed-stars', call: 'getConjunctions' }, level: 'warning' });
         return null;
       }),
-      client.fixedStars.generateReport({ subject, options } as any).catch((e: unknown) => {
+      client.fixedStars.generateReport({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'fixed-stars', call: 'generateReport' }, level: 'warning' });
         return null;
       }),
