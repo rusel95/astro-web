@@ -1,0 +1,39 @@
+{
+  "natal": {
+    "planets": [
+      { "name": "Sun", "sign": "Aries", "degree": 15.42, "house": 7, "retrograde": false },
+      { "name": "Moon", "sign": "Cancer", "degree": 22.18, "house": 10, "retrograde": false },
+      { "name": "Mercury", "sign": "Pisces", "degree": 28.55, "house": 6, "retrograde": true },
+      { "name": "Venus", "sign": "Taurus", "degree": 8.33, "house": 8, "retrograde": false },
+      { "name": "Mars", "sign": "Gemini", "degree": 12.67, "house": 9, "retrograde": false },
+      { "name": "Jupiter", "sign": "Leo", "degree": 3.91, "house": 11, "retrograde": false },
+      { "name": "Saturn", "sign": "Scorpio", "degree": 18.24, "house": 2, "retrograde": true },
+      { "name": "Uranus", "sign": "Capricorn", "degree": 7.56, "house": 4, "retrograde": false },
+      { "name": "Neptune", "sign": "Capricorn", "degree": 14.88, "house": 4, "retrograde": false },
+      { "name": "Pluto", "sign": "Scorpio", "degree": 20.12, "house": 2, "retrograde": true }
+    ],
+    "houses": [
+      { "house": 1, "sign": "Libra", "degree": 0.0 },
+      { "house": 2, "sign": "Scorpio", "degree": 28.5 },
+      { "house": 3, "sign": "Sagittarius", "degree": 29.2 },
+      { "house": 4, "sign": "Capricorn", "degree": 2.8 },
+      { "house": 5, "sign": "Aquarius", "degree": 5.1 },
+      { "house": 6, "sign": "Pisces", "degree": 4.3 },
+      { "house": 7, "sign": "Aries", "degree": 0.0 },
+      { "house": 8, "sign": "Taurus", "degree": 28.5 },
+      { "house": 9, "sign": "Gemini", "degree": 29.2 },
+      { "house": 10, "sign": "Cancer", "degree": 2.8 },
+      { "house": 11, "sign": "Leo", "degree": 5.1 },
+      { "house": 12, "sign": "Virgo", "degree": 4.3 }
+    ],
+    "aspects": [
+      { "planet1": "Sun", "planet2": "Moon", "aspect": "square", "orb": 6.76, "applying": true },
+      { "planet1": "Sun", "planet2": "Mars", "aspect": "sextile", "orb": 2.75, "applying": false },
+      { "planet1": "Moon", "planet2": "Jupiter", "aspect": "trine", "orb": 1.73, "applying": true },
+      { "planet1": "Venus", "planet2": "Saturn", "aspect": "opposition", "orb": 9.91, "applying": false },
+      { "planet1": "Mars", "planet2": "Jupiter", "aspect": "sextile", "orb": 8.76, "applying": true }
+    ],
+    "ascendant": { "sign": "Libra", "degree": 0.0 },
+    "midheaven": { "sign": "Cancer", "degree": 2.8 }
+  }
+}

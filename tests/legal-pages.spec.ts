@@ -2,7 +2,7 @@
  * Legal pages tests — /terms and /privacy.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Terms Page', () => {
   test('loads with correct heading', async ({ page }) => {

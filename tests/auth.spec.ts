@@ -3,7 +3,7 @@
  * Tests login page UI, Google OAuth redirect, and protected route guards.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Auth — Login page', () => {
   test('login page loads and shows Google button', async ({ page }) => {

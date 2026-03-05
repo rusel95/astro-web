@@ -2,7 +2,7 @@
  * Explore page tests — page was removed, now redirects to /dashboard.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Explore Page (removed — redirects to dashboard)', () => {
   test('redirects to /dashboard', async ({ page }) => {

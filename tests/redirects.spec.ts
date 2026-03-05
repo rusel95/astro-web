@@ -3,7 +3,7 @@
  * Phase 18: Cleanup redirects.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const REDIRECTS = [
   { from: '/explore', to: /\/dashboard|\/auth\/login/ },

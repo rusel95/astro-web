@@ -2,7 +2,7 @@
  * Fixed Stars page tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Fixed Stars Page', () => {
   test('/fixed-stars loads with heading', async ({ page }) => {

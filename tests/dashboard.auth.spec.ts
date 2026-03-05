@@ -6,7 +6,7 @@
  *   npx playwright test --project=authenticated
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Dashboard (authenticated)', () => {
   test('shows dashboard after login', async ({ page }) => {

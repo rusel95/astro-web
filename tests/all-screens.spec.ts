@@ -14,7 +14,7 @@
  * - /horoscopes/* (all 6 types)
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 // ─────────────────────────────────────────────────
 // NAVIGATION (global)

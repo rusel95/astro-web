@@ -3,7 +3,7 @@
  * Tests dropdown menus, mobile slide-in, footer links, sticky behavior.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Desktop Navigation', () => {
   test('nav has logo linking to home', async ({ page }) => {

@@ -2,7 +2,7 @@
  * Eclipses page tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Eclipses Page', () => {
   test('loads with heading', async ({ page }) => {

@@ -2,7 +2,7 @@
  * Chinese Astrology section tests (BaZi, forecast, compatibility).
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Chinese Astrology Pages', () => {
   test('/chinese loads with BaZi heading', async ({ page }) => {

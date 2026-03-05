@@ -3,7 +3,7 @@
  * Ensures WCAG 2.1 Level AA compliance.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 import AxeBuilder from '@axe-core/playwright';
 
 const PAGES_TO_TEST = [

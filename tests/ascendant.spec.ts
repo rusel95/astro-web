@@ -2,7 +2,7 @@
  * Ascendant page tests — page was removed, now redirects to /chart/new.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Ascendant Calculator (removed — redirects to /chart/new)', () => {
   test('redirects to /chart/new', async ({ page }) => {

@@ -3,7 +3,7 @@
  * These are dynamic routes: /chart/[id] and /birthday-forecast/[id]
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Chart View — /chart/[id]', () => {
   // Use a simplified approach: test against production chart or skip full flow

@@ -8,7 +8,7 @@
  * Run: npx playwright test tests/full-app-public.spec.ts --project=public
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 // ═══════════════════════════════════════════════════════════════════
 // Group 1: Landing Page — Full Content Check

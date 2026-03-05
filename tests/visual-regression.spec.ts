@@ -4,7 +4,7 @@
  * Compare against on each run to detect UI regressions.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const PAGES_TO_SCREENSHOT = [
   { path: '/', name: 'home' },

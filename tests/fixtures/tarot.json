@@ -1,0 +1,48 @@
+{
+  "daily": {
+    "card": {
+      "name": "The Star",
+      "name_uk": "Зірка",
+      "number": 17,
+      "arcana": "major",
+      "upright": true,
+      "meaning": "Надія, натхнення, духовне оновлення. Після складного періоду приходить час зцілення та відновлення.",
+      "advice": "Довіряйте Всесвіту та залишайтеся відкритими до нових можливостей."
+    }
+  },
+  "draw": {
+    "cards": [
+      {
+        "position": "past",
+        "card": { "name": "The Tower", "name_uk": "Вежа", "number": 16, "arcana": "major", "upright": true },
+        "interpretation": "Нещодавно ви пережили значні зміни або руйнування старих структур"
+      },
+      {
+        "position": "present",
+        "card": { "name": "Ace of Cups", "name_uk": "Туз Кубків", "number": 1, "arcana": "minor", "upright": true },
+        "interpretation": "Зараз відкривається новий емоційний цикл, наповнений любов'ю та творчістю"
+      },
+      {
+        "position": "future",
+        "card": { "name": "The Sun", "name_uk": "Сонце", "number": 19, "arcana": "major", "upright": true },
+        "interpretation": "Попереду — період радості, успіху та самореалізації"
+      }
+    ],
+    "summary": "Розклад вказує на перехід від хаосу до гармонії. Прийміть зміни — вони ведуть до світла."
+  },
+  "birthCards": {
+    "cards": [
+      { "name": "The Star", "name_uk": "Зірка", "number": 17, "description": "Ваша карта душі — Зірка. Ви несете в собі надію та натхнення для інших." },
+      { "name": "Strength", "name_uk": "Сила", "number": 8, "description": "Ваша карта особистості — Сила. Внутрішня сила та мужність — ваші головні якості." }
+    ]
+  },
+  "transitNatal": {
+    "current_transits": [
+      {
+        "transit_card": { "name": "The Wheel of Fortune", "name_uk": "Колесо Фортуни" },
+        "natal_card": { "name": "The Star", "name_uk": "Зірка" },
+        "interpretation": "Поточні транзити активують вашу природну здатність до інтуїтивного сприйняття"
+      }
+    ]
+  }
+}

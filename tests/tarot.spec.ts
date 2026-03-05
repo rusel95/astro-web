@@ -2,7 +2,7 @@
  * Tarot section tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const TAROT_PAGES = [
   { path: '/tarot', heading: /таро/i },

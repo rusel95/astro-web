@@ -2,7 +2,7 @@
  * Cross-sell CTA tests — verify CTAs on chart, compatibility, and moon pages.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Cross-sell CTAs', () => {
   test('moon page has calendar CTA', async ({ page }) => {

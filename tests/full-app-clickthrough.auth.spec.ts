@@ -9,7 +9,8 @@
  * Run: npx playwright test tests/full-app-clickthrough.auth.spec.ts --project=authenticated
  */
 
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
+import type { Page } from '@playwright/test';
 
 /** Dismiss cookie consent banner if present (it intercepts pointer events). */
 async function dismissCookies(page: Page) {

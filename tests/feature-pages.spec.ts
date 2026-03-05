@@ -3,7 +3,7 @@
  * Tests that each page loads, shows the form/content, and works on mobile.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 // All feature pages that use FeaturePageLayout (show birth data form for non-auth users)
 const FEATURE_PAGES = [
