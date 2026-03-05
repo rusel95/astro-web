@@ -81,7 +81,7 @@ setup('authenticate', async ({ page, request }) => {
         path: '/',
         sameSite: 'Lax',
         httpOnly: false,
-        maxAge: COOKIE_MAX_AGE,
+        expires: Math.floor(Date.now() / 1000) + COOKIE_MAX_AGE,
       },
     ]);
   } else {
@@ -103,7 +103,7 @@ setup('authenticate', async ({ page, request }) => {
         path: '/',
         sameSite: 'Lax' as const,
         httpOnly: false,
-        maxAge: COOKIE_MAX_AGE,
+        expires: Math.floor(Date.now() / 1000) + COOKIE_MAX_AGE,
       })),
     );
   }
