@@ -7,20 +7,59 @@ import { trackQuizTimeUnknown } from '@/lib/quiz/tracking';
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
 const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
 
+function TimeSelect({ label, value, options, onChange, ariaLabel }: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <span className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">{label}</span>
+      {/* Wrapper shows custom chevron arrow so it's obvious it's a dropdown */}
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label={ariaLabel}
+          style={{
+            appearance: 'none',
+            WebkitAppearance: 'none',
+            background: 'rgba(108, 60, 225, 0.06)',
+            border: '1.5px solid rgba(108, 60, 225, 0.18)',
+            color: '#1a1a2e',
+            borderRadius: '0.75rem',
+            padding: '1rem 2.5rem 1rem 1rem',
+            fontSize: '1.75rem',
+            fontWeight: 700,
+            width: '5.5rem',
+            textAlign: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          {options.map(v => (
+            <option key={v} value={v}>{v}</option>
+          ))}
+        </select>
+        {/* Chevron indicator */}
+        <svg
+          className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2"
+          width="16" height="16" viewBox="0 0 16 16" fill="none"
+        >
+          <path d="M4 6l4 4 4-4" stroke="rgba(108,60,225,0.5)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 export default function QuizStep4BirthTime({ state, dispatch, onNext, onBack }: QuizStepProps) {
   const parts = state.birthTime ? state.birthTime.split(':') : ['12', '00'];
   const hourVal = parts[0] ?? '12';
   const minuteVal = parts[1] ?? '00';
 
   const isValid = state.birthTimeUnknown || state.birthTime.length > 0;
-
-  const setHour = (h: string) => {
-    dispatch({ type: 'SET_BIRTH_TIME', time: `${h}:${minuteVal}` });
-  };
-
-  const setMinute = (m: string) => {
-    dispatch({ type: 'SET_BIRTH_TIME', time: `${hourVal}:${m}` });
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && isValid) onNext();
@@ -36,42 +75,28 @@ export default function QuizStep4BirthTime({ state, dispatch, onNext, onBack }: 
       </p>
 
       <div className="w-full max-w-sm">
-        {/* Time selects — hidden when time is unknown (#101: no active fields when unknown) */}
+        {/* Time selects — hidden when time is unknown */}
         {!state.birthTimeUnknown && (
           <div className="flex items-center justify-center gap-2">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Год</span>
-              <select
-                value={hourVal}
-                onChange={(e) => setHour(e.target.value)}
-                className="quiz-select w-24 text-center text-2xl font-bold py-4"
-                aria-label="Година народження"
-              >
-                {HOURS.map(h => (
-                  <option key={h} value={h}>{h}</option>
-                ))}
-              </select>
-            </div>
-
+            <TimeSelect
+              label="Год"
+              value={hourVal}
+              options={HOURS}
+              onChange={(h) => dispatch({ type: 'SET_BIRTH_TIME', time: `${h}:${minuteVal}` })}
+              ariaLabel="Година народження"
+            />
             <span className="text-3xl font-light text-gray-300 mt-4">:</span>
-
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-[10px] uppercase tracking-widest font-semibold text-gray-400">Хв</span>
-              <select
-                value={minuteVal}
-                onChange={(e) => setMinute(e.target.value)}
-                className="quiz-select w-24 text-center text-2xl font-bold py-4"
-                aria-label="Хвилина народження"
-              >
-                {MINUTES.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-            </div>
+            <TimeSelect
+              label="Хв"
+              value={minuteVal}
+              options={MINUTES}
+              onChange={(m) => dispatch({ type: 'SET_BIRTH_TIME', time: `${hourVal}:${m}` })}
+              ariaLabel="Хвилина народження"
+            />
           </div>
         )}
 
-        {/* Custom checkbox — fixes black square rendering bug (#100) */}
+        {/* Custom checkbox */}
         <button
           type="button"
           onClick={() => {
