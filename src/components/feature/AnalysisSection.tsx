@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 
-// Ukrainian labels for common API keys
+// Ukrainian labels for common API keys (astrology terms use proper Ukrainian astrology terminology)
 const UK_LABELS: Record<string, string> = {
   // Life areas & themes
   general: 'Загальне',
   love: 'Кохання',
-  career: 'Кар\'єра',
-  health: 'Здоров\'я',
+  career: "Кар'єра",
+  health: "Здоров'я",
   money: 'Фінанси',
   finances: 'Фінанси',
   finance: 'Фінанси',
@@ -57,17 +57,17 @@ const UK_LABELS: Record<string, string> = {
   stones: 'Камені',
   directions: 'Напрямки',
   day_ruler: 'Планета дня',
-  day_ruler_activities: 'Активності дня',
+  day_ruler_activities: 'Сприятливі справи',
   power_hours: 'Години сили',
   times: 'Час',
 
   // Moon
   moon: 'Місяць',
   moon_phase: 'Фаза Місяця',
-  moon_sign: 'Знак Місяця',
+  moon_sign: 'Місяць у знаку',
   illumination: 'Освітленість',
   phase: 'Фаза',
-  ingress_today: 'Інгрес сьогодні',
+  ingress_today: 'Перехід сьогодні',
   next_sign: 'Наступний знак',
   void_of_course_moon: 'Місяць без курсу',
 
@@ -75,7 +75,7 @@ const UK_LABELS: Record<string, string> = {
   planetary_influences: 'Планетарні впливи',
   planet: 'Планета',
   aspect_type: 'Тип аспекту',
-  aspect_name: 'Назва аспекту',
+  aspect_name: 'Аспект',
   strength: 'Сила',
   natal_planet: 'Натальна планета',
 
@@ -85,13 +85,13 @@ const UK_LABELS: Record<string, string> = {
   // Chart anatomy
   compatibility: 'Сумісність',
   description: 'Опис',
-  summary: 'Резюме',
+  summary: 'Підсумок',
   overview: 'Огляд',
   analysis: 'Аналіз',
   advice: 'Порада',
-  rating: 'Рейтинг',
-  score: 'Оцінка',
-  overall_score: 'Загальна оцінка',
+  rating: 'Оцінка',
+  score: 'Бал',
+  overall_score: 'Загальний бал',
   score_description: 'Опис оцінки',
   is_destiny_sign: 'Знак долі',
   strengths: 'Сильні сторони',
@@ -99,35 +99,30 @@ const UK_LABELS: Record<string, string> = {
   challenges: 'Виклики',
   opportunities: 'Можливості',
   recommendations: 'Рекомендації',
-  interpretation: 'Інтерпретація',
+  interpretation: 'Тлумачення',
   conclusion: 'Висновок',
   aspects: 'Аспекти',
   planets: 'Планети',
   houses: 'Будинки',
   sign: 'Знак',
   element: 'Стихія',
-  modality: 'Модальність',
-  ruler: 'Управитель',
+  modality: 'Хрест',
+  ruler: 'Керівник',
   dignity: 'Гідність',
   detriment: 'Вигнання',
   exaltation: 'Екзальтація',
   fall: 'Падіння',
   retrograde: 'Ретроградність',
-  orb: 'Орб',
-  applying: 'Застосовний',
-  separating: 'Розділяючий',
+  orb: 'Орбіс',
+  applying: 'Аплікативний',
+  separating: 'Сепаративний',
   degree: 'Градус',
   minute: 'Хвилина',
   longitude: 'Довгота',
   latitude: 'Широта',
-  declination: 'Схилення',
-  speed: 'Швидкість',
-  house: 'Будинок',
-  cusp: 'Куспід',
 
   // Planet names
   sun: 'Сонце',
-  moon_planet: 'Місяць',
   mercury: 'Меркурій',
   venus: 'Венера',
   mars: 'Марс',
@@ -138,28 +133,19 @@ const UK_LABELS: Record<string, string> = {
   pluto: 'Плутон',
   chiron: 'Хірон',
   lilith: 'Ліліт',
-  mean_lilith: 'Середня Ліліт',
-  north_node: 'Північний вузол',
-  south_node: 'Південний вузол',
+  north_node: 'Висхідний вузол',
+  south_node: 'Низхідний вузол',
   ascendant: 'Асцендент',
-  midheaven: 'Середина неба',
-  mc: 'MC',
-  ic: 'IC',
+  midheaven: 'Середина Неба (MC)',
   vertex: 'Вертекс',
-  part_of_fortune: 'Точка Фортуни',
 
   // Aspect names
-  conjunction: 'Кон\'юнкція',
+  conjunction: "Кон'юнкція",
   opposition: 'Опозиція',
-  trine: 'Трін',
-  square: 'Квадрат',
+  trine: 'Тригон',
+  square: 'Квадратура',
   sextile: 'Секстиль',
   quincunx: 'Квінконс',
-  semi_sextile: 'Напівсекстиль',
-  semi_square: 'Напівквадрат',
-  sesquiquadrate: 'Сесквіквадрат',
-  quintile: 'Квінтиль',
-  biquintile: 'Біквінтиль',
 
   // Zodiac signs
   aries: 'Овен',
@@ -178,11 +164,6 @@ const UK_LABELS: Record<string, string> = {
   // Analysis & reports
   key_influences: 'Ключові впливи',
   detailed_analysis: 'Детальний аналіз',
-  brief_analysis: 'Короткий аналіз',
-  natal_analysis: 'Натальний аналіз',
-  transit_analysis: 'Транзитний аналіз',
-  synastry_analysis: 'Аналіз синастрії',
-  composite_analysis: 'Композитний аналіз',
   report: 'Звіт',
   natal_report: 'Натальний звіт',
   transit_report: 'Транзитний звіт',
@@ -199,16 +180,13 @@ const UK_LABELS: Record<string, string> = {
   date: 'Дата',
   period: 'Період',
   duration: 'Тривалість',
-  start_date: 'Дата початку',
-  end_date: 'Дата завершення',
 
   // Relationships
-  red_flags: 'Тривожні знаки',
+  red_flags: 'Тривожні сигнали',
   love_languages: 'Мови кохання',
   body_mapping: 'Карта тіла',
   communication_style: 'Стиль спілкування',
   emotional_needs: 'Емоційні потреби',
-  attachment_style: 'Стиль прив\'язаності',
   conflict_resolution: 'Вирішення конфліктів',
   shared_values: 'Спільні цінності',
   growth_areas: 'Зони розвитку',
@@ -220,50 +198,38 @@ const UK_LABELS: Record<string, string> = {
   // Wellness & health
   biorhythms: 'Біоритми',
   energy_patterns: 'Енергетичні патерни',
-  wellness_timing: 'Час для здоров\'я',
-  wellness_score: 'Оцінка здоров\'я',
+  wellness_timing: "Сприятливий час для здоров'я",
+  wellness_score: "Оцінка здоров'я",
   physical: 'Фізичне',
   emotional: 'Емоційне',
   intellectual: 'Інтелектуальне',
-  spiritual: 'Духовне',
   energy: 'Енергія',
   vitality: 'Життєва сила',
-  stress: 'Стрес',
-  recovery: 'Відновлення',
 
   // Financial / business
-  market_timing: 'Час для ринку',
+  market_timing: 'Ринковий час',
   personal_trading: 'Особисті фінанси',
   gann_analysis: 'Аналіз Ганна',
   bradley_siderograph: 'Сидерограф Бредлі',
   investment: 'Інвестиції',
   risk: 'Ризик',
-  profit: 'Прибуток',
-  loss: 'Втрата',
   growth: 'Зростання',
-  expansion: 'Розширення',
-  contraction: 'Скорочення',
   leadership: 'Лідерство',
-  networking: 'Нетворкінг',
-  innovation: 'Інновація',
   strategy: 'Стратегія',
 
   // Numerology
   core_numbers: 'Основні числа',
   comprehensive_report: 'Повний звіт',
-  life_path: 'Число життєвого шляху',
-  expression: 'Число вираження',
-  soul_urge: 'Число душі',
-  personality: 'Число особистості',
-  birthday: 'Число дня народження',
-  maturity: 'Число зрілості',
+  life_path: 'Число Життєвого Шляху',
+  expression: 'Число Вираження',
+  soul_urge: 'Число Душі',
+  personality: 'Число Особистості',
+  birthday: 'Число Дня Народження',
+  maturity: 'Число Зрілості',
   personal_year: 'Персональний рік',
-  personal_month: 'Персональний місяць',
-  personal_day: 'Персональний день',
   karmic_debt: 'Кармічний борг',
   karmic_lessons: 'Кармічні уроки',
-  master_number: 'Майстер-число',
-  pinnacles: 'Піки',
+  pinnacles: 'Вершини',
   cycles: 'Цикли',
 
   // Transit & progressions
@@ -271,40 +237,24 @@ const UK_LABELS: Record<string, string> = {
   natal_transits: 'Натальні транзити',
   transit_chart: 'Транзитна карта',
   progressions: 'Прогресії',
-  secondary_progressions: 'Вторинні прогресії',
-  solar_arc: 'Сонячна дуга',
   profections: 'Профекції',
-  profection_year: 'Рік профекції',
-  profected_house: 'Профецирований будинок',
-  time_lord: 'Хронократор',
-  solar_return: 'Повернення Сонця',
-  lunar_return: 'Повернення Місяця',
-  directions: 'Дирекції',
+  solar_return: 'Соляр',
+  lunar_return: 'Лунар',
   primary_directions: 'Первинні дирекції',
 
   // Chinese astrology
   animal: 'Тварина',
   yin_yang: 'Інь-Ян',
-  heavenly_stem: 'Небесний стовбур',
-  earthly_branch: 'Земна гілка',
-  five_elements: 'П\'ять елементів',
-  bazi: 'Бацзи',
-  pillar: 'Стовп',
-  year_pillar: 'Стовп року',
-  month_pillar: 'Стовп місяця',
-  day_pillar: 'Стовп дня',
-  hour_pillar: 'Стовп години',
+  five_elements: "П'ять стихій",
+  bazi: 'Ба-Цзи',
 
   // Astrocartography
   lines: 'Лінії',
   locations: 'Локації',
   best_places: 'Найкращі місця',
-  challenging_places: 'Складні місця',
   relocation: 'Релокація',
-  map: 'Карта',
   city: 'Місто',
   country: 'Країна',
-  region: 'Регіон',
 
   // Tarot
   card: 'Карта',
@@ -314,28 +264,20 @@ const UK_LABELS: Record<string, string> = {
   meaning: 'Значення',
   reversed: 'Перевернута',
   upright: 'Пряма',
-  major_arcana: 'Старші аркани',
-  minor_arcana: 'Молодші аркани',
-  suit: 'Масть',
-  wands: 'Жезли',
-  cups: 'Чаші',
-  swords: 'Мечі',
-  pentacles: 'Пентаклі',
+  major_arcana: 'Старші Аркани',
+  minor_arcana: 'Молодші Аркани',
 
   // Eclipses & fixed stars
   eclipse: 'Затемнення',
   eclipses: 'Затемнення',
-  solar_eclipse: 'Сонячне затемнення',
-  lunar_eclipse: 'Місячне затемнення',
   fixed_stars: 'Нерухомі зірки',
-  star_name: 'Назва зірки',
-  constellation: 'Сузір\'я',
-  magnitude: 'Величина',
+  constellation: "Сузір'я",
+  magnitude: 'Зоряна величина',
   nature: 'Природа',
   influence: 'Вплив',
 
   // Misc structure
-  name: 'Ім\'я',
+  name: "Ім'я",
   type: 'Тип',
   category: 'Категорія',
   level: 'Рівень',
@@ -344,34 +286,20 @@ const UK_LABELS: Record<string, string> = {
   results: 'Результати',
   details: 'Деталі',
   notes: 'Примітки',
-  warning: 'Попередження',
-  info: 'Інформація',
   text: 'Текст',
-  format: 'Формат',
-  word_count: 'Кількість слів',
   metadata: 'Метадані',
-  extra: 'Додатково',
   data: 'Дані',
   value: 'Значення',
-  key: 'Ключ',
-  label: 'Позначка',
   percentage: 'Відсотки',
   count: 'Кількість',
   total: 'Всього',
-  average: 'Середнє',
-  minimum: 'Мінімум',
-  maximum: 'Максимум',
-  true_val: 'Так',
-  false_val: 'Ні',
-  yes: 'Так',
-  no: 'Ні',
   positive: 'Позитивне',
   negative: 'Негативне',
   neutral: 'Нейтральне',
 };
 
 export function getLabel(key: string): string {
-  return UK_LABELS[key] || key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  return UK_LABELS[key] || UK_LABELS[key.toLowerCase()] || key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 interface AnalysisSectionProps {
@@ -399,7 +327,7 @@ function RenderValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
   if (Array.isArray(value)) {
     if (value.length === 0) return null;
     if (typeof value[0] === 'string' || typeof value[0] === 'number') {
-      // Short items (< 40 chars) render as tags, longer ones as list
+      // Short items render as tags, longer ones as list
       const allShort = value.every(item => String(item).length < 40);
       if (allShort && value.length <= 12) {
         return (
@@ -432,7 +360,6 @@ function RenderValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
   }
 
   if (typeof value === 'object') {
-    // Skip internal SDK fields that contain raw chart data / unknown structures
     const SKIP_KEYS = new Set(['subject_data', 'directed_data', 'progressed_data', 'chart_data', 'target_data']);
     const entries = Object.entries(value as Record<string, unknown>).filter(
       ([k, v]) => v !== null && v !== undefined && !SKIP_KEYS.has(k)
@@ -464,11 +391,12 @@ function CollapsibleEntry({
   const [collapsed, setCollapsed] = useState(hasMany && depth > 0);
 
   if (!isComplex) {
-    // Render score-like numbers (0-100 or 0-10) as inline bar
+    // Render score-like numbers as inline progress bar
+    const lowerLabel = label.toLowerCase();
     const isScore = typeof value === 'number' &&
-      (label.toLowerCase().includes('оцінка') || label.toLowerCase().includes('рейтинг') ||
-       label.toLowerCase().includes('score') || label.toLowerCase().includes('rating') ||
-       label.toLowerCase().includes('сила') || label.toLowerCase().includes('strength'));
+      (lowerLabel.includes('оцінка') || lowerLabel.includes('бал') ||
+       lowerLabel.includes('score') || lowerLabel.includes('rating') ||
+       lowerLabel.includes('сила') || lowerLabel.includes('strength'));
     if (isScore && typeof value === 'number') {
       const max = value <= 10 ? 10 : 100;
       const pct = Math.min(100, (value / max) * 100);
