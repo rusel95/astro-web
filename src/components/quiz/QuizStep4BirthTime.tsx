@@ -30,10 +30,10 @@ function TimeSelect({ label, value, options, onChange, ariaLabel }: {
             border: '1.5px solid rgba(108, 60, 225, 0.18)',
             color: '#1a1a2e',
             borderRadius: '0.75rem',
-            padding: '1rem 2.5rem 1rem 1rem',
-            fontSize: '1.75rem',
+            padding: '0.75rem 2rem 0.75rem 0.5rem',
+            fontSize: '1.25rem',
             fontWeight: 700,
-            width: '5.5rem',
+            width: '4.5rem',
             textAlign: 'center',
             cursor: 'pointer',
           }}
