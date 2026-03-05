@@ -312,6 +312,11 @@ interface AnalysisSectionProps {
 function RenderValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
   if (value === null || value === undefined) return null;
 
+  // Safety: convert non-standard types to string to prevent .map() crashes
+  if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'boolean' && typeof value !== 'object') {
+    return <span className="text-white/60 text-sm">{String(value)}</span>;
+  }
+
   if (typeof value === 'string') {
     return <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">{value}</p>;
   }
