@@ -32,11 +32,9 @@ function isChartComplete(chart: ChartRecord | null): boolean {
     chart.name &&
     chart.birth_date &&
     chart.birth_time &&
-    chart.birth_time !== '12:00' &&
     chart.city &&
     chart.latitude &&
-    chart.longitude &&
-    chart.gender
+    chart.longitude
   );
 }
 

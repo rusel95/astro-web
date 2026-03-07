@@ -1,11 +1,15 @@
 import { createClient } from '@/lib/supabase/client';
 import { type FeatureType, CACHE_TTL, type FeatureResult } from '@/types/features';
-import { createHash } from 'crypto';
 
+// Browser-compatible hash (simple djb2 → hex)
 function hashParams(params: Record<string, unknown>): string {
   if (!params || Object.keys(params).length === 0) return '';
-  const sorted = JSON.stringify(params, Object.keys(params).sort());
-  return createHash('md5').update(sorted).digest('hex');
+  const str = JSON.stringify(params, Object.keys(params).sort());
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash + str.charCodeAt(i)) >>> 0;
+  }
+  return hash.toString(16);
 }
 
 export async function getCachedResult(

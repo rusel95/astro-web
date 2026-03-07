@@ -12,9 +12,41 @@ import PartialErrorBanner from './PartialErrorBanner';
 import BirthTimeWarning from './BirthTimeWarning';
 import { apiPost } from '@/lib/api-client';
 import { useAuthChart } from '@/hooks/useAuthChart';
+import { getCachedResult, saveCachedResult } from '@/lib/feature-cache';
 import type { ChartInput } from '@/types/astrology';
-import type { BirthDataFormVariant } from '@/types/features';
+import type { FeatureType, BirthDataFormVariant } from '@/types/features';
 import { posthog } from '@/lib/posthog';
+
+// Map API endpoints to feature types for caching
+const ENDPOINT_TO_FEATURE: Record<string, FeatureType> = {
+  '/api/solar-return': 'solar_return',
+  '/api/lunar-return': 'lunar_return',
+  '/api/transit': 'transit',
+  '/api/progressions': 'progressions',
+  '/api/directions': 'directions',
+  '/api/eclipses': 'eclipses',
+  '/api/horoscope/chinese': 'chinese_horoscope',
+  '/api/chinese/bazi': 'bazi',
+  '/api/chinese/forecast': 'chinese_forecast',
+  '/api/numerology': 'numerology',
+  '/api/traditional/analysis': 'traditional',
+  '/api/traditional/profections': 'profections',
+  '/api/fixed-stars': 'fixed_stars',
+  '/api/astrocartography/map': 'astrocartography',
+  '/api/astrocartography/location': 'astrocartography_location',
+  '/api/insights/business': 'business',
+  '/api/insights/wellness': 'wellness',
+  '/api/insights/financial': 'financial',
+  '/api/analysis/predictive': 'predictive',
+  '/api/analysis/career': 'career_analysis',
+  '/api/analysis/health': 'health_analysis',
+  '/api/analysis/karmic': 'karmic_analysis',
+  '/api/analysis/psychological': 'psychological',
+  '/api/analysis/spiritual': 'spiritual',
+  '/api/analysis/vocational': 'vocational',
+  '/api/tarot/birth-cards': 'tarot_birth_cards',
+  '/api/tarot/transit-natal': 'tarot_transit',
+};
 
 interface FeaturePageLayoutProps {
   title: string;
@@ -47,12 +79,29 @@ export default function FeaturePageLayout({
     posthog?.capture('feature_page_view', { feature: title, endpoint: apiEndpoint });
   }, [title, apiEndpoint]);
 
+  const featureType = ENDPOINT_TO_FEATURE[apiEndpoint];
+
   const handleSubmit = useCallback(
     async (body: Record<string, unknown>) => {
       lastBodyRef.current = body;
       setLoading(true);
       setError(null);
       setPartialError(null);
+
+      // Check cache for auth users with known chart
+      if (user && chart?.id && featureType) {
+        try {
+          const cached = await getCachedResult(user.id, featureType, chart.id, body);
+          if (cached) {
+            setResult(cached.result_data);
+            posthog?.capture('feature_cache_hit', { feature: title });
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // Cache miss or error — proceed with API call
+        }
+      }
 
       const { data, error: apiError } = await apiPost(apiEndpoint, body);
 
@@ -62,10 +111,15 @@ export default function FeaturePageLayout({
       } else if (data) {
         setResult(data);
         posthog?.capture('feature_result_loaded', { feature: title });
+
+        // Save to cache for auth users
+        if (user && chart?.id && featureType) {
+          saveCachedResult(user.id, featureType, chart.id, data, body).catch(() => {});
+        }
       }
       setLoading(false);
     },
-    [apiEndpoint, title]
+    [apiEndpoint, title, user, chart?.id, featureType]
   );
 
   // Auto-submit for auth users with complete chart on single-input pages
@@ -230,7 +284,7 @@ function chartInputToSubject(input: ChartInput) {
 }
 
 // Map ChartRecord (snake_case DB fields) directly to SDK subject format
-function chartRecordToSubject(chart: { name: string; birth_date: string; birth_time: string; city: string; country_code: string; latitude: number; longitude: number }) {
+function chartRecordToSubject(chart: { name: string; birth_date: string; birth_time: string; city: string; country_code: string; latitude: number; longitude: number; gender?: string | null }) {
   const [year, month, day] = chart.birth_date.split('-').map(Number);
   const [hour, minute] = (chart.birth_time || '12:00').split(':').map(Number);
   return {
@@ -246,6 +300,7 @@ function chartRecordToSubject(chart: { name: string; birth_date: string; birth_t
       country_code: chart.country_code,
       latitude: chart.latitude,
       longitude: chart.longitude,
+      ...(chart.gender ? { gender: chart.gender } : {}),
     },
   };
 }
