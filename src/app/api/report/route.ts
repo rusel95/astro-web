@@ -156,7 +156,7 @@ ${formatChartContext(chart)}
     Sentry.captureException(error, { tags: { route: 'report' } });
     console.error('Report generation error:', error);
     return NextResponse.json(
-      { error: error.message || 'Report generation failed' },
+      { error: error.message || 'Не вдалося згенерувати звіт. Спробуйте пізніше.' },
       { status: 500 }
     );
   }
