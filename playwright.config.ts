@@ -25,14 +25,6 @@ export default defineConfig({
   workers: 4,
   reporter: 'html',
   
-  // Screenshot comparison settings
-  expect: {
-    toHaveScreenshot: {
-      maxDiffPixels: 100, // Allow small differences
-      threshold: 0.2, // 20% threshold for visual diffs
-    },
-  },
-
   use: {
     baseURL: process.env.BASE_URL || 'https://astro-web-five.vercel.app',
     trace: 'on-first-retry',
@@ -65,12 +57,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    // Mobile viewport
-    {
-      name: 'mobile',
-      testMatch: /.*(?<!\.auth)\.spec\.ts/,
-      use: { ...devices['Pixel 7'] },
-    },
+    // Mobile viewport removed — individual specs use setViewportSize where needed
   ],
 
   // webServer only needed for local dev; comment out when testing against prod

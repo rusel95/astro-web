@@ -10,8 +10,8 @@
  * - /dashboard (redirect to login if unauthenticated)
  * - /moon (moon calendar)
  * - /compatibility
- * - /zodiac/[sign] (all 12 signs)
- * - /horoscopes/* (all 6 types)
+ *
+ * Note: /zodiac/[sign] and /horoscopes/* are covered by dedicated specs.
  */
 
 import { test, expect } from './helpers/test-fixtures';
@@ -355,86 +355,8 @@ test.describe('Compatibility Page', () => {
   });
 });
 
-// ─────────────────────────────────────────────────
-// ZODIAC PAGES (/zodiac/[sign]) — all 12 signs
-// ─────────────────────────────────────────────────
-
-const ZODIAC_SIGNS = [
-  'aries', 'taurus', 'gemini', 'cancer',
-  'leo', 'virgo', 'libra', 'scorpio',
-  'sagittarius', 'capricorn', 'aquarius', 'pisces',
-];
-
-test.describe('Zodiac Sign Pages', () => {
-  for (const sign of ZODIAC_SIGNS) {
-    test(`/zodiac/${sign}: loads with content`, async ({ page }) => {
-      await page.goto(`/zodiac/${sign}`);
-      const heading = page.locator('h1').first();
-      await expect(heading).toBeVisible({ timeout: 8000 });
-    });
-  }
-
-  test('zodiac page has proper branding in title', async ({ page }) => {
-    await page.goto('/zodiac/aries');
-    const title = await page.title();
-    // Title should mention the zodiac sign
-    expect(title.length).toBeGreaterThan(5);
-  });
-
-  test('zodiac page has CTA link', async ({ page }) => {
-    await page.goto('/zodiac/leo');
-    // Should have a CTA — either to /chart/new or some action
-    const cta = page.locator('a[href="/chart/new"]').first();
-    const hasChartCta = await cta.isVisible().catch(() => false);
-    const hasAnyButton = await page.locator('button, a').filter({ hasText: /розрахувати|створити|дізнатися/i }).first().isVisible().catch(() => false);
-    expect(hasChartCta || hasAnyButton).toBeTruthy();
-  });
-
-  test('invalid zodiac sign returns 404', async ({ page }) => {
-    const response = await page.goto('/zodiac/invalid-sign');
-    expect(response?.status()).toBe(404);
-  });
-
-  test('mobile: zodiac page is responsive', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/zodiac/pisces');
-    await page.waitForLoadState('networkidle').catch(() => {});
-    const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(410);
-  });
-});
-
-// ─────────────────────────────────────────────────
-// HOROSCOPE PAGES (/horoscopes/*)
-// ─────────────────────────────────────────────────
-
-const HOROSCOPE_TYPES = [
-  'personality', 'love', 'career', 'health', 'forecast', 'compatibility',
-];
-
-test.describe('Horoscope Pages', () => {
-  for (const type of HOROSCOPE_TYPES) {
-    test(`/horoscopes/${type}: loads with content`, async ({ page }) => {
-      await page.goto(`/horoscopes/${type}`);
-      const heading = page.locator('h1').first();
-      await expect(heading).toBeVisible({ timeout: 8000 });
-    });
-  }
-
-  test('horoscope page has CTA button', async ({ page }) => {
-    await page.goto('/horoscopes/personality');
-    const cta = page.locator('a[href="/chart/new"], a[href="/compatibility"]').first();
-    await expect(cta).toBeVisible();
-  });
-
-  test('mobile: horoscope page is responsive', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/horoscopes/love');
-    await page.waitForLoadState('networkidle').catch(() => {});
-    const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(410);
-  });
-});
+// Zodiac pages: covered by zodiac.spec.ts
+// Horoscope pages: covered by horoscopes.spec.ts
 
 // ─────────────────────────────────────────────────
 // API ENDPOINTS
@@ -502,7 +424,7 @@ test.describe('Security', () => {
 // ─────────────────────────────────────────────────
 
 test.describe('UX Quality', () => {
-  test('no console errors on home page', async ({ page }) => {
+  test('no critical console errors on home page', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error') errors.push(msg.text());
@@ -515,41 +437,10 @@ test.describe('UX Quality', () => {
     expect(critical).toHaveLength(0);
   });
 
-  test('no console errors on moon page', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(msg.text());
-    });
-    await page.goto('/moon');
-    await page.waitForLoadState('networkidle').catch(() => {});
-    const critical = errors.filter(
-      (e) => !e.includes('posthog') && !e.includes('analytics') && !e.includes('favicon') && !e.includes('hydrat') && !e.includes('Sentry')
-    );
-    // Moon page may have errors if data not populated, allow some
-    expect(critical.length).toBeLessThanOrEqual(2);
-  });
-
-  test('no console errors on compatibility page', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(msg.text());
-    });
-    await page.goto('/compatibility');
-    await page.waitForLoadState('networkidle').catch(() => {});
-    const critical = errors.filter(
-      (e) => !e.includes('posthog') && !e.includes('analytics') && !e.includes('favicon') && !e.includes('hydrat') && !e.includes('Sentry')
-    );
-    expect(critical).toHaveLength(0);
-  });
-
-  test('all pages have proper lang attribute', async ({ page }) => {
+  test('HTML lang=uk and viewport meta', async ({ page }) => {
     await page.goto('/');
     const lang = await page.locator('html').getAttribute('lang');
     expect(lang).toBe('uk');
-  });
-
-  test('meta viewport is set for mobile', async ({ page }) => {
-    await page.goto('/');
     const viewport = await page.locator('meta[name="viewport"]').getAttribute('content');
     expect(viewport).toContain('width=device-width');
   });

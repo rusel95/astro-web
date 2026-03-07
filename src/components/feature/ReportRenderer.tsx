@@ -48,9 +48,33 @@ export default function ReportRenderer({ content, className = '' }: ReportRender
   return null;
 }
 
+// Clean up raw template labels and common untranslated patterns from SDK responses
+function cleanText(raw: string): string {
+  return raw
+    // Strip "НАЗВА:" / "ТЕКСТ:" template markers
+    .replace(/^НАЗВА:\s*/gm, '')
+    .replace(/^ТЕКСТ:\s*/gm, '')
+    // Translate common untranslated English patterns from progression reports
+    .replace(/Progressed Sun in House (\d+)/g, 'Прогресоване Сонце в $1-му Домі')
+    .replace(/Progressed Moon in House (\d+)/g, 'Прогресований Місяць в $1-му Домі')
+    .replace(/Progressed Mercury in House (\d+)/g, 'Прогресований Меркурій в $1-му Домі')
+    .replace(/Progressed Venus in House (\d+)/g, 'Прогресована Венера в $1-му Домі')
+    .replace(/Progressed Mars in House (\d+)/g, 'Прогресований Марс в $1-му Домі')
+    .replace(/Progressed (Sun|Moon|Mercury|Venus|Mars|Jupiter|Saturn) in (\w+)/g, (_, planet, sign) => {
+      const ukPlanets: Record<string, string> = {
+        Sun: 'Прогресоване Сонце', Moon: 'Прогресований Місяць',
+        Mercury: 'Прогресований Меркурій', Venus: 'Прогресована Венера',
+        Mars: 'Прогресований Марс', Jupiter: 'Прогресований Юпітер',
+        Saturn: 'Прогресований Сатурн',
+      };
+      return `${ukPlanets[planet] || `Прогресований ${planet}`} у ${sign}`;
+    });
+}
+
 function FormattedText({ text, className = '' }: { text: string; className?: string }) {
   // Split by double newlines into paragraphs
-  const paragraphs = text.split(/\n\n+/).filter(p => p.trim());
+  const cleaned = cleanText(text);
+  const paragraphs = cleaned.split(/\n\n+/).filter(p => p.trim());
 
   return (
     <div className={`space-y-3 ${className}`}>
@@ -110,8 +134,10 @@ function ReportItem({ item }: { item: unknown }) {
   if (typeof item === 'object' && item !== null) {
     const obj = item as Record<string, unknown>;
     // Common SDK patterns: { planet, interpretation }, { aspect, description }, { title, text }
-    const title = (obj.title || obj.planet || obj.aspect || obj.name || obj.area || obj.category) as string | undefined;
-    const text = (obj.interpretation || obj.description || obj.text || obj.prediction || obj.meaning || obj.content || obj.summary) as string | undefined;
+    const rawTitle = (obj.title || obj.planet || obj.aspect || obj.name || obj.area || obj.category) as string | undefined;
+    const rawText = (obj.interpretation || obj.description || obj.text || obj.prediction || obj.meaning || obj.content || obj.summary) as string | undefined;
+    const title = rawTitle ? cleanText(String(rawTitle)) : undefined;
+    const text = rawText ? cleanText(String(rawText)) : undefined;
     const rating = obj.rating as number | undefined;
     const score = obj.score as number | undefined;
 
