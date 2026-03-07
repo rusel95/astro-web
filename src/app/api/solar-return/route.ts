@@ -4,10 +4,11 @@ import { getAstrologyClient, toSdkChartOptions } from '@/lib/astrology-client';
 
 export async function POST(req: NextRequest) {
   try {
-    const { subject, year } = await req.json();
+    const { subject, year, target_date } = await req.json();
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
-    const targetYear = year || new Date().getFullYear();
+    // Accept explicit year, or extract year from target_date (YYYY-MM-DD), or default to current year
+    const targetYear = year || (target_date ? parseInt((target_date as string).split('-')[0], 10) : new Date().getFullYear());
 
     const [solarReturnChart, solarReturnChartSvg, solarReturnReport, solarReturnTransits] = await Promise.all([
       client.charts.getSolarReturnChart({ subject, year: targetYear, options, language: 'uk' } as any).catch((e: unknown) => {

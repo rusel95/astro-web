@@ -76,11 +76,13 @@ function degToRad(deg: number) { return (deg * Math.PI) / 180; }
 
 function polarToXY(cx: number, cy: number, r: number, angleDeg: number) {
   const rad = degToRad(angleDeg);
-  return { x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad) };
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
 function astroToSvgAngle(longitude: number, ascendant: number): number {
-  return 180 + ascendant - longitude;
+  // With SVG y-down (cy + r*sin): subtract ascendant so ASC lands at 180° (left),
+  // negate to make zodiac run counter-clockwise as longitude increases.
+  return 180 - (longitude - ascendant);
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -267,9 +269,9 @@ export default function NatalChartWheel({
 
           const pathD = [
             `M ${pArcStart.x} ${pArcStart.y}`,
-            `A ${R_OUTER - 1} ${R_OUTER - 1} 0 0 0 ${pArcEnd.x} ${pArcEnd.y}`,
+            `A ${R_OUTER - 1} ${R_OUTER - 1} 0 0 1 ${pArcEnd.x} ${pArcEnd.y}`,
             `L ${pInnerEnd.x} ${pInnerEnd.y}`,
-            `A ${R_ZODIAC_INNER + 1} ${R_ZODIAC_INNER + 1} 0 0 1 ${pInnerStart.x} ${pInnerStart.y}`,
+            `A ${R_ZODIAC_INNER + 1} ${R_ZODIAC_INNER + 1} 0 0 0 ${pInnerStart.x} ${pInnerStart.y}`,
             'Z',
           ].join(' ');
 

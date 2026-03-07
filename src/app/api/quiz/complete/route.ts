@@ -164,7 +164,7 @@ export async function POST(request: Request) {
 
     let chartResponse;
     try {
-      chartResponse = await client.charts.getNatalChart({ subject, options });
+      chartResponse = await client.charts.getNatalChart({ subject, options, language: 'uk' } as any);
     } catch (apiErr: any) {
       Sentry.captureException(apiErr, {
         tags: { route: 'quiz/complete', step: 'astrology_api' },
