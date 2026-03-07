@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const count = SPREAD_COUNTS[spread_type] ?? 1;
 
     // Step 1: Draw cards
-    const drawn = await client.tarot.drawCards({ count } as any);
+    const drawn = await client.tarot.drawCards({ count, language: 'uk' } as any);
     const cards = (drawn as any)?.cards ?? drawn;
 
     // Step 2: Generate report based on spread type

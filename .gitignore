@@ -46,3 +46,5 @@ tests/.auth/
 # Env files
 .env.local
 .env.*.local
+firebase-debug.log
+.firebase/

@@ -8,19 +8,19 @@ export async function POST(req: NextRequest) {
     const client = getAstrologyClient();
 
     const [leadershipStyle, teamDynamics, businessTiming, hiringCompatibility] = await Promise.all([
-      client.insights.business.getLeadershipStyle({ subject } as any).catch((e: unknown) => {
+      client.insights.business.getLeadershipStyle({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/business', call: 'getLeadershipStyle' }, level: 'warning' });
         return null;
       }),
-      client.insights.business.getTeamDynamics({ subject } as any).catch((e: unknown) => {
+      client.insights.business.getTeamDynamics({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/business', call: 'getTeamDynamics' }, level: 'warning' });
         return null;
       }),
-      client.insights.business.getBusinessTiming({ subject } as any).catch((e: unknown) => {
+      client.insights.business.getBusinessTiming({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/business', call: 'getBusinessTiming' }, level: 'warning' });
         return null;
       }),
-      client.insights.business.getHiringCompatibility({ subject } as any).catch((e: unknown) => {
+      client.insights.business.getHiringCompatibility({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/business', call: 'getHiringCompatibility' }, level: 'warning' });
         return null;
       }),

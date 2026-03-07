@@ -9,15 +9,15 @@ export async function POST(req: NextRequest) {
     const options = toSdkChartOptions();
 
     const [analysis, dignitiesAnalysis, lotsAnalysis] = await Promise.all([
-      client.traditional.getAnalysis({ subject, options } as any).catch((e: unknown) => {
+      client.traditional.getAnalysis({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/analysis', call: 'getAnalysis' }, level: 'warning' });
         return null;
       }),
-      client.traditional.getDignitiesAnalysis({ subject, options } as any).catch((e: unknown) => {
+      client.traditional.getDignitiesAnalysis({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/analysis', call: 'getDignitiesAnalysis' }, level: 'warning' });
         return null;
       }),
-      client.traditional.getLotsAnalysis({ subject, options } as any).catch((e: unknown) => {
+      client.traditional.getLotsAnalysis({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/analysis', call: 'getLotsAnalysis' }, level: 'warning' });
         return null;
       }),

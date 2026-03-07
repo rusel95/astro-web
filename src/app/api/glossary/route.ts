@@ -9,19 +9,19 @@ export async function GET(req: NextRequest) {
     const client = getAstrologyClient();
 
     const [activePoints, elements, houses, keywords, lifeAreas] = await Promise.all([
-      client.glossary.getActivePoints({} as any).catch((e: unknown) => {
+      client.glossary.getActivePoints({ language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'glossary', call: 'getActivePoints' }, level: 'warning' });
         return null;
       }),
-      client.glossary.getElements().catch((e: unknown) => {
+      client.glossary.getElements({ language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'glossary', call: 'getElements' }, level: 'warning' });
         return null;
       }),
-      client.glossary.getHouses({} as any).catch((e: unknown) => {
+      client.glossary.getHouses({ language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'glossary', call: 'getHouses' }, level: 'warning' });
         return null;
       }),
-      client.glossary.getKeywords(category ? { category } : {} as any).catch((e: unknown) => {
+      client.glossary.getKeywords(category ? { category, language: 'uk' } : { language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'glossary', call: 'getKeywords' }, level: 'warning' });
         return null;
       }),

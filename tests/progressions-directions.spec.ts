@@ -2,7 +2,7 @@
  * Progressions and Directions pages tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Progressions and Directions Pages', () => {
   test('/progressions loads with heading', async ({ page }) => {

@@ -12,11 +12,11 @@ export async function POST(req: NextRequest) {
     }
 
     const [locationAnalysis, relocationChart] = await Promise.all([
-      client.astrocartography.analyzeLocation({ subject, location } as any).catch((e: unknown) => {
+      client.astrocartography.analyzeLocation({ subject, location, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'astrocartography/location', call: 'analyzeLocation' }, level: 'warning' });
         return null;
       }),
-      client.astrocartography.generateRelocationChart({ subject } as any).catch((e: unknown) => {
+      client.astrocartography.generateRelocationChart({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'astrocartography/location', call: 'generateRelocationChart' }, level: 'warning' });
         return null;
       }),

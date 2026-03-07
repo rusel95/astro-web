@@ -2,7 +2,7 @@
  * Landing page section tests — verify all homepage sections render.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Landing Page Sections', () => {
   test('hero section has main heading', async ({ page }) => {

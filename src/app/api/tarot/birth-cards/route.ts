@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const { birth_date, subject } = await req.json();
     const client = getAstrologyClient();
 
-    const payload = subject ? { subject, include_interpretation: true } : { birth_date, include_interpretation: true };
+    const payload = subject ? { subject, include_interpretation: true, language: 'uk' } : { birth_date, include_interpretation: true, language: 'uk' };
 
     const birthCards = await client.tarot.calculateBirthCards(payload as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: 'tarot/birth-cards', call: 'calculateBirthCards' }, level: 'error' });

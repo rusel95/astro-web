@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ZODIAC_NAMES_UK } from '@/lib/constants';
 import type { ZodiacSign } from '@/types/astrology';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
+import HoroscopeResult from '@/components/horoscope/HoroscopeResult';
 import AnalysisSection from '@/components/feature/AnalysisSection';
 import ErrorState from '@/components/feature/ErrorState';
 import { useAuthChart } from '@/hooks/useAuthChart';
@@ -124,7 +125,12 @@ export default function SignHoroscopePage({ title, description, apiPath }: SignH
       )}
 
       {/* Results */}
-      {data && !loading && !error && (
+      {data && !loading && !error && selectedSign && (
+        <HoroscopeResult data={data} sign={selectedSign} />
+      )}
+
+      {/* Fallback if HoroscopeResult can't parse the data */}
+      {data && !loading && !error && selectedSign && !(data as any).horoscope?.life_areas && (
         <div className="space-y-4">
           {Object.entries(data).map(([key, value]) => {
             if (!value || (typeof value === 'object' && Object.keys(value as object).length === 0)) return null;

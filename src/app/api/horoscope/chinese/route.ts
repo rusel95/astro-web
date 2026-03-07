@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    const horoscope = await client.horoscope.getChineseHoroscope({ subject } as any);
+    const horoscope = await client.horoscope.getChineseHoroscope({ subject, language: 'uk' } as any);
 
     return NextResponse.json(
       { horoscope },

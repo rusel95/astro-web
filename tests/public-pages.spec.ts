@@ -3,7 +3,7 @@
  * Ensures every page loads, has proper content, and works on mobile.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const PUBLIC_PAGES = [
   { path: '/', title: /персональні|гороскопи|прогнози/i, key: 'Home' },

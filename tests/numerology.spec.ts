@@ -2,7 +2,7 @@
  * Numerology feature tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Numerology Page', () => {
   test('loads with heading and description', async ({ page }) => {

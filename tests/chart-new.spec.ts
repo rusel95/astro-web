@@ -3,7 +3,7 @@
  * Runs without auth (chart creation is public).
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('New Chart — Step 0: Date picker', () => {
   test.beforeEach(async ({ page }) => {

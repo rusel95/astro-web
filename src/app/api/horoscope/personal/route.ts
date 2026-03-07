@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     };
     const options = toSdkChartOptions();
 
-    const horoscope = await client.horoscope.getPersonalDailyHoroscope({ subject, options } as any);
+    const horoscope = await client.horoscope.getPersonalDailyHoroscope({ subject, options, language: 'uk' } as any);
 
     return NextResponse.json(
       { horoscope },

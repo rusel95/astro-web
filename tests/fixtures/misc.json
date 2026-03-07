@@ -1,0 +1,124 @@
+{
+  "transit": {
+    "transits": [
+      { "planet": "Jupiter", "sign": "Leo", "house": 11, "aspect_to_natal": "trine Sun", "description": "Юпітер у тригоні з натальним Сонцем — період удачі та розширення можливостей" },
+      { "planet": "Saturn", "sign": "Pisces", "house": 6, "aspect_to_natal": "square Moon", "description": "Сатурн у квадратурі з натальним Місяцем — емоційні випробування та потреба у дисципліні" }
+    ]
+  },
+  "progressions": {
+    "progressed_sun": { "sign": "Taurus", "degree": 12.5, "description": "Прогресивне Сонце у Тільці — період стабілізації та матеріального зростання" },
+    "progressed_moon": { "sign": "Virgo", "degree": 8.3, "description": "Прогресивний Місяць у Діві — увага до деталей та здоров'я" },
+    "current_phase": "Перша чверть — час дії та ініціативи"
+  },
+  "directions": {
+    "directed_mc": { "sign": "Leo", "degree": 15.2, "description": "Спрямований MC у Леві — період публічного визнання" },
+    "significant_arcs": [
+      { "arc": "Сонце → MC", "year": 2026, "description": "Кульмінація кар'єрних досягнень" }
+    ]
+  },
+  "solarReturn": {
+    "solar_return_date": "2026-04-05",
+    "ascendant": { "sign": "Sagittarius", "degree": 12.8 },
+    "sun_house": 5,
+    "theme": "Рік творчості, романтики та самовираження",
+    "key_aspects": [
+      { "aspect": "Sun trine Jupiter", "description": "Сприятливий рік для розширення горизонтів" }
+    ]
+  },
+  "lunarReturn": {
+    "lunar_return_date": "2026-03-18",
+    "ascendant": { "sign": "Gemini", "degree": 5.4 },
+    "moon_house": 1,
+    "theme": "Місяць самопрезентації та нових контактів",
+    "emotional_focus": "Комунікація та обмін ідеями"
+  },
+  "eclipses": {
+    "upcoming": [
+      { "type": "solar", "date": "2026-08-12", "sign": "Leo", "degree": 19.5, "house": 11, "description": "Сонячне затемнення у Леві активує сферу дружби та спільнот" },
+      { "type": "lunar", "date": "2026-02-25", "sign": "Virgo", "degree": 7.2, "house": 12, "description": "Місячне затемнення у Діві вимагає відпускання старих звичок" }
+    ],
+    "natal_impact": "Затемнення торкаються вашого 11-12 осі — трансформація соціальних зв'язків"
+  },
+  "fixedStars": {
+    "conjunctions": [
+      { "star": "Regulus", "planet": "Jupiter", "orb": 1.2, "description": "Регулус у кон'юнкції з Юпітером — природна здатність до лідерства та визнання" },
+      { "star": "Spica", "planet": "Venus", "orb": 0.8, "description": "Спіка у кон'юнкції з Венерою — артистичний талант та привабливість" }
+    ]
+  },
+  "astrocartography": {
+    "map": {
+      "lines": [
+        { "planet": "Jupiter", "type": "MC", "description": "Лінія Юпітера MC — кар'єрне зростання" },
+        { "planet": "Venus", "type": "ASC", "description": "Лінія Венери ASC — гармонія та краса" }
+      ]
+    },
+    "location": {
+      "city": "Київ",
+      "latitude": 50.45,
+      "longitude": 30.52,
+      "dominant_influences": ["Saturn IC", "Neptune DSC"],
+      "score": 68,
+      "description": "Київ — місце глибокої трансформації та духовного зростання"
+    }
+  },
+  "wellness": {
+    "physical": { "score": 75, "advice": "Регулярні кардіо-тренування покращать загальний стан" },
+    "mental": { "score": 82, "advice": "Медитація та дихальні вправи для ментальної ясності" },
+    "emotional": { "score": 68, "advice": "Творче самовираження як спосіб емоційного балансу" },
+    "overall_recommendations": ["Йога", "Плавання", "Ведення щоденника"]
+  },
+  "financial": {
+    "financial_profile": "Схильність до ризикованих інвестицій з високим потенціалом",
+    "favorable_periods": ["Квітень 2026", "Вересень 2026"],
+    "areas_of_opportunity": ["Технології", "Нерухомість"],
+    "caution_areas": ["Спекуляції", "Криптовалюти у серпні"],
+    "wealth_indicators": { "jupiter_house": 11, "venus_house": 8 }
+  },
+  "business": {
+    "business_profile": "Природний підприємець з інноваційним мисленням",
+    "best_business_types": ["Технологічний стартап", "Консалтинг", "Освітній бізнес"],
+    "partnership_advice": "Ідеальний партнер — людина з сильним Сатурном (організованість та дисципліна)",
+    "timing": { "best_launch_period": "Травень-Червень 2026" }
+  },
+  "glossary": {
+    "terms": [
+      { "term": "Аспект", "definition": "Кутова відстань між двома планетами в натальній карті, що визначає характер їхньої взаємодії" },
+      { "term": "Тригон", "definition": "Гармонійний аспект у 120°, що вказує на природний талант або легкість у певній сфері" },
+      { "term": "Квадратура", "definition": "Напружений аспект у 90°, що створює внутрішній конфлікт та стимулює розвиток" },
+      { "term": "Асцендент", "definition": "Знак зодіаку, що сходив на східному горизонті в момент народження. Визначає зовнішню поведінку" },
+      { "term": "Мідхевен", "definition": "Найвища точка натальної карти (MC). Вказує на кар'єрний шлях та публічний імідж" }
+    ]
+  },
+  "relationshipInsights": {
+    "overall_dynamic": "Комплементарний союз — ваші сильні сторони компенсують слабкості одне одного",
+    "communication_style": "Потрібно більше терпіння у спілкуванні. Уникайте критики.",
+    "emotional_bond": { "score": 85, "description": "Глибокий емоційний зв'язок через аспекти Місяця" },
+    "growth_potential": { "score": 72, "description": "Стосунки сприяють особистісному зростанню обох партнерів" }
+  },
+  "lunarCalendar": {
+    "current_moon": {
+      "phase": "waxing_crescent",
+      "sign": "Taurus",
+      "illumination": 0.15,
+      "age_days": 3.2
+    },
+    "upcoming_events": [
+      { "event": "first_quarter", "date": "2026-03-08", "sign": "Gemini" },
+      { "event": "full_moon", "date": "2026-03-14", "sign": "Virgo" }
+    ]
+  },
+  "numerologyCompatibility": {
+    "person1_life_path": 7,
+    "person2_life_path": 3,
+    "compatibility_score": 72,
+    "description": "Союз мислителя та комунікатора — цікавий, але потребує компромісу",
+    "strengths": ["Інтелектуальна стимуляція", "Різноманітність"],
+    "challenges": ["Різний темп життя", "Потреба у тиші vs соціальність"]
+  },
+  "horoscopeChinese": {
+    "animal": "Тигр",
+    "element": "Вогонь",
+    "general": "Рік Змії створює виклики для Тигрів, але також відкриває нові горизонти",
+    "advice": "Будьте обережні з фінансами та довіряйте інтуїції"
+  }
+}

@@ -2,7 +2,7 @@
  * Astrocartography section tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Astrocartography Pages', () => {
   test('/astrocartography loads with heading', async ({ page }) => {

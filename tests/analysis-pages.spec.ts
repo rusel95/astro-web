@@ -2,7 +2,7 @@
  * Analysis pages tests (career, health, karmic, psychological, spiritual, vocational, lunar, relocation).
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const analysisPages = [
   { path: '/analysis/career', heading: /кар.єрний аналіз/i },

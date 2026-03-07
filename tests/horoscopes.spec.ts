@@ -3,7 +3,7 @@
  * Each type has different content/focus but similar structure.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 // Map old /horoscopes/* slugs to new /horoscope/* paths (permanent redirects set in next.config)
 const HOROSCOPE_TYPES = [

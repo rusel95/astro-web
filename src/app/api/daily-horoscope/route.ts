@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   if (!sign || !VALID_SIGNS.includes(sign as typeof VALID_SIGNS[number])) {
     return NextResponse.json(
-      { error: 'Invalid or missing sign parameter. Must be one of: ' + VALID_SIGNS.join(', ') },
+      { error: 'Невірний або відсутній параметр знаку зодіаку.' },
       { status: 400 }
     );
   }
@@ -49,9 +49,19 @@ export async function GET(request: NextRequest) {
     });
 
     // Map life_areas to the contract format (love/career/health categories)
-    const loveArea = result.life_areas?.find(a => a.area?.toLowerCase().includes('love') || a.area?.toLowerCase().includes('relationship'));
-    const careerArea = result.life_areas?.find(a => a.area?.toLowerCase().includes('career') || a.area?.toLowerCase().includes('work') || a.area?.toLowerCase().includes('finance'));
-    const healthArea = result.life_areas?.find(a => a.area?.toLowerCase().includes('health') || a.area?.toLowerCase().includes('wellness'));
+    // SDK returns Ukrainian area names when language:'uk' — match both EN and UK variants
+    const loveArea = result.life_areas?.find(a => {
+      const area = a.area?.toLowerCase() || '';
+      return area.includes('love') || area.includes('relationship') || area.includes('кохан') || area.includes('стосун');
+    });
+    const careerArea = result.life_areas?.find(a => {
+      const area = a.area?.toLowerCase() || '';
+      return area.includes('career') || area.includes('work') || area.includes('finance') || area.includes('кар\'єр') || area.includes('робот') || area.includes('фінанс');
+    });
+    const healthArea = result.life_areas?.find(a => {
+      const area = a.area?.toLowerCase() || '';
+      return area.includes('health') || area.includes('wellness') || area.includes('здоров') || area.includes('самопочут');
+    });
 
     const response = {
       sign,

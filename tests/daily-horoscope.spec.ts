@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 // /daily redirects to /horoscope/daily (SignHoroscopePage with zodiac sign selector)
 test.describe('Daily Horoscope', () => {

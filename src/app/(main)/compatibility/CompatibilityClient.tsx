@@ -8,6 +8,7 @@ import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
 import AnalysisSection from '@/components/feature/AnalysisSection';
+import CompatibilityScoreGauge from '@/components/compatibility/CompatibilityScoreGauge';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
@@ -248,7 +249,13 @@ export default function CompatibilityClient() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mt-12 space-y-6">
             {/* Compatibility Score */}
             {!!result.compatibilityScore && (
-              <AnalysisSection title="Оцінка сумісності" data={result.compatibilityScore} />
+              <CompatibilityScoreGauge
+                score={result.compatibilityScore.score ?? result.compatibilityScore.overall_score ?? 0}
+                description={result.compatibilityScore.score_description}
+                isDestinySign={result.compatibilityScore.is_destiny_sign}
+                person1Name={name1}
+                person2Name={name2}
+              />
             )}
 
             {/* Synastry SVG */}

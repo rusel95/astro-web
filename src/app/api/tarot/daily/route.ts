@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const client = getAstrologyClient();
     const today = new Date().toISOString().split('T')[0];
 
-    const dailyCard = await client.tarot.getDailyCard({ user_id: `anon-${today}` } as any).catch((e: unknown) => {
+    const dailyCard = await client.tarot.getDailyCard({ user_id: `anon-${today}`, language: 'uk' } as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: 'tarot/daily', call: 'getDailyCard' }, level: 'warning' });
       return null;
     });

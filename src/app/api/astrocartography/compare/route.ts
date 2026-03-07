@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const client = getAstrologyClient();
-    const comparison = await client.astrocartography.compareLocations({ subject, locations } as any);
+    const comparison = await client.astrocartography.compareLocations({ subject, locations, language: 'uk' } as any);
 
     return NextResponse.json(
       { comparison },

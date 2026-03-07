@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Quiz Flow', () => {
   test('quiz page loads with first step', async ({ page }) => {

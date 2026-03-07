@@ -3,7 +3,7 @@
  * Ensures SEO content, images, and mobile layout for each sign.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const ZODIAC_SIGNS = [
   { slug: 'aries', name: 'Овен', symbol: '♈' },

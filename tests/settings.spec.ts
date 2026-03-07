@@ -2,7 +2,7 @@
  * Settings page tests — account deletion flow.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Settings Page', () => {
   test('loads with heading', async ({ page }) => {

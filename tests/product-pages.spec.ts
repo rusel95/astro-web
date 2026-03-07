@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 const PRODUCT_SLUGS = [
   'personality', 'talent', 'love', 'marriage',

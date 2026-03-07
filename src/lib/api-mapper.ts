@@ -18,12 +18,18 @@ function toPlanetName(name: string): PlanetName | null {
 
 function toZodiacSign(name: string): ZodiacSign {
   const map: Record<string, ZodiacSign> = {
+    // English — full and abbreviated
     ari: 'Aries', aries: 'Aries', tau: 'Taurus', taurus: 'Taurus',
     gem: 'Gemini', gemini: 'Gemini', can: 'Cancer', cancer: 'Cancer',
     leo: 'Leo', vir: 'Virgo', virgo: 'Virgo', lib: 'Libra', libra: 'Libra',
     sco: 'Scorpio', scorpio: 'Scorpio', sag: 'Sagittarius', sagittarius: 'Sagittarius',
     cap: 'Capricorn', capricorn: 'Capricorn', aqu: 'Aquarius', aquarius: 'Aquarius',
     pis: 'Pisces', pisces: 'Pisces',
+    // Ukrainian — returned by SDK when language:'uk' is set
+    'овен': 'Aries', 'телець': 'Taurus', 'близнюки': 'Gemini', 'близнята': 'Gemini',
+    'рак': 'Cancer', 'лев': 'Leo', 'діва': 'Virgo', 'терези': 'Libra',
+    'скорпіон': 'Scorpio', 'стрілець': 'Sagittarius', 'козеріг': 'Capricorn',
+    'водолій': 'Aquarius', 'риби': 'Pisces',
   };
   return map[name.toLowerCase()] ?? 'Aries';
 }

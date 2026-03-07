@@ -2,7 +2,7 @@
  * Traditional Astrology section tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Traditional Astrology Pages', () => {
   test('/traditional loads with heading', async ({ page }) => {

@@ -1,0 +1,49 @@
+{
+  "synastry": {
+    "compatibilityScore": {
+      "score": 78,
+      "score_description": "Висока сумісність з потенціалом для глибоких стосунків",
+      "is_destiny_sign": false,
+      "overall_score": 78
+    },
+    "aspects": [
+      {
+        "planet1": "Sun",
+        "planet2": "Moon",
+        "aspect": "trine",
+        "orb": 2.3,
+        "description": "Гармонійний зв'язок між вашим Сонцем та Місяцем партнера створює природну емоційну сумісність"
+      },
+      {
+        "planet1": "Venus",
+        "planet2": "Mars",
+        "aspect": "conjunction",
+        "orb": 1.5,
+        "description": "Потужне фізичне притягнення та пристрасть у стосунках"
+      },
+      {
+        "planet1": "Mercury",
+        "planet2": "Mercury",
+        "aspect": "sextile",
+        "orb": 3.1,
+        "description": "Легке спілкування та взаєморозуміння на інтелектуальному рівні"
+      }
+    ],
+    "strengths": [
+      "Емоційна сумісність",
+      "Фізичне притягнення",
+      "Інтелектуальний зв'язок"
+    ],
+    "challenges": [
+      "Різне ставлення до фінансів",
+      "Потреба у особистому просторі"
+    ]
+  },
+  "composite": {
+    "composite_sun": { "sign": "Близнюки", "house": 7 },
+    "composite_moon": { "sign": "Риби", "house": 4 },
+    "relationship_theme": "Інтелектуальне партнерство з глибоким емоційним зв'язком",
+    "strengths": ["Спілкування", "Спільні інтереси", "Емпатія"],
+    "growth_areas": ["Практичність", "Стабільність"]
+  }
+}

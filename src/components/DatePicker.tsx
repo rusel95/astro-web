@@ -45,6 +45,21 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
     }
   }, [selected]);
 
+  // Intercept wheel events to scroll exactly 1 item at a time (prevents step-2 on most browsers)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 1 : -1;
+      const newIdx = Math.max(0, Math.min(items.length - 1, selected + delta));
+      el.scrollTop = newIdx * ITEM_H;
+      onSelect(newIdx);
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [selected, items.length, onSelect]);
+
   const handleScroll = () => {
     if (!containerRef.current) return;
     const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
@@ -72,12 +87,12 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
         {/* Fade top */}
         <div
           className="absolute inset-x-0 top-0 z-20 pointer-events-none"
-          style={{ height: ITEM_H * 2, background: 'linear-gradient(to bottom, rgba(15,10,30,0.95), transparent)' }}
+          style={{ height: ITEM_H * 2, background: 'linear-gradient(to bottom, rgba(15,10,30,0.75), transparent)' }}
         />
         {/* Fade bottom */}
         <div
           className="absolute inset-x-0 bottom-0 z-20 pointer-events-none"
-          style={{ height: ITEM_H * 2, background: 'linear-gradient(to top, rgba(15,10,30,0.95), transparent)' }}
+          style={{ height: ITEM_H * 2, background: 'linear-gradient(to top, rgba(15,10,30,0.75), transparent)' }}
         />
         {/* Scroll container */}
         <div
@@ -100,7 +115,7 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
               style={{
                 height: ITEM_H,
                 scrollSnapAlign: 'start',
-                color: idx === selected ? '#ffffff' : 'rgba(255,255,255,0.3)',
+                color: idx === selected ? '#ffffff' : 'rgba(255,255,255,0.45)',
                 fontSize: idx === selected ? '22px' : '17px',
                 fontWeight: idx === selected ? 700 : 400,
                 transition: 'all 0.15s ease',

@@ -2,7 +2,7 @@
  * Wellness, Financial, and Business insight pages tests.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './helpers/test-fixtures';
 
 test.describe('Insights Pages', () => {
   test('/insights/wellness loads with heading', async ({ page }) => {

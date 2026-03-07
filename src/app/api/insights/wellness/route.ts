@@ -8,27 +8,27 @@ export async function POST(req: NextRequest) {
     const client = getAstrologyClient();
 
     const [bodyMapping, biorhythms, energyPatterns, wellnessTiming, wellnessScore, moonWellness] = await Promise.all([
-      client.insights.wellness.getBodyMapping({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getBodyMapping({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getBodyMapping' }, level: 'warning' });
         return null;
       }),
-      client.insights.wellness.getBiorhythms({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getBiorhythms({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getBiorhythms' }, level: 'warning' });
         return null;
       }),
-      client.insights.wellness.getEnergyPatterns({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getEnergyPatterns({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getEnergyPatterns' }, level: 'warning' });
         return null;
       }),
-      client.insights.wellness.getWellnessTiming({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getWellnessTiming({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getWellnessTiming' }, level: 'warning' });
         return null;
       }),
-      client.insights.wellness.getWellnessScore({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getWellnessScore({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getWellnessScore' }, level: 'warning' });
         return null;
       }),
-      client.insights.wellness.getMoonWellness({ subject } as any).catch((e: unknown) => {
+      client.insights.wellness.getMoonWellness({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'insights/wellness', call: 'getMoonWellness' }, level: 'warning' });
         return null;
       }),

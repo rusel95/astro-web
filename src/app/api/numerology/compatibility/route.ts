@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const s1 = { ...subject1, name: subject1?.name || 'Person 1' };
     const s2 = { ...subject2, name: subject2?.name || 'Person 2' };
 
-    const compatibility = await client.numerology.analyzeCompatibility({ subjects: [s1, s2] } as any).catch((e: unknown) => {
+    const compatibility = await client.numerology.analyzeCompatibility({ subjects: [s1, s2], language: 'uk' } as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: 'numerology/compatibility', call: 'analyzeCompatibility' }, level: 'error' });
       return null;
     });

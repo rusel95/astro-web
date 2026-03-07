@@ -25,13 +25,19 @@ export async function POST(req: NextRequest, { params }: { params: { type: strin
 
   try {
     const { subject } = await req.json();
+    if (!subject) {
+      return NextResponse.json({ error: 'Дані субʼєкта обовʼязкові' }, { status: 400 });
+    }
+    if (type === 'lunar' && !subject.birth_data) {
+      return NextResponse.json({ error: 'Дані народження обовʼязкові для місячного аналізу' }, { status: 400 });
+    }
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
 
     // Lunar analysis requires datetime_location instead of subject
     const requestBody = type === 'lunar'
-      ? { datetime_location: subject.birth_data }
-      : { subject, options };
+      ? { datetime_location: subject.birth_data, language: 'uk' }
+      : { subject, options, language: 'uk' };
 
     const analysisResult = await ANALYSIS_METHOD_MAP[type as AnalysisType](client, requestBody as any).catch((e: unknown) => {
       Sentry.captureException(e, { tags: { route: `analysis/${type}`, call: `get${type}Analysis` }, level: 'error' });

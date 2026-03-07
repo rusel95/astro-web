@@ -7,9 +7,9 @@ export default function SolarReturnClient() {
   return (
     <FeaturePageLayout
       title="Соляр (Solar Return)"
-      description="Карта повернення Сонця у натальну позицію. Основні теми та енергії на рік."
+      description="Карта повернення Сонця у натальну позицію. Вкажіть рік для розрахунку."
       apiEndpoint="/api/solar-return"
-      formVariant="basic"
+      formVariant="date-range"
     >
       {(data) => (
         <div className="space-y-6">

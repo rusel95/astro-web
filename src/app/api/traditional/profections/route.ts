@@ -10,15 +10,15 @@ export async function POST(req: NextRequest) {
     const today = new Date().toISOString().split('T')[0];
 
     const [profectionsAnalysis, annualProfection, profectionTimeline] = await Promise.all([
-      client.traditional.getProfectionsAnalysis({ subject, options } as any).catch((e: unknown) => {
+      client.traditional.getProfectionsAnalysis({ subject, options, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/profections', call: 'getProfectionsAnalysis' }, level: 'warning' });
         return null;
       }),
-      client.traditional.getAnnualProfection({ subject, current_date: today } as any).catch((e: unknown) => {
+      client.traditional.getAnnualProfection({ subject, current_date: today, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/profections', call: 'getAnnualProfection' }, level: 'warning' });
         return null;
       }),
-      client.traditional.getProfectionTimeline({ subject, start_age: 0, end_age: 90 } as any).catch((e: unknown) => {
+      client.traditional.getProfectionTimeline({ subject, start_age: 0, end_age: 90, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'traditional/profections', call: 'getProfectionTimeline' }, level: 'warning' });
         return null;
       }),

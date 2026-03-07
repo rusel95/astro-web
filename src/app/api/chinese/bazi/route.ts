@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         Sentry.captureException(e, { tags: { route: 'chinese/bazi', call: 'calculateLuckPillars' }, level: 'warning' });
         return null;
       }),
-      client.chinese.calculateMingGua({ subject } as any).catch((e: unknown) => {
+      client.chinese.calculateMingGua({ subject, language: 'uk' } as any).catch((e: unknown) => {
         Sentry.captureException(e, { tags: { route: 'chinese/bazi', call: 'calculateMingGua' }, level: 'warning' });
         return null;
       }),

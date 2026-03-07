@@ -246,7 +246,7 @@ export default function ChartPage() {
       {/* ── Header ── */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-6 pb-4">
         <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
-          {inputData.name || 'Натальна карта'}
+          {(inputData.name && !/[/?&=]/.test(inputData.name)) ? inputData.name : 'Натальна карта'}
         </h1>
         <p className="text-text-muted text-sm mt-1">
           {chart.locationName} · {chart.birthDate} · {chart.birthTime}
