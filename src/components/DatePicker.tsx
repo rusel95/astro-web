@@ -37,15 +37,19 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   const ITEM_H = 52;
   const VISIBLE = 5;
   const containerRef = useRef<HTMLDivElement>(null);
+  const programmaticScroll = useRef(false);
 
   // Center selected item
   useEffect(() => {
     if (containerRef.current) {
+      programmaticScroll.current = true;
       containerRef.current.scrollTop = selected * ITEM_H;
+      // Reset flag after the browser processes the scroll
+      requestAnimationFrame(() => { programmaticScroll.current = false; });
     }
   }, [selected]);
 
-  // Intercept wheel events to scroll exactly 1 item at a time (prevents step-2 on most browsers)
+  // Intercept wheel events to scroll exactly 1 item at a time
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -53,7 +57,9 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
       e.preventDefault();
       const delta = e.deltaY > 0 ? 1 : -1;
       const newIdx = Math.max(0, Math.min(items.length - 1, selected + delta));
+      programmaticScroll.current = true;
       el.scrollTop = newIdx * ITEM_H;
+      requestAnimationFrame(() => { programmaticScroll.current = false; });
       onSelect(newIdx);
     };
     el.addEventListener('wheel', handleWheel, { passive: false });
@@ -61,7 +67,7 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   }, [selected, items.length, onSelect]);
 
   const handleScroll = () => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || programmaticScroll.current) return;
     const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
     const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
     if (clamped !== selected) onSelect(clamped);

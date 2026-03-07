@@ -14,6 +14,14 @@ interface FormData {
   email: string;
 }
 
+// Products that have dedicated feature pages (bypass chart view)
+const PRODUCT_FEATURE_ROUTES: Record<string, string> = {
+  '2026': '/solar-return',
+  'calendar': '/transit',
+  'monthly': '/lunar-return',
+  '3-years': '/progressions',
+};
+
 export default function ProductForm({ productSlug }: { productSlug: string }) {
   const router = useRouter();
   const [form, setForm] = useState<FormData>({
@@ -55,7 +63,8 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
               // Auth user has complete chart — skip form, redirect directly
               setExistingChartId(chart.id);
               setAutoRedirecting(true);
-              router.push(`/chart/${chart.id}?from=${productSlug}`);
+              const featureRoute = PRODUCT_FEATURE_ROUTES[productSlug];
+              router.push(featureRoute || `/chart/${chart.id}?from=${productSlug}`);
               return;
             }
 
