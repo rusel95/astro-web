@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import BirthDataForm from '@/components/feature/BirthDataForm';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 import ErrorState from '@/components/feature/ErrorState';
 import { apiPost } from '@/lib/api-client';
 import type { ChartInput } from '@/types/astrology';
@@ -94,7 +95,9 @@ export default function NumerologyCompatibilityClient() {
       {result && !error && (
         <div className="space-y-4">
           {!!result.compatibility && (
-            <AnalysisSection title="Нумерологічна сумісність" data={result.compatibility as Record<string, unknown>} />
+            <SectionCard title="Нумерологічна сумісність">
+              <ReportRenderer content={result.compatibility} />
+            </SectionCard>
           )}
         </div>
       )}

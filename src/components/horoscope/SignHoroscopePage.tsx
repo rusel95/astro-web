@@ -5,7 +5,8 @@ import { ZODIAC_NAMES_UK } from '@/lib/constants';
 import type { ZodiacSign } from '@/types/astrology';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
 import HoroscopeResult from '@/components/horoscope/HoroscopeResult';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 import ErrorState from '@/components/feature/ErrorState';
 import { useAuthChart } from '@/hooks/useAuthChart';
 
@@ -135,11 +136,12 @@ export default function SignHoroscopePage({ title, description, apiPath }: SignH
           {Object.entries(data).map(([key, value]) => {
             if (!value || (typeof value === 'object' && Object.keys(value as object).length === 0)) return null;
             return (
-              <AnalysisSection
+              <SectionCard
                 key={key}
                 title={key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                data={value as Record<string, unknown>}
-              />
+              >
+                <ReportRenderer content={value} />
+              </SectionCard>
             );
           })}
         </div>

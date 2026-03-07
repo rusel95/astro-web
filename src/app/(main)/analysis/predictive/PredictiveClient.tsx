@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 export default function PredictiveClient() {
   return (
@@ -14,7 +15,9 @@ export default function PredictiveClient() {
       {(data) => (
         <div className="space-y-6">
           {!!data.predictive && (
-            <AnalysisSection title="Прогностичний аналіз" data={data.predictive as Record<string, unknown>} />
+            <SectionCard title="Прогностичний аналіз">
+              <ReportRenderer content={data.predictive} />
+            </SectionCard>
           )}
         </div>
       )}

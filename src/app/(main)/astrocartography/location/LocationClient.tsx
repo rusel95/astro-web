@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 export default function LocationClient() {
   return (
@@ -12,13 +13,17 @@ export default function LocationClient() {
       formVariant="location"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.locationAnalysis && (
-            <AnalysisSection title="Аналіз локації" data={data.locationAnalysis as Record<string, unknown>} />
+            <SectionCard title="Аналіз локації">
+              <ReportRenderer content={data.locationAnalysis} />
+            </SectionCard>
           )}
 
           {!!data.relocationChart && (
-            <AnalysisSection title="Карта релокації" data={data.relocationChart as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Карта релокації" defaultCollapsed>
+              <ReportRenderer content={data.relocationChart} />
+            </SectionCard>
           )}
         </div>
       )}

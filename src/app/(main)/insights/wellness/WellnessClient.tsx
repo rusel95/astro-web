@@ -1,7 +1,9 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
 
 export default function WellnessClient() {
   return (
@@ -12,24 +14,45 @@ export default function WellnessClient() {
       formVariant="full"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.wellnessScore && (
-            <AnalysisSection title="Велнес-рейтинг" data={data.wellnessScore as Record<string, unknown>} />
+            <SectionCard title="Велнес-рейтинг">
+              {typeof data.wellnessScore === 'object' && !Array.isArray(data.wellnessScore) ? (
+                <KeyValueGrid data={data.wellnessScore as Record<string, unknown>} columns={2} />
+              ) : (
+                <ReportRenderer content={data.wellnessScore} />
+              )}
+            </SectionCard>
           )}
+
           {!!data.bodyMapping && (
-            <AnalysisSection title="Карта тіла" data={data.bodyMapping as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Карта тіла" defaultCollapsed>
+              <ReportRenderer content={data.bodyMapping} />
+            </SectionCard>
           )}
+
           {!!data.biorhythms && (
-            <AnalysisSection title="Біоритми" data={data.biorhythms as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Біоритми" defaultCollapsed>
+              <ReportRenderer content={data.biorhythms} />
+            </SectionCard>
           )}
+
           {!!data.energyPatterns && (
-            <AnalysisSection title="Енергетичні патерни" data={data.energyPatterns as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Енергетичні патерни" defaultCollapsed>
+              <ReportRenderer content={data.energyPatterns} />
+            </SectionCard>
           )}
+
           {!!data.wellnessTiming && (
-            <AnalysisSection title="Оптимальні часові вікна" data={data.wellnessTiming as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Оптимальні часові вікна" defaultCollapsed>
+              <ReportRenderer content={data.wellnessTiming} />
+            </SectionCard>
           )}
+
           {!!data.moonWellness && (
-            <AnalysisSection title="Місячний велнес" data={data.moonWellness as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Місячний велнес" defaultCollapsed>
+              <ReportRenderer content={data.moonWellness} />
+            </SectionCard>
           )}
         </div>
       )}

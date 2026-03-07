@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from './FeaturePageLayout';
-import AnalysisSection from './AnalysisSection';
+import SectionCard from './SectionCard';
+import ReportRenderer from './ReportRenderer';
 
 interface AnalysisPageClientProps {
   analysisType: string;
@@ -22,9 +23,11 @@ export default function AnalysisPageClient({
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.analysis && (
-            <AnalysisSection title={title} data={data.analysis as Record<string, unknown>} />
+            <SectionCard title={title}>
+              <ReportRenderer content={data.analysis} />
+            </SectionCard>
           )}
         </div>
       )}

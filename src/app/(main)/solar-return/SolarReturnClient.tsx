@@ -1,7 +1,21 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import DataTable from '@/components/feature/DataTable';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
+
+function extractSafeData(obj: unknown): Record<string, unknown> | null {
+  if (!obj || typeof obj !== 'object') return null;
+  const r = obj as Record<string, unknown>;
+  const safe: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(r)) {
+    if (['subject', 'subject_data', 'chart_data', 'options'].includes(k)) continue;
+    if (v != null) safe[k] = v;
+  }
+  return Object.keys(safe).length > 0 ? safe : null;
+}
 
 export default function SolarReturnClient() {
   return (
@@ -11,21 +25,40 @@ export default function SolarReturnClient() {
       apiEndpoint="/api/solar-return"
       formVariant="date-range"
     >
-      {(data) => (
-        <div className="space-y-6">
-          {!!data.solarReturnReport && (
-            <AnalysisSection title="Звіт соляру" data={data.solarReturnReport as Record<string, unknown>} />
-          )}
+      {(data) => {
+        const report = extractSafeData(data.solarReturnReport);
+        const transits = data.solarReturnTransits;
+        const chart = extractSafeData(data.solarReturnChart);
+        const transitArr = Array.isArray(transits) ? transits : null;
 
-          {!!data.solarReturnTransits && (
-            <AnalysisSection title="Транзити соляру" data={data.solarReturnTransits as Record<string, unknown>} />
-          )}
+        return (
+          <div className="space-y-4">
+            {report && (
+              <SectionCard title="Звіт соляру">
+                <ReportRenderer content={report} />
+              </SectionCard>
+            )}
 
-          {!!data.solarReturnChart && (
-            <AnalysisSection title="Дані карти соляру" data={data.solarReturnChart as Record<string, unknown>} defaultCollapsed />
-          )}
-        </div>
-      )}
+            {transitArr && transitArr.length > 0 && (
+              <SectionCard title="Транзити соляру">
+                <DataTable data={transitArr} />
+              </SectionCard>
+            )}
+
+            {!transitArr && transits && typeof transits === 'object' ? (
+              <SectionCard title="Транзити соляру">
+                <ReportRenderer content={transits as Record<string, unknown>} />
+              </SectionCard>
+            ) : null}
+
+            {chart && (
+              <SectionCard title="Дані карти соляру" defaultCollapsed>
+                <KeyValueGrid data={chart} />
+              </SectionCard>
+            )}
+          </div>
+        );
+      }}
     </FeaturePageLayout>
   );
 }

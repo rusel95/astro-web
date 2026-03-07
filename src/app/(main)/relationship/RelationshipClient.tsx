@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 import PartialErrorBanner from '@/components/feature/PartialErrorBanner';
 import ErrorState from '@/components/feature/ErrorState';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
@@ -103,27 +104,39 @@ export default function RelationshipClient() {
             )}
 
             {!!result.compatibility && (
-              <AnalysisSection title="Сумісність" data={result.compatibility as Record<string, unknown>} />
+              <SectionCard title="Сумісність">
+                <ReportRenderer content={result.compatibility} />
+              </SectionCard>
             )}
 
             {!!result.loveLanguages?.person1 && (
-              <AnalysisSection title={`Мови кохання — ${name1}`} data={result.loveLanguages.person1 as Record<string, unknown>} />
+              <SectionCard title={`Мови кохання — ${name1}`}>
+                <ReportRenderer content={result.loveLanguages.person1} />
+              </SectionCard>
             )}
 
             {!!result.loveLanguages?.person2 && (
-              <AnalysisSection title={`Мови кохання — ${name2}`} data={result.loveLanguages.person2 as Record<string, unknown>} />
+              <SectionCard title={`Мови кохання — ${name2}`}>
+                <ReportRenderer content={result.loveLanguages.person2} />
+              </SectionCard>
             )}
 
             {!!result.redFlags?.person1 && (
-              <AnalysisSection title={`Тривожні знаки — ${name1}`} data={result.redFlags.person1 as Record<string, unknown>} />
+              <SectionCard title={`Тривожні знаки — ${name1}`}>
+                <ReportRenderer content={result.redFlags.person1} />
+              </SectionCard>
             )}
 
             {!!result.redFlags?.person2 && (
-              <AnalysisSection title={`Тривожні знаки — ${name2}`} data={result.redFlags.person2 as Record<string, unknown>} />
+              <SectionCard title={`Тривожні знаки — ${name2}`}>
+                <ReportRenderer content={result.redFlags.person2} />
+              </SectionCard>
             )}
 
             {!!result.timing && (
-              <AnalysisSection title="Оптимальний час" data={result.timing as Record<string, unknown>} />
+              <SectionCard title="Оптимальний час">
+                <ReportRenderer content={result.timing} />
+              </SectionCard>
             )}
 
             <button onClick={() => setResult(null)} className="w-full py-3 rounded-xl text-white/70 hover:text-white transition-all min-h-[44px]" style={{ background: 'rgba(255,255,255,0.05)' }}>

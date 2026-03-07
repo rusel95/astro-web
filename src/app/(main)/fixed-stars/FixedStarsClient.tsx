@@ -1,7 +1,9 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import DataTable from '@/components/feature/DataTable';
 
 export default function FixedStarsClient() {
   return (
@@ -12,12 +14,21 @@ export default function FixedStarsClient() {
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.conjunctions && (
-            <AnalysisSection title="Кон'юнкції із зірками" data={data.conjunctions as Record<string, unknown>} />
+            <SectionCard title="Кон'юнкції із зірками">
+              {Array.isArray(data.conjunctions) ? (
+                <DataTable data={data.conjunctions} />
+              ) : (
+                <ReportRenderer content={data.conjunctions} />
+              )}
+            </SectionCard>
           )}
+
           {!!data.report && (
-            <AnalysisSection title="Звіт фіксованих зірок" data={data.report as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Звіт фіксованих зірок" defaultCollapsed>
+              <ReportRenderer content={data.report} />
+            </SectionCard>
           )}
         </div>
       )}

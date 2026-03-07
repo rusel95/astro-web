@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import DataTable from '@/components/feature/DataTable';
 
 interface GlossaryData {
   activePoints?: unknown;
@@ -11,10 +13,22 @@ interface GlossaryData {
   lifeAreas?: unknown;
 }
 
+function GlossarySection({ title, data, defaultCollapsed = false }: { title: string; data: unknown; defaultCollapsed?: boolean }) {
+  if (!data) return null;
+  return (
+    <SectionCard title={title} defaultCollapsed={defaultCollapsed}>
+      {Array.isArray(data) ? (
+        <DataTable data={data} />
+      ) : (
+        <ReportRenderer content={data} />
+      )}
+    </SectionCard>
+  );
+}
+
 export default function GlossaryClient() {
   const [data, setData] = useState<GlossaryData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetch('/api/glossary')
@@ -31,16 +45,6 @@ export default function GlossaryClient() {
         <p className="text-white/60 mt-1">Довідник астрологічних термінів, планет, будинків та елементів.</p>
       </div>
 
-      <div className="relative">
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Пошук термінів..."
-          className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-sm text-white placeholder-white/30 focus:outline-none focus:border-zorya-violet/50"
-        />
-      </div>
-
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
@@ -48,22 +52,12 @@ export default function GlossaryClient() {
           ))}
         </div>
       ) : data ? (
-        <div className="space-y-6">
-          {!!data.elements && (
-            <AnalysisSection title="Стихії" data={data.elements as Record<string, unknown>} />
-          )}
-          {!!data.activePoints && (
-            <AnalysisSection title="Планети та точки" data={data.activePoints as Record<string, unknown>} defaultCollapsed />
-          )}
-          {!!data.houses && (
-            <AnalysisSection title="Будинки" data={data.houses as Record<string, unknown>} defaultCollapsed />
-          )}
-          {!!data.lifeAreas && (
-            <AnalysisSection title="Сфери життя" data={data.lifeAreas as Record<string, unknown>} defaultCollapsed />
-          )}
-          {!!data.keywords && (
-            <AnalysisSection title="Ключові слова" data={data.keywords as Record<string, unknown>} defaultCollapsed />
-          )}
+        <div className="space-y-4">
+          <GlossarySection title="Стихії" data={data.elements} />
+          <GlossarySection title="Планети та точки" data={data.activePoints} defaultCollapsed />
+          <GlossarySection title="Будинки" data={data.houses} defaultCollapsed />
+          <GlossarySection title="Сфери життя" data={data.lifeAreas} defaultCollapsed />
+          <GlossarySection title="Ключові слова" data={data.keywords} defaultCollapsed />
         </div>
       ) : (
         <p className="text-white/40 text-sm">Не вдалося завантажити глосарій.</p>

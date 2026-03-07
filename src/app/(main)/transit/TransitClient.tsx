@@ -2,7 +2,21 @@
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import DataTable from '@/components/feature/DataTable';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
+
+function extractSafeData(obj: unknown): Record<string, unknown> | null {
+  if (!obj || typeof obj !== 'object') return null;
+  const r = obj as Record<string, unknown>;
+  const safe: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(r)) {
+    if (['subject', 'subject_data', 'chart_data', 'options'].includes(k)) continue;
+    if (v != null) safe[k] = v;
+  }
+  return Object.keys(safe).length > 0 ? safe : null;
+}
 
 export default function TransitClient() {
   return (
@@ -12,29 +26,51 @@ export default function TransitClient() {
       apiEndpoint="/api/transit"
       formVariant="date-range"
     >
-      {(data) => (
-        <div className="space-y-6">
-          {typeof data.transitChartSvg === 'string' && (
-            <SvgChartViewer svgContent={data.transitChartSvg} title="Транзитне бі-колесо" />
-          )}
+      {(data) => {
+        const transitReport = extractSafeData(data.transitReport);
+        const natalTransitReport = extractSafeData(data.natalTransitReport);
+        const natalTransits = data.natalTransits;
+        const transitChart = extractSafeData(data.transitChart);
+        const transitsArr = Array.isArray(natalTransits) ? natalTransits : null;
 
-          {!!data.transitReport && (
-            <AnalysisSection title="Транзитний звіт" data={data.transitReport as Record<string, unknown>} />
-          )}
+        return (
+          <div className="space-y-4">
+            {typeof data.transitChartSvg === 'string' && (
+              <SvgChartViewer svgContent={data.transitChartSvg} title="Транзитне бі-колесо" />
+            )}
 
-          {!!data.natalTransitReport && (
-            <AnalysisSection title="Натальні транзити" data={data.natalTransitReport as Record<string, unknown>} />
-          )}
+            {transitReport && (
+              <SectionCard title="Транзитний звіт">
+                <ReportRenderer content={transitReport} />
+              </SectionCard>
+            )}
 
-          {!!data.natalTransits && (
-            <AnalysisSection title="Найближчі транзити (30 днів)" data={data.natalTransits as Record<string, unknown>} defaultCollapsed />
-          )}
+            {natalTransitReport && (
+              <SectionCard title="Натальні транзити">
+                <ReportRenderer content={natalTransitReport} />
+              </SectionCard>
+            )}
 
-          {!!data.transitChart && (
-            <AnalysisSection title="Дані транзитної карти" data={data.transitChart as Record<string, unknown>} defaultCollapsed />
-          )}
-        </div>
-      )}
+            {transitsArr && transitsArr.length > 0 && (
+              <SectionCard title="Найближчі транзити (30 днів)" defaultCollapsed>
+                <DataTable data={transitsArr} />
+              </SectionCard>
+            )}
+
+            {!transitsArr && natalTransits && typeof natalTransits === 'object' ? (
+              <SectionCard title="Найближчі транзити (30 днів)" defaultCollapsed>
+                <ReportRenderer content={natalTransits as Record<string, unknown>} />
+              </SectionCard>
+            ) : null}
+
+            {transitChart && (
+              <SectionCard title="Дані транзитної карти" defaultCollapsed>
+                <KeyValueGrid data={transitChart} />
+              </SectionCard>
+            )}
+          </div>
+        );
+      }}
     </FeaturePageLayout>
   );
 }

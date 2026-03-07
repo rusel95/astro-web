@@ -1,7 +1,9 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import DataTable from '@/components/feature/DataTable';
 
 export default function TraditionalClient() {
   return (
@@ -12,17 +14,31 @@ export default function TraditionalClient() {
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.analysis && (
-            <AnalysisSection title="Традиційний аналіз" data={data.analysis as Record<string, unknown>} />
+            <SectionCard title="Традиційний аналіз">
+              <ReportRenderer content={data.analysis} />
+            </SectionCard>
           )}
 
           {!!data.dignitiesAnalysis && (
-            <AnalysisSection title="Гідності планет" data={data.dignitiesAnalysis as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Гідності планет" defaultCollapsed>
+              {Array.isArray(data.dignitiesAnalysis) ? (
+                <DataTable data={data.dignitiesAnalysis} />
+              ) : (
+                <ReportRenderer content={data.dignitiesAnalysis} />
+              )}
+            </SectionCard>
           )}
 
           {!!data.lotsAnalysis && (
-            <AnalysisSection title="Арабські частки" data={data.lotsAnalysis as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Арабські частки" defaultCollapsed>
+              {Array.isArray(data.lotsAnalysis) ? (
+                <DataTable data={data.lotsAnalysis} />
+              ) : (
+                <ReportRenderer content={data.lotsAnalysis} />
+              )}
+            </SectionCard>
           )}
         </div>
       )}

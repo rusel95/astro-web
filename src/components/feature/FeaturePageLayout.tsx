@@ -4,7 +4,9 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import BirthDataForm from './BirthDataForm';
 import ChartSelector from './ChartSelector';
-import AnalysisSection, { getLabel } from './AnalysisSection';
+import SectionCard from './SectionCard';
+import ReportRenderer from './ReportRenderer';
+import { getLabel } from './AnalysisSection';
 import ErrorState from './ErrorState';
 import PartialErrorBanner from './PartialErrorBanner';
 import BirthTimeWarning from './BirthTimeWarning';
@@ -130,11 +132,9 @@ export default function FeaturePageLayout({
         return <p className="text-white/40 text-sm text-center py-8">Дані відсутні</p>;
       }
       return entries.map(([key, value]) => (
-        <AnalysisSection
-          key={key}
-          title={getLabel(key)}
-          data={value as Record<string, unknown>}
-        />
+        <SectionCard key={key} title={getLabel(key)}>
+          <ReportRenderer content={value} />
+        </SectionCard>
       ));
     } catch {
       return (

@@ -7,7 +7,8 @@ import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 import CompatibilityScoreGauge from '@/components/compatibility/CompatibilityScoreGauge';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 
@@ -265,12 +266,16 @@ export default function CompatibilityClient() {
 
             {/* Synastry Report */}
             {!!result.synastryReport && (
-              <AnalysisSection title="Синастрійний звіт" data={result.synastryReport as Record<string, unknown>} />
+              <SectionCard title="Синастрійний звіт">
+                <ReportRenderer content={result.synastryReport} />
+              </SectionCard>
             )}
 
             {/* Synastry Chart Data */}
             {!!result.synastryChart && (
-              <AnalysisSection title="Аспекти синастрії" data={result.synastryChart as Record<string, unknown>} defaultCollapsed />
+              <SectionCard title="Аспекти синастрії" defaultCollapsed>
+                <ReportRenderer content={result.synastryChart} />
+              </SectionCard>
             )}
 
             {/* New calculation */}

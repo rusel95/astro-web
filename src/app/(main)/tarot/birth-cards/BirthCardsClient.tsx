@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 export default function BirthCardsClient() {
   return (
@@ -67,7 +68,9 @@ export default function BirthCardsClient() {
 
                 {/* Full data */}
                 {!bc.personality_card && (
-                  <AnalysisSection title="Карти народження" data={bc as Record<string, unknown>} />
+                  <SectionCard title="Карти народження">
+                    <ReportRenderer content={bc} />
+                  </SectionCard>
                 )}
               </>
             )}

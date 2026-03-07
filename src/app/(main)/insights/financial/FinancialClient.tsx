@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 export default function FinancialClient() {
   return (
@@ -12,18 +13,29 @@ export default function FinancialClient() {
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.marketTiming && (
-            <AnalysisSection title="Ринковий таймінг" data={data.marketTiming as Record<string, unknown>} />
+            <SectionCard title="Ринковий таймінг">
+              <ReportRenderer content={data.marketTiming} />
+            </SectionCard>
           )}
+
           {!!data.personalTrading && (
-            <AnalysisSection title="Особиста торгівля" data={data.personalTrading as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Особиста торгівля" defaultCollapsed>
+              <ReportRenderer content={data.personalTrading} />
+            </SectionCard>
           )}
+
           {!!data.gannAnalysis && (
-            <AnalysisSection title="Аналіз Ганна" data={data.gannAnalysis as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Аналіз Ганна" defaultCollapsed>
+              <ReportRenderer content={data.gannAnalysis} />
+            </SectionCard>
           )}
+
           {!!data.bradleySiderograph && (
-            <AnalysisSection title="Сайдерограф Бредлі" data={data.bradleySiderograph as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Сайдерограф Бредлі" defaultCollapsed>
+              <ReportRenderer content={data.bradleySiderograph} />
+            </SectionCard>
           )}
         </div>
       )}

@@ -6,7 +6,8 @@ import CitySearch from '@/components/CitySearch';
 import DateInputPicker from '@/components/DateInputPicker';
 import TimePicker from '@/components/TimePicker';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 import ErrorState from '@/components/feature/ErrorState';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 
@@ -124,11 +125,15 @@ export default function CompositeClient() {
             )}
 
             {!!result.compositeReport && (
-              <AnalysisSection title="Звіт композитної карти" data={result.compositeReport as Record<string, unknown>} />
+              <SectionCard title="Звіт композитної карти">
+                <ReportRenderer content={result.compositeReport} />
+              </SectionCard>
             )}
 
             {!!result.compositeChart && (
-              <AnalysisSection title="Дані композитної карти" data={result.compositeChart as Record<string, unknown>} defaultCollapsed />
+              <SectionCard title="Дані композитної карти" defaultCollapsed>
+                <ReportRenderer content={result.compositeChart} />
+              </SectionCard>
             )}
 
             <button onClick={() => setResult(null)} className="w-full py-3 rounded-xl text-white/70 hover:text-white transition-all min-h-[44px]" style={{ background: 'rgba(255,255,255,0.05)' }}>

@@ -1,7 +1,8 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 export default function TransitTarotClient() {
   return (
@@ -14,10 +15,14 @@ export default function TransitTarotClient() {
       {(data) => (
         <div className="space-y-6">
           {!!data.report && (
-            <AnalysisSection title="Транзитне таро" data={data.report as Record<string, unknown>} />
+            <SectionCard title="Транзитне таро">
+              <ReportRenderer content={data.report} />
+            </SectionCard>
           )}
           {!!data.cards && Array.isArray(data.cards) && (
-            <AnalysisSection title="Карти" data={{ cards: data.cards } as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Карти" defaultCollapsed>
+              <ReportRenderer content={data.cards} />
+            </SectionCard>
           )}
         </div>
       )}

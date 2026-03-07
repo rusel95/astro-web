@@ -1,7 +1,10 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
+import DataTable from '@/components/feature/DataTable';
 
 export default function ProfectionsClient() {
   return (
@@ -12,17 +15,31 @@ export default function ProfectionsClient() {
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.annualProfection && (
-            <AnalysisSection title="Поточна профекція" data={data.annualProfection as Record<string, unknown>} />
+            <SectionCard title="Поточна профекція">
+              {typeof data.annualProfection === 'object' && !Array.isArray(data.annualProfection) ? (
+                <KeyValueGrid data={data.annualProfection as Record<string, unknown>} columns={2} />
+              ) : (
+                <ReportRenderer content={data.annualProfection} />
+              )}
+            </SectionCard>
           )}
 
           {!!data.profectionsAnalysis && (
-            <AnalysisSection title="Аналіз профекцій" data={data.profectionsAnalysis as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Аналіз профекцій" defaultCollapsed>
+              <ReportRenderer content={data.profectionsAnalysis} />
+            </SectionCard>
           )}
 
           {!!data.profectionTimeline && (
-            <AnalysisSection title="Хронологія профекцій (0–90 років)" data={data.profectionTimeline as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Хронологія профекцій (0–90 років)" defaultCollapsed>
+              {Array.isArray(data.profectionTimeline) ? (
+                <DataTable data={data.profectionTimeline} maxRows={20} />
+              ) : (
+                <ReportRenderer content={data.profectionTimeline} />
+              )}
+            </SectionCard>
           )}
         </div>
       )}

@@ -1,20 +1,19 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
 
-// Extract only display-safe fields from the SDK report response.
-// subject_data, directed_data, chart_data are internal SDK fields that can
-// contain unknown/complex structures — rendering them causes React crashes.
-function extractReportDisplay(report: unknown): Record<string, unknown> | null {
-  if (!report || typeof report !== 'object') return null;
-  const r = report as Record<string, unknown>;
-  const display: Record<string, unknown> = {};
-  if (r.interpretations) display.interpretations = r.interpretations;
-  if (r.direction_type) display.direction_type = r.direction_type;
-  if (typeof r.arc_used === 'number') display.arc_used = r.arc_used;
-  if (r.target_date) display.target_date = r.target_date;
-  return Object.keys(display).length > 0 ? display : null;
+function extractSafeData(obj: unknown): Record<string, unknown> | null {
+  if (!obj || typeof obj !== 'object') return null;
+  const r = obj as Record<string, unknown>;
+  const safe: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(r)) {
+    if (['subject', 'subject_data', 'chart_data', 'directed_data', 'options'].includes(k)) continue;
+    if (v != null) safe[k] = v;
+  }
+  return Object.keys(safe).length > 0 ? safe : null;
 }
 
 export default function DirectionsClient() {
@@ -26,11 +25,21 @@ export default function DirectionsClient() {
       formVariant="date-range"
     >
       {(data) => {
-        const reportDisplay = extractReportDisplay(data.directionReport);
+        const report = extractSafeData(data.directionReport);
+        const directions = extractSafeData(data.directions);
+
         return (
-          <div className="space-y-6">
-            {reportDisplay && (
-              <AnalysisSection title="Звіт дирекцій" data={reportDisplay} />
+          <div className="space-y-4">
+            {report && (
+              <SectionCard title="Звіт дирекцій">
+                <ReportRenderer content={report} />
+              </SectionCard>
+            )}
+
+            {directions && (
+              <SectionCard title="Напрямлені позиції" defaultCollapsed>
+                <KeyValueGrid data={directions} />
+              </SectionCard>
             )}
           </div>
         );

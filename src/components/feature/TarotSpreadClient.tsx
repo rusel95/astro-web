@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import AnalysisSection from './AnalysisSection';
+import SectionCard from './SectionCard';
+import ReportRenderer from './ReportRenderer';
 
 interface TarotCard {
   name?: string;
@@ -139,7 +140,9 @@ export default function TarotSpreadClient({
 
             {/* Report */}
             {!!result.report && (
-              <AnalysisSection title="Інтерпретація розкладу" data={result.report as Record<string, unknown>} />
+              <SectionCard title="Інтерпретація розкладу">
+                <ReportRenderer content={result.report} />
+              </SectionCard>
             )}
 
             {/* Re-draw confirmation */}

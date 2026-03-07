@@ -16,7 +16,8 @@ import AreaCards from '@/components/report/AreaCards';
 import ReportView from '@/components/report/ReportView';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
 import BirthTimeWarning from '@/components/feature/BirthTimeWarning';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 function isBirthdayToday(birthDate: string): boolean {
   const [, m, d] = birthDate.split('-').map(Number);
@@ -498,24 +499,21 @@ export default function ChartPage() {
 
                 {/* Enhanced data sections (T034) */}
                 {!!enhanced?.natalReport && (
-                  <div className="glass-card p-4">
-                    <h3 className="text-sm font-semibold text-text-muted mb-3">Натальний звіт (API)</h3>
-                    <AnalysisSection title="Звіт" data={enhanced.natalReport as Record<string, unknown>} />
-                  </div>
+                  <SectionCard title="Натальний звіт (API)">
+                    <ReportRenderer content={enhanced.natalReport} />
+                  </SectionCard>
                 )}
 
                 {!!enhanced?.enhancedPositions && (
-                  <div className="glass-card p-4">
-                    <h3 className="text-sm font-semibold text-text-muted mb-3">Гідності планет</h3>
-                    <AnalysisSection title="Гідності" data={enhanced.enhancedPositions as Record<string, unknown>} />
-                  </div>
+                  <SectionCard title="Гідності планет">
+                    <ReportRenderer content={enhanced.enhancedPositions} />
+                  </SectionCard>
                 )}
 
                 {!!enhanced?.enhancedAspects && (
-                  <div className="glass-card p-4">
-                    <h3 className="text-sm font-semibold text-text-muted mb-3">Розширені аспекти</h3>
-                    <AnalysisSection title="Аспекти" data={enhanced.enhancedAspects as Record<string, unknown>} />
-                  </div>
+                  <SectionCard title="Розширені аспекти">
+                    <ReportRenderer content={enhanced.enhancedAspects} />
+                  </SectionCard>
                 )}
               </div>
             </motion.div>

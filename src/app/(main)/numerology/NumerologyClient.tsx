@@ -1,7 +1,9 @@
 'use client';
 
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
+import KeyValueGrid from '@/components/feature/KeyValueGrid';
 
 export default function NumerologyClient() {
   return (
@@ -12,13 +14,21 @@ export default function NumerologyClient() {
       formVariant="basic"
     >
       {(data) => (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {!!data.coreNumbers && (
-            <AnalysisSection title="Ключові числа" data={data.coreNumbers as Record<string, unknown>} />
+            <SectionCard title="Ключові числа">
+              {typeof data.coreNumbers === 'object' && !Array.isArray(data.coreNumbers) ? (
+                <KeyValueGrid data={data.coreNumbers as Record<string, unknown>} columns={2} />
+              ) : (
+                <ReportRenderer content={data.coreNumbers} />
+              )}
+            </SectionCard>
           )}
 
           {!!data.comprehensiveReport && (
-            <AnalysisSection title="Комплексний звіт" data={data.comprehensiveReport as Record<string, unknown>} defaultCollapsed />
+            <SectionCard title="Комплексний звіт" defaultCollapsed>
+              <ReportRenderer content={data.comprehensiveReport} />
+            </SectionCard>
           )}
         </div>
       )}

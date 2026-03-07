@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AnalysisSection from '@/components/feature/AnalysisSection';
+import SectionCard from '@/components/feature/SectionCard';
+import ReportRenderer from '@/components/feature/ReportRenderer';
 
 interface TarotCard {
   name?: string;
@@ -73,11 +74,9 @@ export default function TarotHubClient() {
                   <p className="text-sm text-white/60">{(card as any).meaning}</p>
                 )}
                 {!!(card as any)?.interpretation && (
-                  <AnalysisSection
-                    title="Інтерпретація"
-                    data={(card as any).interpretation as Record<string, unknown>}
-                    defaultCollapsed
-                  />
+                  <SectionCard title="Інтерпретація" defaultCollapsed>
+                    <ReportRenderer content={(card as any).interpretation} />
+                  </SectionCard>
                 )}
               </div>
             </div>
