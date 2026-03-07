@@ -10,8 +10,8 @@
  * - /dashboard (redirect to login if unauthenticated)
  * - /moon (moon calendar)
  * - /compatibility
- * - /zodiac/[sign] (all 12 signs)
- * - /horoscopes/* (all 6 types)
+ *
+ * Note: /zodiac/[sign] and /horoscopes/* are covered by dedicated specs.
  */
 
 import { test, expect } from './helpers/test-fixtures';

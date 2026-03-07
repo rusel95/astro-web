@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import { createClient } from '@/lib/supabase/client';
 
@@ -14,6 +15,7 @@ interface FormData {
 }
 
 export default function ProductForm({ productSlug }: { productSlug: string }) {
+  const router = useRouter();
   const [form, setForm] = useState<FormData>({
     name: '',
     gender: '',
@@ -44,13 +46,16 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
             .single();
 
           if (chart) {
-            const isComplete = !!(chart.name && chart.birth_date && chart.birth_time && chart.city);
+            const isComplete = !!(
+              chart.name && chart.birth_date && chart.birth_time && chart.city &&
+              Number.isFinite(chart.latitude) && Number.isFinite(chart.longitude)
+            );
 
             if (isComplete && chart.id) {
               // Auth user has complete chart — skip form, redirect directly
               setExistingChartId(chart.id);
               setAutoRedirecting(true);
-              window.location.href = `/chart/${chart.id}?from=${productSlug}`;
+              router.push(`/chart/${chart.id}?from=${productSlug}`);
               return;
             }
 
@@ -116,7 +121,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     });
     // If auth user already has a chart, go there directly. Never create a duplicate.
     if (existingChartId) {
-      window.location.href = `/chart/${existingChartId}?from=${productSlug}`;
+      router.push(`/chart/${existingChartId}?from=${productSlug}`);
       return;
     }
     // New user or no existing chart — create a new chart
@@ -126,7 +131,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     if (form.birthTime) params.set('birthTime', form.birthTime);
     if (form.city) params.set('city', form.city);
     params.set('from', productSlug);
-    window.location.href = `/chart/new?${params.toString()}`;
+    router.push(`/chart/new?${params.toString()}`);
   };
 
   if (autoRedirecting) {

@@ -19,10 +19,9 @@ test.describe('Auth — Login page', () => {
     await expect(googleBtn).toBeVisible();
   });
 
-  test('Google OAuth button is visible and clickable', async ({ page }) => {
+  test('Google OAuth button is enabled', async ({ page }) => {
     await page.goto('/auth/login');
     const googleBtn = page.locator('button, a').filter({ hasText: /google/i }).first();
-    await expect(googleBtn).toBeVisible();
     await expect(googleBtn).toBeEnabled();
   });
 

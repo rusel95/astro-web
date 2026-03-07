@@ -33,8 +33,8 @@ function isChartComplete(chart: ChartRecord | null): boolean {
     chart.birth_date &&
     chart.birth_time &&
     chart.city &&
-    chart.latitude &&
-    chart.longitude
+    Number.isFinite(chart.latitude) &&
+    Number.isFinite(chart.longitude)
   );
 }
 

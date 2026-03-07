@@ -279,6 +279,7 @@ function chartInputToSubject(input: ChartInput) {
       country_code: input.countryCode,
       latitude: input.latitude,
       longitude: input.longitude,
+      ...(input.gender ? { gender: input.gender } : {}),
     },
   };
 }

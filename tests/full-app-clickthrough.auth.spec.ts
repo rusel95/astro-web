@@ -313,15 +313,12 @@ test.describe('Data Prefilling — Logged-in User', () => {
         }
       }
 
-      await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
-      await page.waitForTimeout(4000);
+      // Wait for either redirect to chart page or page to settle
+      const redirected = await page.waitForURL(/\/chart\/[a-zA-Z0-9-]+/, { timeout: 8000 }).then(() => true).catch(() => false);
 
-      const finalUrl = page.url();
-      const wasRedirected = finalUrl.includes('/chart/');
-
-      if (wasRedirected) {
+      if (redirected) {
         // Auth user with complete chart → auto-redirected to chart page
-        expect(finalUrl).toMatch(/\/chart\/[a-z0-9-]+/);
+        expect(page.url()).toMatch(/\/chart\/[a-zA-Z0-9-]+/);
       } else {
         // Incomplete chart or no chart → page should show heading or form
         const heading = page.locator('h1, h2').first();
