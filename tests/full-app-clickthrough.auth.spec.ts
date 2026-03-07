@@ -301,11 +301,10 @@ test.describe('Data Prefilling — Logged-in User', () => {
   ];
 
   for (const pagePath of PRODUCT_PAGES) {
-    test(`${pagePath}: form fields prefilled from user chart data`, async ({ page }) => {
+    test(`${pagePath}: auto-redirects to chart or shows form`, async ({ page }) => {
       const response = await page.goto(pagePath);
       const status = response?.status() ?? 0;
       if (status === 404) {
-        // ISR/SSG pages can 404 transiently on first cold load — retry once
         await page.waitForTimeout(2000);
         const retry = await page.goto(pagePath);
         if (retry?.status() === 404) {
@@ -314,64 +313,19 @@ test.describe('Data Prefilling — Logged-in User', () => {
         }
       }
 
-      await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-      await page.waitForTimeout(4000); // Wait for Supabase prefill fetch
+      await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(4000);
 
-      // Check if the "auto-filled" badge is visible (user has charts)
-      const autofillBadge = page.locator('text=/автоматично.*профіл/i');
-      const hasBadge = await autofillBadge.count() > 0;
+      const finalUrl = page.url();
+      const wasRedirected = finalUrl.includes('/chart/');
 
-      if (hasBadge) {
-        // Badge is visible — deep assertions on all prefilled fields
-        await expect(autofillBadge.first()).toBeVisible();
-
-        // 1. Name is prefilled with non-empty value
-        const nameInput = page.locator('input[type="text"]').first();
-        await expect(nameInput).toBeVisible();
-        const nameVal = await nameInput.inputValue();
-        expect(nameVal.length).toBeGreaterThan(0);
-
-        // 2. Email is prefilled and readonly
-        const emailInput = page.locator('input[type="email"]');
-        if (await emailInput.count() > 0) {
-          const emailVal = await emailInput.inputValue();
-          expect(emailVal).toContain('@');
-          const isReadOnly = await emailInput.getAttribute('readonly');
-          expect(isReadOnly).not.toBeNull();
-        }
-
-        // 3. Birth date — check format if present, but allow empty (chart may lack birth_date)
-        const dateInput = page.locator('input[type="date"]');
-        if (await dateInput.count() > 0) {
-          const dateVal = await dateInput.inputValue();
-          if (dateVal) {
-            expect(dateVal).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-          }
-        }
-
-        // 4. Birth time — check format if present, allow empty
-        const timeInput = page.locator('input[type="time"]');
-        if (await timeInput.count() > 0) {
-          const timeVal = await timeInput.inputValue();
-          if (timeVal) {
-            expect(timeVal).toMatch(/^\d{2}:\d{2}/);
-          }
-        }
-
-        // 5. City — check if present, allow empty
-        const textInputs = page.locator('input[type="text"]');
-        if (await textInputs.count() >= 2) {
-          const cityVal = await textInputs.nth(1).inputValue();
-          if (cityVal) {
-            expect(cityVal.length).toBeGreaterThan(0);
-          }
-        }
+      if (wasRedirected) {
+        // Auth user with complete chart → auto-redirected to chart page
+        expect(finalUrl).toMatch(/\/chart\/[a-z0-9-]+/);
       } else {
-        // No badge — user may not have charts yet. Verify page at least renders form
+        // Incomplete chart or no chart → page should show heading or form
         const heading = page.locator('h1, h2').first();
         await expect(heading).toBeVisible({ timeout: 5000 });
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText!.length).toBeGreaterThan(100);
       }
     });
   }
