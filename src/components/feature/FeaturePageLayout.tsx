@@ -176,6 +176,13 @@ export default function FeaturePageLayout({
   // Safely render children — catch any render errors to avoid full-page crash
   const renderChildren = (data: Record<string, unknown>): ReactNode => {
     try {
+      // Check if result has any meaningful (non-null, non-meta) data before rendering
+      const META_KEYS = new Set(['subject', 'subject_data', 'chart_data', 'options', 'id', 'created_at', 'partialErrors']);
+      const hasData = Object.entries(data).some(([k, v]) => !META_KEYS.has(k) && v != null);
+      if (!hasData) {
+        return <p className="text-white/40 text-sm text-center py-8">Дані відсутні або поки не доступні для цієї дати</p>;
+      }
+
       if (children) return children(data);
       const entries = Object.entries(data).filter(([, value]) => {
         if (!value) return false;

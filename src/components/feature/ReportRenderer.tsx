@@ -48,7 +48,8 @@ export default function ReportRenderer({ content, className = '' }: ReportRender
   return null;
 }
 
-const UK_PLANETS: Record<string, string> = {
+// Planets in Ukrainian for Progressed / Directed / Solar Arc contexts
+const UK_PROG_PLANETS: Record<string, string> = {
   Sun: 'Прогресоване Сонце', Moon: 'Прогресований Місяць',
   Mercury: 'Прогресований Меркурій', Venus: 'Прогресована Венера',
   Mars: 'Прогресований Марс', Jupiter: 'Прогресований Юпітер',
@@ -56,22 +57,37 @@ const UK_PLANETS: Record<string, string> = {
   Neptune: 'Прогресований Нептун', Pluto: 'Прогресований Плутон',
 };
 
+const UK_DIR_PLANETS: Record<string, string> = {
+  Sun: 'Направлене Сонце', Moon: 'Направлений Місяць',
+  Mercury: 'Направлений Меркурій', Venus: 'Направлена Венера',
+  Mars: 'Направлений Марс', Jupiter: 'Направлений Юпітер',
+  Saturn: 'Направлений Сатурн', Uranus: 'Направлений Уран',
+  Neptune: 'Направлений Нептун', Pluto: 'Направлений Плутон',
+  True_Node: 'Направлений Північний вузол', True_South_Node: 'Направлений Південний вузол',
+  Mean_Lilith: 'Направлена Ліліт',
+};
+
+// Sign name → Ukrainian (locative case) — full names AND 3-letter abbreviations
 const UK_SIGNS: Record<string, string> = {
+  // Full names (Progressed/Solar Arc reports)
   Aries: 'Овні', Taurus: 'Тельці', Gemini: 'Близнюках',
   Cancer: 'Раку', Leo: 'Леві', Virgo: 'Діві',
   Libra: 'Терезах', Scorpio: 'Скорпіоні', Sagittarius: 'Стрільці',
   Capricorn: 'Козерозі', Aquarius: 'Водолії', Pisces: 'Рибах',
+  // 3-letter abbreviations (Directed headings)
+  Ari: 'Овні', Tau: 'Тельці', Gem: 'Близнюках',
+  Can: 'Раку', Vir: 'Діві', Lib: 'Терезах',
+  Sco: 'Скорпіоні', Sag: 'Стрільці', Cap: 'Козерозі',
+  Aqu: 'Водолії', Pis: 'Рибах',
 };
 
-const PLANET_HOUSE_PATTERN = new RegExp(
-  `Progressed (${Object.keys(UK_PLANETS).join('|')}) in House (\\d+)`,
-  'g'
-);
+const ALL_PLANET_KEYS = Array.from(new Set([...Object.keys(UK_PROG_PLANETS), ...Object.keys(UK_DIR_PLANETS)]));
+const ALL_SIGN_KEYS = Object.keys(UK_SIGNS).sort((a, b) => b.length - a.length); // longest first to avoid partial matches
 
-const PLANET_SIGN_PATTERN = new RegExp(
-  `Progressed (${Object.keys(UK_PLANETS).join('|')}) in (${Object.keys(UK_SIGNS).join('|')})`,
-  'g'
-);
+const PROG_HOUSE_PATTERN = new RegExp(`Progressed (${Object.keys(UK_PROG_PLANETS).join('|')}) in House (\\d+)`, 'g');
+const PROG_SIGN_PATTERN = new RegExp(`Progressed (${Object.keys(UK_PROG_PLANETS).join('|')}) in (${ALL_SIGN_KEYS.join('|')})(?=[^a-z]|$)`, 'g');
+const DIR_HOUSE_PATTERN = new RegExp(`(?:Directed|Solar Arc) (${ALL_PLANET_KEYS.join('|')}) in (?:the )?(\\d+)(?:st|nd|rd|th)? [Hh]ouse`, 'g');
+const DIR_SIGN_PATTERN = new RegExp(`(?:Directed|Solar Arc) (${ALL_PLANET_KEYS.join('|')}) in (${ALL_SIGN_KEYS.join('|')})(?=[^a-z]|$)`, 'g');
 
 // Clean up raw template labels and common untranslated patterns from SDK responses
 function cleanText(raw: string): string {
@@ -79,10 +95,14 @@ function cleanText(raw: string): string {
     // Strip "НАЗВА:" / "ТЕКСТ:" template markers
     .replace(/^НАЗВА:\s*/gm, '')
     .replace(/^ТЕКСТ:\s*/gm, '')
-    // Translate "Progressed X in House N" for all planets
-    .replace(PLANET_HOUSE_PATTERN, (_, planet, n) => `${UK_PLANETS[planet]} в ${n}-му Домі`)
-    // Translate "Progressed X in Sign" for all planets and signs
-    .replace(PLANET_SIGN_PATTERN, (_, planet, sign) => `${UK_PLANETS[planet]} у ${UK_SIGNS[sign]}`);
+    // Translate "Progressed X in House N"
+    .replace(PROG_HOUSE_PATTERN, (_, planet, n) => `${UK_PROG_PLANETS[planet]} в ${n}-му Домі`)
+    // Translate "Progressed X in Sign"
+    .replace(PROG_SIGN_PATTERN, (_, planet, sign) => `${UK_PROG_PLANETS[planet]} у ${UK_SIGNS[sign]}`)
+    // Translate "Directed/Solar Arc X in House N"
+    .replace(DIR_HOUSE_PATTERN, (_, planet, n) => `${UK_DIR_PLANETS[planet] ?? planet} в ${n}-му Домі`)
+    // Translate "Directed/Solar Arc X in Sign" (including 3-letter abbreviations)
+    .replace(DIR_SIGN_PATTERN, (_, planet, sign) => `${UK_DIR_PLANETS[planet] ?? planet} у ${UK_SIGNS[sign]}`);
 }
 
 function FormattedText({ text, className = '' }: { text: string; className?: string }) {

@@ -82,14 +82,14 @@ export default function AuthNav({ user }: Props) {
         </span>
       </a>
       <a
-        href="/settings"
+        href="/chart/new"
         className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-80"
         style={{
           border: '1px solid rgba(255,255,255,0.15)',
           color: 'rgba(255,255,255,0.5)',
         }}
       >
-        Налаштування
+        Змінити дані
       </a>
       <button
         onClick={handleSignOut}

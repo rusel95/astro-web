@@ -313,12 +313,13 @@ test.describe('Data Prefilling — Logged-in User', () => {
         }
       }
 
-      // Wait for either redirect to chart page or page to settle
-      const redirected = await page.waitForURL(/\/chart\/[a-zA-Z0-9-]+/, { timeout: 8000 }).then(() => true).catch(() => false);
+      // Wait for either redirect to an existing chart page (not /chart/new) or page to settle
+      const EXISTING_CHART_URL = /\/chart\/(?!new(?:[/?#]|$))[a-zA-Z0-9-]+/;
+      const redirected = await page.waitForURL(EXISTING_CHART_URL, { timeout: 8000 }).then(() => true).catch(() => false);
 
       if (redirected) {
-        // Auth user with complete chart → auto-redirected to chart page
-        expect(page.url()).toMatch(/\/chart\/[a-zA-Z0-9-]+/);
+        // Auth user with complete chart → auto-redirected to existing chart page
+        expect(page.url()).toMatch(EXISTING_CHART_URL);
       } else {
         // Incomplete chart or no chart → page should show heading or form
         const heading = page.locator('h1, h2').first();
