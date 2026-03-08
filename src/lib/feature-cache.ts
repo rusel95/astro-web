@@ -36,6 +36,7 @@ export async function getCachedResult(
 
   const supabase = createClient();
   const paramsHash = hashParams(params);
+  const canonicalParams = JSON.stringify(deepSortKeys(params));
 
   const { data } = await supabase
     .from('feature_results')
@@ -49,7 +50,13 @@ export async function getCachedResult(
     .limit(1)
     .single();
 
-  return data as FeatureResult | null;
+  if (!data) return null;
+
+  // Secondary check: verify full params match to guard against hash collisions
+  const storedParams = JSON.stringify(deepSortKeys(data.feature_params as Record<string, unknown>));
+  if (storedParams !== canonicalParams) return null;
+
+  return data as FeatureResult;
 }
 
 export async function saveCachedResult(

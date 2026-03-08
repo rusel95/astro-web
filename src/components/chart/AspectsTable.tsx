@@ -16,7 +16,7 @@ export default function AspectsTable({ chart }: { chart: NatalChart }) {
     <div className="space-y-1">
       {chart.aspects.map((a, i) => (
         <div key={i} className="flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-white/[0.03] transition-colors text-sm">
-          <span className="inline-flex"><PlanetIcon planet={a.planet1} size={16} className="text-zorya-gold" /></span>
+          <span className="inline-flex" aria-hidden="true"><PlanetIcon planet={a.planet1} size={16} className="text-zorya-gold" /></span>
           <span className="text-white text-xs min-w-[60px]">{PLANET_NAMES_UK[a.planet1]}</span>
           <span className={`text-lg ${ASPECT_COLORS[a.type] || 'text-gray-400'}`}>{ASPECT_SYMBOLS[a.type]}</span>
           <span className="text-white text-xs min-w-[60px]">{PLANET_NAMES_UK[a.planet2]}</span>
