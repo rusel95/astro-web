@@ -122,15 +122,16 @@ export default function FeaturePageLayout({
     [apiEndpoint, title, user, chart?.id, featureType]
   );
 
-  // Auto-submit for auth users with complete chart on single-input pages
+  // Auto-submit for auth users with complete chart on basic (non-date-range) pages only.
+  // Pages with date-range forms require user to pick a target date, so don't auto-submit.
+  const needsTargetDate = formVariant === 'date-range';
   useEffect(() => {
-    if (!dualInput && !authLoading && user && isComplete && chart && !autoSubmitted && !result) {
+    if (!needsTargetDate && !dualInput && !authLoading && user && isComplete && chart && !autoSubmitted && !result) {
       setAutoSubmitted(true);
-      // Use snake_case fields from ChartRecord (not ChartInput camelCase)
       setBirthTimeUnknown(chart.birth_time === '12:00');
       handleSubmit({ subject: chartRecordToSubject(chart) });
     }
-  }, [dualInput, authLoading, user, isComplete, chart, autoSubmitted, result, handleSubmit]);
+  }, [needsTargetDate, dualInput, authLoading, user, isComplete, chart, autoSubmitted, result, handleSubmit]);
 
   const handleFormSubmit = (data: ChartInput & { targetDate?: string; targetCity?: string; targetLatitude?: number; targetLongitude?: number }) => {
     setBirthTimeUnknown(data.birthTime === '12:00');
@@ -156,7 +157,7 @@ export default function FeaturePageLayout({
     if (lastBodyRef.current) handleSubmit(lastBodyRef.current);
   };
 
-  const showForm = !dualInput ? (!user || !isComplete) : true;
+  const showForm = !dualInput ? (!user || !isComplete || needsTargetDate) : true;
 
   // Map ChartRecord (snake_case DB fields) to ChartInput (camelCase form fields)
   const initialData: Partial<ChartInput> | undefined =
