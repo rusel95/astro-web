@@ -209,11 +209,22 @@ export default function FeaturePageLayout({
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-display font-bold text-white">
-          {title}
-        </h1>
-        <p className="text-white/60 mt-1">{description}</p>
+      <div className="relative rounded-2xl overflow-hidden bg-white/[0.04] border border-white/[0.08] p-6 md:p-8">
+        {/* Gradient accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-zorya-violet via-zorya-blue to-zorya-gold/50" />
+        {/* Subtle glow */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-zorya-violet/[0.06] rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-zorya-violet text-sm">✦</span>
+            <span className="text-xs font-medium text-zorya-violet/70 uppercase tracking-widest">Зоря</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-white">
+            {title}
+          </h1>
+          <p className="text-white/60 mt-2 text-sm md:text-base leading-relaxed max-w-lg">{description}</p>
+        </div>
       </div>
 
       {/* Birth Time Warning */}
