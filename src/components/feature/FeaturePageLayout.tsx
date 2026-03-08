@@ -176,21 +176,19 @@ export default function FeaturePageLayout({
   // Safely render children — catch any render errors to avoid full-page crash
   const renderChildren = (data: Record<string, unknown>): ReactNode => {
     try {
-      // Check if result has any meaningful (non-null, non-meta) data before rendering
-      const META_KEYS = new Set(['subject', 'subject_data', 'chart_data', 'options', 'id', 'created_at', 'partialErrors']);
-      const hasData = Object.entries(data).some(([k, v]) => !META_KEYS.has(k) && v != null);
-      if (!hasData) {
-        return <p className="text-white/40 text-sm text-center py-8">Дані відсутні або поки не доступні для цієї дати</p>;
-      }
-
+      // Pages with custom children handle their own empty state
       if (children) return children(data);
-      const entries = Object.entries(data).filter(([, value]) => {
+
+      // Default rendering: filter out meta keys and null values
+      const META_KEYS = new Set(['subject', 'subject_data', 'chart_data', 'progressed_data', 'directed_data', 'target_data', 'options', 'id', 'created_at', 'partialErrors']);
+      const entries = Object.entries(data).filter(([k, value]) => {
+        if (META_KEYS.has(k)) return false;
         if (!value) return false;
         if (typeof value === 'object' && Object.keys(value as object).length === 0) return false;
         return true;
       });
       if (entries.length === 0) {
-        return <p className="text-white/40 text-sm text-center py-8">Дані відсутні</p>;
+        return <p className="text-white/40 text-sm text-center py-8">Дані відсутні або поки не доступні для цієї дати</p>;
       }
       return entries.map(([key, value]) => (
         <SectionCard key={key} title={getLabel(key)}>

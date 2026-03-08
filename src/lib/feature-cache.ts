@@ -69,6 +69,11 @@ export async function saveCachedResult(
   const ttl = CACHE_TTL[featureType];
   if (ttl === 0) return; // No caching for this feature type
 
+  // Don't cache results where all meaningful values are null (SDK failures)
+  const META_KEYS = new Set(['subject', 'subject_data', 'chart_data', 'progressed_data', 'directed_data', 'target_data', 'options', 'id', 'created_at', 'partialErrors']);
+  const hasData = Object.entries(resultData).some(([k, v]) => !META_KEYS.has(k) && v != null);
+  if (!hasData) return;
+
   const supabase = createClient();
   const paramsHash = hashParams(params);
   const expiresAt =

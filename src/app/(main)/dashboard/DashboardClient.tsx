@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Cake, Moon, Heart, Plus, ChevronRight, Star, Compass, Sun } from 'lucide-react';
+import { Cake, Moon, Heart, Plus, ChevronRight, Star, Compass, Sun, Pencil } from 'lucide-react';
 import DailySummary from '@/components/dashboard/DailySummary';
 import ProfileManager from '@/components/dashboard/ProfileManager';
+import EditChartModal from '@/components/dashboard/EditChartModal';
 import RecommendedProducts from '@/components/dashboard/RecommendedProducts';
 import { track } from '@/lib/analytics';
 import { ANALYTICS_EVENTS } from '@/lib/analytics/events';
@@ -131,6 +132,14 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
   const [moonData, setMoonData] = useState<MoonData | null>(null);
   const [showAllCharts, setShowAllCharts] = useState(false);
   const [charts, setCharts] = useState(initialCharts);
+  const [editingChart, setEditingChart] = useState<Chart | null>(null);
+
+  // Auto-open edit modal when navigating to /dashboard#edit
+  useEffect(() => {
+    if (window.location.hash === '#edit' && charts.length > 0) {
+      setEditingChart(charts[0]);
+    }
+  }, []);
 
   const displayName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'Мандрівнику';
   const avatarUrl = user.user_metadata?.avatar_url;
@@ -311,7 +320,16 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
                         </p>
                       </div>
                     </div>
-                    <ChevronRight size={16} className="text-white/25 group-hover:text-white/50 transition-colors flex-shrink-0" />
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={(e) => { e.preventDefault(); setEditingChart(chart); }}
+                        className="p-1.5 rounded-lg hover:bg-white/10 transition-colors opacity-0 group-hover:opacity-100"
+                        title="Редагувати"
+                      >
+                        <Pencil size={13} className="text-white/40" />
+                      </button>
+                      <ChevronRight size={16} className="text-white/25 group-hover:text-white/50 transition-colors" />
+                    </div>
                   </a>
                 );
               })}
@@ -442,6 +460,18 @@ export default function DashboardClient({ user, charts: initialCharts }: Props) 
         />
 
       </div>
+
+      {/* Edit Chart Modal */}
+      {editingChart && (
+        <EditChartModal
+          chart={editingChart}
+          onClose={() => setEditingChart(null)}
+          onSaved={(updated) => {
+            setCharts(prev => prev.map(c => c.id === updated.id ? { ...c, ...updated } : c));
+            setEditingChart(null);
+          }}
+        />
+      )}
     </div>
   );
 }
