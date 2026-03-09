@@ -182,15 +182,6 @@ export default function DesktopNav({ user }: DesktopNavProps) {
             </span>
           </a>
 
-          {user && (
-            <a
-              href="/dashboard"
-              onClick={() => track(ANALYTICS_EVENTS.NAV_ITEM_CLICKED, { item: 'dashboard' })}
-              className="px-3.5 py-2 text-white/70 hover:text-white text-sm font-medium rounded-full transition-all hover:bg-white/[0.06]"
-            >
-              Мій кабінет
-            </a>
-          )}
         </div>
 
         {/* Right side */}

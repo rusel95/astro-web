@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { getAstrologyClient, toSdkChartOptions } from '@/lib/astrology-client';
+import { generateFeatureReport } from '@/lib/ai-report';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,10 +22,16 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
+    // Generate AI-enhanced Ukrainian report from raw SDK data
+    const rawForAI = directionReport || directions;
+    const aiReport = rawForAI
+      ? await generateFeatureReport('directions', rawForAI)
+      : null;
+
     const partialErrors = [!directions, !directionReport].filter(Boolean).length;
 
     return NextResponse.json(
-      { directions, directionReport, partialErrors: partialErrors > 0 ? partialErrors : undefined },
+      { directions, directionReport, aiReport, partialErrors: partialErrors > 0 ? partialErrors : undefined },
       { headers: { 'Cache-Control': 'private, s-maxage=2592000, stale-while-revalidate=86400' } }
     );
   } catch (error: any) {

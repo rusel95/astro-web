@@ -1,8 +1,9 @@
 'use client';
 
 import { NatalChart } from '@/types/astrology';
-import { PLANET_SYMBOLS, PLANET_NAMES_UK, ZODIAC_NAMES_UK } from '@/lib/constants';
+import { PLANET_NAMES_UK, ZODIAC_NAMES_UK } from '@/lib/constants';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
+import PlanetIcon from '@/components/icons/PlanetIcon';
 
 export default function PlanetsTable({ chart }: { chart: NatalChart }) {
   return (
@@ -21,7 +22,7 @@ export default function PlanetsTable({ chart }: { chart: NatalChart }) {
           {chart.planets.map((p) => (
             <tr key={p.name} className="border-b border-white/5 hover:bg-white/5 transition-colors">
               <td className="py-2.5 px-4">
-                <span className="text-zorya-violet mr-1.5 text-base">{PLANET_SYMBOLS[p.name]}</span>
+                <span className="inline-flex align-middle mr-1.5" aria-hidden="true"><PlanetIcon planet={p.name} size={16} className="text-zorya-violet" /></span>
                 <span className="text-text-primary">{PLANET_NAMES_UK[p.name]}</span>
               </td>
               <td className="py-2.5 px-4">

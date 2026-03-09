@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import { createClient } from '@/lib/supabase/client';
 
@@ -13,7 +14,16 @@ interface FormData {
   email: string;
 }
 
+// Products that have dedicated feature pages (bypass chart view)
+const PRODUCT_FEATURE_ROUTES: Record<string, string> = {
+  '2026': '/solar-return',
+  'calendar': '/transit',
+  'monthly': '/lunar-return',
+  '3-years': '/progressions',
+};
+
 export default function ProductForm({ productSlug }: { productSlug: string }) {
+  const router = useRouter();
   const [form, setForm] = useState<FormData>({
     name: '',
     gender: '',
@@ -25,9 +35,9 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
   const [tracked, setTracked] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
   const [existingChartId, setExistingChartId] = useState<string | null>(null);
+  const [autoRedirecting, setAutoRedirecting] = useState(false);
 
   // Pre-fill from auth session + chart data, then quiz session as fallback
-  // FR-019: Auto-submit when auth user has complete chart data
   useEffect(() => {
     async function prefillFromAuth() {
       try {
@@ -35,7 +45,6 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
         const { data: { user } } = await supabase.auth.getUser();
 
         if (user) {
-          // Get the user's most recent chart for birth data
           const { data: chart } = await supabase
             .from('charts')
             .select('id, name, birth_date, birth_time, city, gender, latitude, longitude, country_code')
@@ -45,57 +54,34 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
             .single();
 
           if (chart) {
-            // Check completeness: name + DOB + time + city + gender (FR-019)
             const isComplete = !!(
-              chart.name &&
-              chart.birth_date &&
-              chart.birth_time &&
-              chart.city &&
-              chart.gender
+              chart.name && chart.birth_date && chart.birth_time && chart.city &&
+              Number.isFinite(chart.latitude) && Number.isFinite(chart.longitude)
             );
 
             if (isComplete && chart.id) {
-              // Auth user already has a chart — pre-fill form and store chart ID.
-              // "Продовжити" will navigate to the existing chart, NOT create a new one.
-              // This prevents the infinite loop: product page → /chart/new → chart page → product CTA → loop.
-              const prefillData: Partial<FormData> = {
-                email: user.email || '',
-                name: chart.name || '',
-                gender: (chart.gender === 'male' || chart.gender === 'female') ? chart.gender : '',
-                birthDate: chart.birth_date || '',
-                birthTime: chart.birth_time || '',
-                city: chart.city || '',
-              };
-              setForm((prev) => ({ ...prev, ...prefillData }));
+              // Auth user has complete chart — skip form, redirect directly
               setExistingChartId(chart.id);
-              setPrefilled(true);
+              setAutoRedirecting(true);
+              const featureRoute = PRODUCT_FEATURE_ROUTES[productSlug];
+              router.push(featureRoute || `/chart/${chart.id}?from=${productSlug}`);
               return;
             }
-          }
 
-          const authData: Partial<FormData> = {
-            email: user.email || '',
-          };
-
-          if (chart) {
+            // Partial data — pre-fill only missing fields
+            const authData: Partial<FormData> = { email: user.email || '' };
             if (chart.name) authData.name = chart.name;
             if (chart.gender === 'male' || chart.gender === 'female') authData.gender = chart.gender;
             if (chart.birth_date) authData.birthDate = chart.birth_date;
             if (chart.birth_time) authData.birthTime = chart.birth_time;
             if (chart.city) authData.city = chart.city;
+            setForm((prev) => ({ ...prev, ...authData }));
+            setPrefilled(true);
+            return;
           }
 
-          // Also check profile name as fallback
-          if (!authData.name) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('name')
-              .eq('id', user.id)
-              .single();
-            if (profile?.name) authData.name = profile.name;
-          }
-
-          setForm((prev) => ({ ...prev, ...authData }));
+          // No chart at all — just pre-fill email
+          setForm((prev) => ({ ...prev, email: user.email || '' }));
           setPrefilled(true);
           return;
         }
@@ -127,7 +113,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     }
 
     prefillFromAuth();
-  }, []);
+  }, [productSlug]);
 
   const handleChange = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -144,7 +130,7 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     });
     // If auth user already has a chart, go there directly. Never create a duplicate.
     if (existingChartId) {
-      window.location.href = `/chart/${existingChartId}?from=${productSlug}`;
+      router.push(`/chart/${existingChartId}?from=${productSlug}`);
       return;
     }
     // New user or no existing chart — create a new chart
@@ -154,8 +140,16 @@ export default function ProductForm({ productSlug }: { productSlug: string }) {
     if (form.birthTime) params.set('birthTime', form.birthTime);
     if (form.city) params.set('city', form.city);
     params.set('from', productSlug);
-    window.location.href = `/chart/new?${params.toString()}`;
+    router.push(`/chart/new?${params.toString()}`);
   };
+
+  if (autoRedirecting) {
+    return (
+      <div className="glass-card p-6 md:p-8 flex items-center justify-center">
+        <div className="animate-pulse text-white/60 text-sm">Завантаження...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card p-6 md:p-8">

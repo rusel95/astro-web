@@ -3,6 +3,7 @@
 import FeaturePageLayout from '@/components/feature/FeaturePageLayout';
 import SectionCard from '@/components/feature/SectionCard';
 import ReportRenderer from '@/components/feature/ReportRenderer';
+import AIReportCard from '@/components/feature/AIReportCard';
 import KeyValueGrid from '@/components/feature/KeyValueGrid';
 
 function extractSafeData(obj: unknown): Record<string, unknown> | null {
@@ -25,12 +26,17 @@ export default function DirectionsClient() {
       formVariant="date-range"
     >
       {(data) => {
+        const aiReport = data.aiReport as { title: string; summary: string; sections: Array<{ heading: string; text: string; rating?: number }>; recommendations: string[] } | null;
         const report = extractSafeData(data.directionReport);
         const directions = extractSafeData(data.directions);
 
         return (
           <div className="space-y-4">
-            {report && (
+            {aiReport && (
+              <AIReportCard report={aiReport} />
+            )}
+
+            {!aiReport && report && (
               <SectionCard title="Звіт дирекцій">
                 <ReportRenderer content={report} />
               </SectionCard>
@@ -39,6 +45,13 @@ export default function DirectionsClient() {
             {directions && (
               <SectionCard title="Напрямлені позиції" defaultCollapsed>
                 <KeyValueGrid data={directions} />
+              </SectionCard>
+            )}
+
+            {/* Show raw SDK report as collapsible fallback when AI report is available */}
+            {aiReport && report && (
+              <SectionCard title="Сирі дані SDK" defaultCollapsed>
+                <ReportRenderer content={report} />
               </SectionCard>
             )}
           </div>
