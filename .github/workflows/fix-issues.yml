@@ -1,0 +1,126 @@
+name: Auto-fix GitHub Issues
+
+# Triggers:
+# 1. Manual dispatch (with optional label override)
+# 2. Schedule (daily at 9am UTC — adjust as needed)
+# 3. When an issue gets labeled "ready"
+on:
+  workflow_dispatch:
+    inputs:
+      issue_label:
+        description: 'Label to filter issues by'
+        default: 'ready'
+        required: false
+      issue_limit:
+        description: 'Max issues to process'
+        default: '20'
+        required: false
+
+  schedule:
+    # Daily at 9:00 UTC (12:00 Kyiv time)
+    - cron: '0 9 * * *'
+
+  issues:
+    types: [labeled]
+
+jobs:
+  fix-issues:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Only run on label event if the label is "ready"
+    if: >
+      github.event_name != 'issues' ||
+      github.event.label.name == 'ready'
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        continue-on-error: true
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Check for ready issues
+        id: check-issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_LABEL: ${{ github.event.inputs.issue_label || 'ready' }}
+          INPUT_LIMIT: ${{ github.event.inputs.issue_limit || '20' }}
+        run: |
+          ISSUE_NUMBERS=$(gh issue list \
+            --label "$INPUT_LABEL" \
+            --state open \
+            --limit "$INPUT_LIMIT" \
+            --json number \
+            --jq '.[].number' | tr '\n' ',' | sed 's/,$//')
+
+          ISSUE_COUNT=$(gh issue list \
+            --label "$INPUT_LABEL" \
+            --state open \
+            --limit "$INPUT_LIMIT" \
+            --json number \
+            --jq 'length')
+
+          echo "issue_numbers=$ISSUE_NUMBERS" >> "$GITHUB_OUTPUT"
+          echo "issue_count=$ISSUE_COUNT" >> "$GITHUB_OUTPUT"
+
+          if [[ "$ISSUE_COUNT" == "0" ]]; then
+            echo "No issues with label '$INPUT_LABEL'. Skipping."
+          else
+            echo "Found $ISSUE_COUNT issue(s): $ISSUE_NUMBERS"
+          fi
+
+      - name: Run Claude Code to fix issues
+        if: steps.check-issues.outputs.issue_count != '0'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBERS: ${{ steps.check-issues.outputs.issue_numbers }}
+          REPO_NAME: ${{ github.repository }}
+          # App env vars (needed for build)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          ASTROLOGY_API_BASE_URL: ${{ secrets.ASTROLOGY_API_BASE_URL }}
+          ASTROLOGY_API_KEY: ${{ secrets.ASTROLOGY_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+        run: |
+          BRANCH_NAME="auto-fix/$(date +%Y%m%d-%H%M)"
+
+          # Build the prompt from template
+          PROMPT=$(cat scripts/fix-issues-prompt.md)
+          PROMPT="${PROMPT//\{\{ISSUE_NUMBERS\}\}/$ISSUE_NUMBERS}"
+          PROMPT="${PROMPT//\{\{BRANCH_NAME\}\}/$BRANCH_NAME}"
+          PROMPT="${PROMPT//\{\{REPO\}\}/$REPO_NAME}"
+
+          # Configure git for commits
+          git config user.name "claude-code[bot]"
+          git config user.email "claude-code[bot]@users.noreply.github.com"
+
+          # Run Claude Code headlessly
+          claude -p "$PROMPT" \
+            --dangerously-skip-permissions \
+            --verbose
