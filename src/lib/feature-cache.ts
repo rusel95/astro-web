@@ -81,14 +81,17 @@ export async function saveCachedResult(
       ? new Date('2099-12-31T23:59:59Z').toISOString()
       : new Date(Date.now() + ttl).toISOString();
 
-  // Upsert: delete old then insert
+  // Upsert: delete old entry with same params then insert.
+  // Match on both hash AND full params to avoid evicting unrelated entries on hash collision.
+  const canonicalParams = deepSortKeys(params);
   await supabase
     .from('feature_results')
     .delete()
     .eq('user_id', userId)
     .eq('feature_type', featureType)
     .eq('chart_id', chartId)
-    .eq('feature_params_hash', paramsHash);
+    .eq('feature_params_hash', paramsHash)
+    .eq('feature_params', canonicalParams as any);
 
   await supabase.from('feature_results').insert({
     user_id: userId,
