@@ -59,7 +59,7 @@ const PRODUCT_SLUG_TO_AREA: Record<string, ReportArea> = {
   marriage: 'relationships',
   health: 'health',
   finance: 'finances',
-  children: 'general',
+  children: 'children',
   pregnancy: 'general',
   conception: 'general',
   calendar: 'general',

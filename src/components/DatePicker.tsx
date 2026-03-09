@@ -16,14 +16,6 @@ function daysInMonth(month: number, year: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-const INPUT_STYLE: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.07)',
-  border: '1.5px solid rgba(255,255,255,0.12)',
-  WebkitAppearance: 'none',
-  MozAppearance: 'none',
-  appearance: 'none',
-};
-
 // ── Scroll Drum Column ─────────────────────────────────────────────────────────
 interface DrumProps {
   items: (string | number)[];
@@ -38,18 +30,44 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   const VISIBLE = 5;
   const containerRef = useRef<HTMLDivElement>(null);
   const programmaticScroll = useRef(false);
+  const isTouching = useRef(false);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  // Center selected item
+  // Center selected item (only when not actively touching)
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && !isTouching.current) {
       programmaticScroll.current = true;
       containerRef.current.scrollTop = selected * ITEM_H;
-      // Reset flag after the browser processes the scroll
       requestAnimationFrame(() => { programmaticScroll.current = false; });
     }
   }, [selected]);
 
-  // Intercept wheel events to scroll exactly 1 item at a time
+  // Track touch state so we don't fight native scroll
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onTouchStart = () => { isTouching.current = true; };
+    const onTouchEnd = () => {
+      isTouching.current = false;
+      // After touch ends, wait for scroll snap to settle, then sync
+      clearTimeout(scrollTimer.current);
+      scrollTimer.current = setTimeout(() => {
+        if (!el) return;
+        const newIdx = Math.round(el.scrollTop / ITEM_H);
+        const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
+        if (clamped !== selected) onSelect(clamped);
+      }, 150);
+    };
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
+      clearTimeout(scrollTimer.current);
+    };
+  }, [selected, items.length, onSelect]);
+
+  // Intercept wheel events to scroll exactly 1 item at a time (desktop)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -67,7 +85,7 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   }, [selected, items.length, onSelect]);
 
   const handleScroll = () => {
-    if (!containerRef.current || programmaticScroll.current) return;
+    if (!containerRef.current || programmaticScroll.current || isTouching.current) return;
     const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
     const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
     if (clamped !== selected) onSelect(clamped);
@@ -104,10 +122,12 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
         <div
           ref={containerRef}
           data-testid="drum-col"
-          className="absolute inset-0 overflow-y-scroll hide-scrollbar"
+          className="absolute inset-0 overflow-y-scroll hide-scrollbar z-30"
           style={{
             scrollSnapType: 'y mandatory',
             scrollPaddingTop: ITEM_H * Math.floor(VISIBLE / 2),
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
           }}
           onScroll={handleScroll}
         >
