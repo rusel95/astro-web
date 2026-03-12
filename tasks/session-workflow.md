@@ -1,4 +1,4 @@
-# Session Workflow — astro-web
+# Session Workflow — Зоря (astro-web)
 
 **The only loop that works:** продивляєшся → фіксаєш → пушиш → деплоїш → продивляєшся
 
@@ -48,8 +48,8 @@ Must be clean before handing off to user for push.
 
 ## Deploy
 
-- Every `git push` to `main` auto-deploys to Vercel (no manual step needed)
-- Branch `002-auth-ux-fixes` → manual: `npx vercel --prod --yes` (from user's machine)
+- Every `git push` to `main` auto-deploys to Vercel (when enabled in vercel.json)
+- Manual: `npx vercel --prod --yes` (from user's machine)
 - Check status: `vercel ls --limit 5`
 
 ---
