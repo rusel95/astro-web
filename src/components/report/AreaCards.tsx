@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { LucideIcon, User, Briefcase, Heart, Activity, TrendingUp, Sparkles, ChevronRight, CheckCircle2, Lock } from 'lucide-react';
+import { LucideIcon, User, Briefcase, Heart, Activity, TrendingUp, Sparkles, Baby, ChevronRight, CheckCircle2, Lock } from 'lucide-react';
 import { ReportArea } from '@/types/astrology';
 import { REPORT_AREAS } from '@/lib/constants';
 
@@ -12,6 +12,7 @@ const AREA_ICONS: Record<ReportArea, LucideIcon> = {
   health:        Activity,
   finances:      TrendingUp,
   spirituality:  Sparkles,
+  children:      Baby,
 };
 
 interface Props {

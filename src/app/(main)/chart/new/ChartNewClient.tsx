@@ -11,6 +11,14 @@ import { posthog } from '@/lib/posthog';
 import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import ZodiacIcon from '@/components/icons/ZodiacIcon';
 
+// Products with dedicated feature pages — redirect there instead of /chart/{id}
+const PRODUCT_FEATURE_ROUTES: Record<string, string> = {
+  '2026': '/solar-return',
+  'calendar': '/transit',
+  'monthly': '/lunar-return',
+  '3-years': '/progressions',
+};
+
 const TOTAL_STEPS = 4;
 
 const BG = 'linear-gradient(to bottom, #0f0a1e, #1a0e35)';
@@ -213,7 +221,8 @@ export default function ChartNewClient() {
         gender,
       });
       const fromProduct = searchParams.get('from');
-      const chartPath = fromProduct ? `/chart/${data.id}?from=${fromProduct}` : `/chart/${data.id}`;
+      const featureRoute = fromProduct ? PRODUCT_FEATURE_ROUTES[fromProduct] : undefined;
+      const chartPath = featureRoute || (fromProduct ? `/chart/${data.id}?from=${fromProduct}` : `/chart/${data.id}`);
       router.push(chartPath);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Помилка розрахунку';
@@ -313,7 +322,8 @@ export default function ChartNewClient() {
           source: 'auto_submit_query_params',
         });
         const fromParam = searchParams.get('from');
-        const destPath = fromParam ? `/chart/${data.id}?from=${fromParam}` : `/chart/${data.id}`;
+        const featureRoute = fromParam ? PRODUCT_FEATURE_ROUTES[fromParam] : undefined;
+        const destPath = featureRoute || (fromParam ? `/chart/${data.id}?from=${fromParam}` : `/chart/${data.id}`);
         router.push(destPath);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Помилка розрахунку');

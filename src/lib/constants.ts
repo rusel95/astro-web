@@ -43,6 +43,7 @@ export const REPORT_AREAS: ReportAreaInfo[] = [
   { id: 'health', name: 'Здоров\'я', icon: '🏥', description: 'Фізичне та емоційне благополуччя' },
   { id: 'finances', name: 'Фінанси', icon: '💰', description: 'Матеріальний добробут' },
   { id: 'spirituality', name: 'Духовність', icon: '🔮', description: 'Духовний шлях та карма' },
+  { id: 'children', name: 'Дитячий гороскоп', icon: '👶', description: 'Характер та таланти дитини' },
 ];
 
 export const ZODIAC_SYMBOLS: Record<ZodiacSign, string> = {

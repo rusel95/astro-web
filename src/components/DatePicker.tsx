@@ -16,14 +16,6 @@ function daysInMonth(month: number, year: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-const INPUT_STYLE: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.07)',
-  border: '1.5px solid rgba(255,255,255,0.12)',
-  WebkitAppearance: 'none',
-  MozAppearance: 'none',
-  appearance: 'none',
-};
-
 // ── Scroll Drum Column ─────────────────────────────────────────────────────────
 interface DrumProps {
   items: (string | number)[];

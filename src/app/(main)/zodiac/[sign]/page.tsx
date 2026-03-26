@@ -342,6 +342,30 @@ export default function ZodiacSignPage({ params }: { params: { sign: string } })
           </div>
         </div>
 
+        {/* Sign selector — navigate between all 12 signs */}
+        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 mb-10">
+          {ZODIAC_SIGNS.map((sign) => {
+            const info = ZODIAC_INFO[sign];
+            const isActive = params.sign === sign;
+            return (
+              <Link
+                key={sign}
+                href={`/zodiac/${sign}`}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
+                  isActive
+                    ? 'bg-zorya-violet/20 border border-zorya-violet/40 scale-105'
+                    : 'bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08]'
+                }`}
+              >
+                <ZodiacIcon sign={info.nameEn} size={20} color={isActive ? info.color : undefined} />
+                <span className={`text-[10px] font-medium ${isActive ? 'text-white' : 'text-white/50'}`}>
+                  {info.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
         {/* Description */}
         <div className="p-8 rounded-3xl mb-8" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <p className="text-lg text-white/80 leading-relaxed">{zodiac.description}</p>
