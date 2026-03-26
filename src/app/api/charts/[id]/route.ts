@@ -59,6 +59,14 @@ export async function PATCH(
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
+    // Invalidate stored chart_data when any birth field changes —
+    // downstream views consume chart_data, so it must be recomputed
+    const BIRTH_FIELDS = ['birth_date', 'birth_time', 'city', 'latitude', 'longitude', 'country_code'];
+    const birthFieldChanged = BIRTH_FIELDS.some(f => f in updates);
+    if (birthFieldChanged) {
+      updates.chart_data = null;
+    }
+
     const { data: chart, error } = await supabase
       .from('charts')
       .update(updates)

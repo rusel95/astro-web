@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import CitySearch from '@/components/CitySearch';
 
 interface ChartData {
   id: string;
@@ -9,6 +10,9 @@ interface ChartData {
   birth_date: string;
   birth_time?: string;
   city: string;
+  latitude?: number;
+  longitude?: number;
+  country_code?: string;
   gender?: string;
 }
 
@@ -22,8 +26,11 @@ export default function EditChartModal({ chart, onClose, onSaved }: EditChartMod
   const [form, setForm] = useState({
     name: chart.name || '',
     birth_date: chart.birth_date || '',
-    birth_time: chart.birth_time || '',
+    birth_time: chart.birth_time ?? '',
     city: chart.city || '',
+    latitude: chart.latitude || 0,
+    longitude: chart.longitude || 0,
+    country_code: chart.country_code || '',
     gender: chart.gender || '',
   });
   const [saving, setSaving] = useState(false);
@@ -34,10 +41,24 @@ export default function EditChartModal({ chart, onClose, onSaved }: EditChartMod
     setError(null);
 
     try {
+      // Only send fields that have values — omit empty birth_time to avoid clearing it
+      const payload: Record<string, unknown> = {
+        name: form.name,
+        birth_date: form.birth_date,
+        city: form.city,
+        latitude: form.latitude,
+        longitude: form.longitude,
+        country_code: form.country_code,
+        gender: form.gender || null,
+      };
+      if (form.birth_time) {
+        payload.birth_time = form.birth_time;
+      }
+
       const res = await fetch(`/api/charts/${chart.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -115,12 +136,15 @@ export default function EditChartModal({ chart, onClose, onSaved }: EditChartMod
 
           <div>
             <label className="block text-xs text-white/50 mb-1">Місто народження</label>
-            <input
-              type="text"
+            <CitySearch
               value={form.city}
-              onChange={(e) => setForm(f => ({ ...f, city: e.target.value }))}
-              placeholder="Місто"
-              className={inputClass}
+              onSelect={(c) => setForm(f => ({
+                ...f,
+                city: c.name,
+                latitude: c.lat,
+                longitude: c.lon,
+                country_code: c.countryCode,
+              }))}
             />
           </div>
 
