@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
     // The standard Subject includes city/lat/lng which the Chinese endpoint rejects with 500.
     // Null gender must be OMITTED (not passed as null) or the endpoint rejects it.
     const bd = rawSubject?.birth_data ?? {};
-    const birth_data: Record<string, unknown> = {
-      year: bd.year ?? null,
-      month: bd.month ?? null,
-      day: bd.day ?? null,
-      hour: bd.hour ?? null,
-      minute: bd.minute ?? null,
-    };
+    // Only include fields that have values — passing null causes SDK 500
+    const birth_data: Record<string, unknown> = {};
+    if (bd.year != null) birth_data.year = bd.year;
+    if (bd.month != null) birth_data.month = bd.month;
+    if (bd.day != null) birth_data.day = bd.day;
+    if (bd.hour != null) birth_data.hour = bd.hour;
+    if (bd.minute != null) birth_data.minute = bd.minute;
     if (bd.gender === 'male' || bd.gender === 'female') {
       birth_data.gender = bd.gender;
     }

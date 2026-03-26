@@ -72,6 +72,10 @@ function ExpandableSection({ heading, text, rating }: { heading: string; text: s
 export default function AIReportCard({ report, className = '' }: AIReportCardProps) {
   if (!report?.summary) return null;
 
+  // Guard against malformed AI responses where sections/recommendations aren't arrays
+  const sections = Array.isArray(report.sections) ? report.sections : [];
+  const recommendations = Array.isArray(report.recommendations) ? report.recommendations : [];
+
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Summary card */}
@@ -90,9 +94,9 @@ export default function AIReportCard({ report, className = '' }: AIReportCardPro
       </div>
 
       {/* Sections */}
-      {report.sections?.length > 0 && (
+      {sections.length > 0 && (
         <div className="rounded-2xl bg-white/[0.04] border border-white/[0.08] p-5 space-y-4">
-          {report.sections.map((section, i) => (
+          {sections.map((section, i) => (
             <ExpandableSection
               key={i}
               heading={section.heading}
@@ -104,14 +108,14 @@ export default function AIReportCard({ report, className = '' }: AIReportCardPro
       )}
 
       {/* Recommendations */}
-      {report.recommendations?.length > 0 && (
+      {recommendations.length > 0 && (
         <div className="rounded-2xl bg-zorya-purple/[0.04] border border-zorya-purple/10 p-5">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-zorya-violet text-sm">✦</span>
             <h4 className="text-sm font-semibold text-white">Рекомендації</h4>
           </div>
           <div className="space-y-2">
-            {report.recommendations.map((rec, i) => (
+            {recommendations.map((rec, i) => (
               <div key={i} className="flex gap-3 py-1.5 px-2 rounded-lg bg-white/[0.03]">
                 <span className="w-5 h-5 rounded-full bg-zorya-purple/20 text-zorya-violet flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
                   {i + 1}

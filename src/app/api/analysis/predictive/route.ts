@@ -10,6 +10,11 @@ export async function POST(req: NextRequest) {
 
     const predictive = await client.analysis.getPredictiveAnalysis({ subject, orb: 6, language: 'uk' } as any);
 
+    if (!predictive) {
+      Sentry.captureMessage('getPredictiveAnalysis returned null/undefined', { tags: { route: 'analysis/predictive' } });
+      return NextResponse.json({ error: 'Не вдалося отримати прогностичний аналіз' }, { status: 500 });
+    }
+
     return NextResponse.json(
       { predictive },
       {
