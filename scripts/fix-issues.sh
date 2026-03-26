@@ -78,8 +78,8 @@ ISSUE_NUMBERS=$(gh issue list \
   --jq '.[].number' | tr '\n' ',' | sed 's/,$//')
 
 # ── Create branch name ──────────────────────────────────────
-TIMESTAMP=$(date +%Y%m%d-%H%M)
-BRANCH_NAME="${BRANCH_PREFIX}/${TIMESTAMP}"
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+BRANCH_NAME="${BRANCH_PREFIX}/${TIMESTAMP}-$$"
 
 # ── Build the prompt ─────────────────────────────────────────
 if [[ ! -f "$PROMPT_FILE" ]]; then

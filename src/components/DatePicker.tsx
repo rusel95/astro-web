@@ -30,18 +30,21 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
   const VISIBLE = 5;
   const containerRef = useRef<HTMLDivElement>(null);
   const programmaticScroll = useRef(false);
+  const scrollDebounce = useRef<ReturnType<typeof setTimeout>>();
 
-  // Center selected item
+  // Center selected item — skip during active user scroll
   useEffect(() => {
     if (containerRef.current) {
       programmaticScroll.current = true;
       containerRef.current.scrollTop = selected * ITEM_H;
-      // Reset flag after the browser processes the scroll
-      requestAnimationFrame(() => { programmaticScroll.current = false; });
+      // Keep flag raised for 2 frames to cover scroll event propagation
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { programmaticScroll.current = false; });
+      });
     }
   }, [selected]);
 
-  // Intercept wheel events to scroll exactly 1 item at a time
+  // Intercept wheel events to scroll exactly 1 item at a time (desktop)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -51,18 +54,25 @@ function DrumColumn({ items, selected, onSelect, label, width = 'flex-1' }: Drum
       const newIdx = Math.max(0, Math.min(items.length - 1, selected + delta));
       programmaticScroll.current = true;
       el.scrollTop = newIdx * ITEM_H;
-      requestAnimationFrame(() => { programmaticScroll.current = false; });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { programmaticScroll.current = false; });
+      });
       onSelect(newIdx);
     };
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
   }, [selected, items.length, onSelect]);
 
+  // Debounced scroll handler — waits for scroll snap to settle before syncing
   const handleScroll = () => {
     if (!containerRef.current || programmaticScroll.current) return;
-    const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
-    const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
-    if (clamped !== selected) onSelect(clamped);
+    clearTimeout(scrollDebounce.current);
+    scrollDebounce.current = setTimeout(() => {
+      if (!containerRef.current) return;
+      const newIdx = Math.round(containerRef.current.scrollTop / ITEM_H);
+      const clamped = Math.max(0, Math.min(items.length - 1, newIdx));
+      if (clamped !== selected) onSelect(clamped);
+    }, 80);
   };
 
   return (

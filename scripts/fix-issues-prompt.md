@@ -100,12 +100,13 @@ Batch fix for N issues from QA review.
 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
-### Step 9: Close Issues
-For each successfully fixed issue:
+### Step 9: Comment on Issues (Do NOT Close)
+
+For each successfully fixed issue, add a comment linking to the PR:
 ```
-gh issue close <number> --repo {{REPO}} --comment "Fixed in PR #<pr-number>"
+gh issue comment <number> --repo {{REPO}} --body "Fix submitted in PR #<pr-number>. Will be closed when PR is merged."
 ```
-Do NOT close issues you skipped or couldn't fix.
+Do NOT close issues — they should only be closed after the PR is merged and verified.
 
 ## Important Notes
 

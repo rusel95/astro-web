@@ -28,8 +28,8 @@ export default function EditChartModal({ chart, onClose, onSaved }: EditChartMod
     birth_date: chart.birth_date || '',
     birth_time: chart.birth_time ?? '',
     city: chart.city || '',
-    latitude: chart.latitude || 0,
-    longitude: chart.longitude || 0,
+    latitude: chart.latitude ?? undefined as number | undefined,
+    longitude: chart.longitude ?? undefined as number | undefined,
     country_code: chart.country_code || '',
     gender: chart.gender || '',
   });
@@ -41,18 +41,18 @@ export default function EditChartModal({ chart, onClose, onSaved }: EditChartMod
     setError(null);
 
     try {
-      // Only send fields that have values — omit empty birth_time to avoid clearing it
       const payload: Record<string, unknown> = {
         name: form.name,
         birth_date: form.birth_date,
+        birth_time: form.birth_time || null,
         city: form.city,
-        latitude: form.latitude,
-        longitude: form.longitude,
         country_code: form.country_code,
         gender: form.gender || null,
       };
-      if (form.birth_time) {
-        payload.birth_time = form.birth_time;
+      // Only include coordinates if they exist — don't send (0,0) for charts without geodata
+      if (form.latitude != null && form.longitude != null) {
+        payload.latitude = form.latitude;
+        payload.longitude = form.longitude;
       }
 
       const res = await fetch(`/api/charts/${chart.id}`, {

@@ -59,12 +59,25 @@ export async function PATCH(
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    // Invalidate stored chart_data when any birth field changes —
-    // downstream views consume chart_data, so it must be recomputed
+    // Only invalidate chart_data if a birth field actually changed value
     const BIRTH_FIELDS = ['birth_date', 'birth_time', 'city', 'latitude', 'longitude', 'country_code'];
-    const birthFieldChanged = BIRTH_FIELDS.some(f => f in updates);
-    if (birthFieldChanged) {
-      updates.chart_data = null;
+    const hasBirthFieldUpdate = BIRTH_FIELDS.some(f => f in updates);
+    if (hasBirthFieldUpdate) {
+      const { data: current } = await supabase
+        .from('charts')
+        .select('birth_date, birth_time, city, latitude, longitude, country_code')
+        .eq('id', params.id)
+        .eq('user_id', user.id)
+        .single();
+
+      if (current) {
+        const actuallyChanged = BIRTH_FIELDS.some(f =>
+          f in updates && String(updates[f] ?? '') !== String((current as Record<string, unknown>)[f] ?? '')
+        );
+        if (actuallyChanged) {
+          updates.chart_data = null;
+        }
+      }
     }
 
     const { data: chart, error } = await supabase
