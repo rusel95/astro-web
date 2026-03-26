@@ -48,3 +48,6 @@ tests/.auth/
 .env.*.local
 firebase-debug.log
 .firebase/
+
+# Auto-fix logs
+scripts/fix-issues-*.log
