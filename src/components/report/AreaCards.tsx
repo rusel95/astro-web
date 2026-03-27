@@ -13,6 +13,7 @@ const AREA_ICONS: Record<ReportArea, LucideIcon> = {
   finances:      TrendingUp,
   spirituality:  Sparkles,
   children:      Baby,
+  marriage:      Heart,
 };
 
 interface Props {

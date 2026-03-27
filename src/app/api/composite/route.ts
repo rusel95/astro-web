@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { getAstrologyClient, toSdkSubject, toSdkChartOptions } from '@/lib/astrology-client';
 import { ChartInput } from '@/types/astrology';
+import { generateFeatureReport } from '@/lib/ai-report';
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,11 +35,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Generate AI-enhanced Ukrainian report from raw SDK data
+    const rawForAI = compositeReport || compositeChart;
+    const aiReport = rawForAI
+      ? await generateFeatureReport('composite', rawForAI)
+      : null;
+
     return NextResponse.json(
       {
         compositeChart,
         compositeChartSvg: typeof compositeChartSvg === 'string' ? compositeChartSvg : null,
         compositeReport,
+        aiReport,
       },
       {
         headers: {

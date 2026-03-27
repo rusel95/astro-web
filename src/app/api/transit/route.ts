@@ -4,11 +4,11 @@ import { getAstrologyClient, toSdkChartOptions } from '@/lib/astrology-client';
 
 export async function POST(req: NextRequest) {
   try {
-    const { subject, transit_date } = await req.json();
+    const { subject, transit_date, target_date } = await req.json();
     const client = getAstrologyClient();
     const options = toSdkChartOptions();
 
-    const transitDate = transit_date || new Date().toISOString().split('T')[0];
+    const transitDate = transit_date || target_date || new Date().toISOString().split('T')[0];
 
     const [transitChart, transitChartSvg, transitReport, natalTransitReport, natalTransits] = await Promise.all([
       client.charts.getTransitChart({ subject, transit_date: transitDate, options, language: 'uk' } as any).catch((e: unknown) => {

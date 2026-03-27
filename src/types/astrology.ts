@@ -63,7 +63,7 @@ export interface NatalChart {
   svgContent?: string;
 }
 
-export type ReportArea = 'general' | 'career' | 'relationships' | 'health' | 'finances' | 'spirituality' | 'children';
+export type ReportArea = 'general' | 'career' | 'relationships' | 'health' | 'finances' | 'spirituality' | 'children' | 'marriage';
 
 export interface ReportAreaInfo {
   id: ReportArea;

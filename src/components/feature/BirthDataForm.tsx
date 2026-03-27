@@ -209,6 +209,7 @@ export default function BirthDataForm({
       {showTargetDate && (
         <div>
           <label className={LABEL_CLASS}>Цільова дата</label>
+          <p className="text-white/40 text-xs mb-1.5">Для Соляру — вкажіть дату останнього дня народження. Для інших — дату, на яку хочете розрахунок.</p>
           <DatePicker value={targetDate} onChange={setTargetDate} />
           {errors.targetDate && <p className="text-red-400 text-xs mt-1">{errors.targetDate}</p>}
         </div>

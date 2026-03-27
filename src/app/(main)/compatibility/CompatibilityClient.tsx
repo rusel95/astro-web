@@ -9,6 +9,7 @@ import TimePicker from '@/components/TimePicker';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
 import SectionCard from '@/components/feature/SectionCard';
 import ReportRenderer from '@/components/feature/ReportRenderer';
+import AIReportCard from '@/components/feature/AIReportCard';
 import CompatibilityScoreGauge from '@/components/compatibility/CompatibilityScoreGauge';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 
@@ -264,8 +265,13 @@ export default function CompatibilityClient() {
               <SvgChartViewer svgContent={result.synastryChartSvg} title="Синастрійна карта (бі-колесо)" />
             )}
 
-            {/* Synastry Report */}
-            {!!result.synastryReport && (
+            {/* AI Synastry Report (Ukrainian) */}
+            {result.aiReport && (
+              <AIReportCard report={result.aiReport} />
+            )}
+
+            {/* SDK Synastry Report (fallback) */}
+            {!result.aiReport && !!result.synastryReport && (
               <SectionCard title="Синастрійний звіт">
                 <ReportRenderer content={result.synastryReport} />
               </SectionCard>

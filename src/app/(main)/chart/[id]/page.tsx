@@ -56,7 +56,7 @@ const PRODUCT_SLUG_TO_AREA: Record<string, ReportArea> = {
   business: 'career',
   love: 'relationships',
   'love-compatibility': 'relationships',
-  marriage: 'relationships',
+  marriage: 'marriage',
   health: 'health',
   finance: 'finances',
   children: 'children',

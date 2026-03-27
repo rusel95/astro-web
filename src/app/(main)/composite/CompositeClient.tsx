@@ -8,6 +8,7 @@ import TimePicker from '@/components/TimePicker';
 import SvgChartViewer from '@/components/feature/SvgChartViewer';
 import SectionCard from '@/components/feature/SectionCard';
 import ReportRenderer from '@/components/feature/ReportRenderer';
+import AIReportCard from '@/components/feature/AIReportCard';
 import ErrorState from '@/components/feature/ErrorState';
 import { isSupabaseConfigured } from '@/lib/supabase/client';
 
@@ -124,7 +125,11 @@ export default function CompositeClient() {
               <SvgChartViewer svgContent={result.compositeChartSvg} title="Композитна карта" />
             )}
 
-            {!!result.compositeReport && (
+            {result.aiReport && (
+              <AIReportCard report={result.aiReport} />
+            )}
+
+            {!result.aiReport && !!result.compositeReport && (
               <SectionCard title="Звіт композитної карти">
                 <ReportRenderer content={result.compositeReport} />
               </SectionCard>

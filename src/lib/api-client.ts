@@ -11,6 +11,13 @@ const ANALYSIS_ENDPOINTS = [
   '/api/composite',
   '/api/relationship-insights',
   '/api/insights/',
+  '/api/directions',
+  '/api/progressions',
+  '/api/transit',
+  '/api/solar-return',
+  '/api/lunar-return',
+  '/api/chinese/',
+  '/api/horoscope/chinese',
 ];
 
 // Per-session concurrency tracking

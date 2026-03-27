@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { getAstrologyClient, toSdkSubject, toSdkChartOptions } from '@/lib/astrology-client';
 import { mapAPIResponse } from '@/lib/api-mapper';
 import { ChartInput } from '@/types/astrology';
+import { generateFeatureReport } from '@/lib/ai-report';
 
 interface CompatibilityInput {
   person1: ChartInput;
@@ -48,6 +49,12 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
+    // Generate AI-enhanced Ukrainian report from raw SDK data
+    const rawForAI = synastryReport || synastryChart;
+    const aiReport = rawForAI
+      ? await generateFeatureReport('synastry', rawForAI)
+      : null;
+
     return NextResponse.json(
       {
         person1Chart: chart1,
@@ -55,6 +62,7 @@ export async function POST(req: NextRequest) {
         synastryChart,
         synastryChartSvg: typeof synastryChartSvg === 'string' ? synastryChartSvg : null,
         synastryReport,
+        aiReport,
         compatibilityScore,
       },
       {
