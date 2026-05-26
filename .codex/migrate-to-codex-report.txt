@@ -1,0 +1,33 @@
+Migration inventory:
+  active: instruction files - 2 found
+    - CLAUDE.md
+    - AGENTS.md
+  inactive: skills - none found
+  active: command sources - 9 found
+    provider: source command (9)
+      - speckit.analyze
+      - speckit.checklist
+      - speckit.clarify
+      - speckit.constitution
+      - speckit.implement
+      - speckit.plan
+      - speckit.specify
+      - speckit.tasks
+      - speckit.taskstoissues
+  inactive: subagents - none found
+Migration surfaces:
+  active: AGENTS.md - 1 instruction file(s) found.
+  active: skills - 9 skill(s) converted.
+  inactive: MCP config - No settings or MCP config found.
+  inactive: subagents - No subagents found.
+Migration report:
+  manual_fix_required: AGENTS.md - Generated copy contains Claude-only instruction semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-analyze/SKILL.md - Converted source command `speckit.analyze` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-checklist/SKILL.md - Converted source command `speckit.checklist` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-clarify/SKILL.md - Converted source command `speckit.clarify` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-constitution/SKILL.md - Converted source command `speckit.constitution` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-implement/SKILL.md - Converted source command `speckit.implement` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-plan/SKILL.md - Converted source command `speckit.plan` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-specify/SKILL.md - Converted source command `speckit.specify` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-tasks/SKILL.md - Converted source command `speckit.tasks` to a single-file Codex skill; review invocation and template placeholder semantics.
+  manual_fix_required: .agents/skills/source-command-speckit-taskstoissues/SKILL.md - Converted source command `speckit.taskstoissues` to a single-file Codex skill; review invocation and template placeholder semantics.
